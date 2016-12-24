@@ -1,0 +1,8 @@
+[preface]
+== Preface
+Xxx.
+
+This reference documentation contains the following parts.
+
+<<introduction>> introduction to this reference documentation
+

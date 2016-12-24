@@ -1,0 +1,226 @@
+buildscript {
+	ext {
+		springBootVersion = '1.4.2.RELEASE'
+		dependencyManagementVersion = '0.6.1.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+		maven { url 'http://repo.springsource.org/plugins-release' }
+	}
+//	plugins {
+//		id "io.spring.dependency-management" version "0.6.1.RELEASE"
+//	}
+	dependencies {
+		classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
+		classpath('org.asciidoctor:asciidoctor-gradle-plugin:1.5.2')
+		classpath("io.spring.gradle:docbook-reference-plugin:0.3.1")
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath("io.spring.gradle:dependency-management-plugin:${dependencyManagementVersion}")
+	}
+}
+
+def sampleProjects() {
+	subprojects.findAll { project ->
+		project.name.contains('spring-cloud-iot-samples') && project.name != 'spring-cloud-iot-common'
+	}
+}
+
+configure(allprojects) {
+println allprojects
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	apply plugin: 'io.spring.dependency-management'
+
+	group = 'org.springframework.cloud.iot'
+
+	compileJava {
+		sourceCompatibility = 1.8
+		targetCompatibility = 1.8
+	}
+
+	repositories {
+		mavenCentral()
+	}
+
+	dependencyManagement {
+		imports {
+//			mavenBom "org.springframework.cloud:spring-cloud-dependencies:Camden.SR3"
+			mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
+		}
+	}
+
+}
+
+configure(subprojects) { subproject ->
+	apply from: "${rootProject.projectDir}/publish-maven.gradle"
+
+	jar {
+		manifest.attributes['Implementation-Title'] = subproject.name
+		manifest.attributes['Implementation-Version'] = subproject.version
+
+		from("${rootProject.projectDir}/src/dist") {
+			include "license.txt"
+			include "notice.txt"
+			into "META-INF"
+			expand(copyright: new Date().format('yyyy'), version: project.version)
+		}
+	}
+
+
+	task sourcesJar(type: Jar, dependsOn:classes) {
+		classifier = 'sources'
+		from sourceSets.main.allJava
+	}
+
+	task javadocJar(type: Jar) {
+		classifier = 'javadoc'
+		from javadoc
+	}
+
+	artifacts {
+		archives sourcesJar
+		archives javadocJar
+	}
+
+}
+
+project('spring-cloud-iot-core') {
+	description = "Spring Cloud IoT Core"
+
+	dependencies {
+		testCompile('org.springframework.boot:spring-boot-starter-test')
+		testRuntime('org.springframework.boot:spring-boot-starter')
+	}
+}
+
+
+project('spring-cloud-iot-pi4j') {
+	description = "Spring Cloud IoT Pi4J"
+
+	dependencies {
+		compile project(":spring-cloud-iot-core")
+		compile("com.pi4j:pi4j-core:$pi4jVersion")
+		compile("com.pi4j:pi4j-device:$pi4jVersion")
+		testCompile('org.springframework.boot:spring-boot-starter-test')
+	}
+}
+
+project('spring-cloud-iot-boot') {
+	description = "Spring Cloud IoT Boot"
+
+	dependencies {
+		compile project(":spring-cloud-iot-pi4j")
+		compile('org.springframework.boot:spring-boot-autoconfigure')
+		compile('org.slf4j:slf4j-api')
+		testCompile('org.springframework.boot:spring-boot-starter-test')
+		testRuntime('org.springframework.boot:spring-boot-starter')
+	}
+}
+
+//project('spring-cloud-iot-samples-common') {
+//	configurations.archives.artifacts.removeAll { it.archiveTask.is jar }
+//	tasks.findByPath("artifactoryPublish")?.enabled = false
+//}
+
+configure(sampleProjects()) {
+//	apply plugin: 'org.springframework.boot'
+//	configurations.archives.artifacts.removeAll { it.archiveTask.is jar }
+	tasks.findByPath("artifactoryPublish")?.enabled = false
+	dependencies {
+		compile project(":spring-cloud-iot-boot")
+		runtime('org.springframework.boot:spring-boot-starter')
+	}
+}
+
+configure(rootProject) {
+	apply plugin: 'org.asciidoctor.gradle.asciidoctor'
+	apply plugin: "docbook-reference"
+//	apply from: "${rootProject.projectDir}/publish-maven.gradle"
+//	configurations.archives.artifacts.clear()
+
+	reference {
+		sourceDir = new File(asciidoctor.outputDir , 'docbook5')
+		pdfFilename = "spring-cloud-iot-reference.pdf"
+		epubFilename = "spring-cloud-iot-reference.epub"
+		expandPlaceholders = ""
+	}
+
+	afterEvaluate {
+		tasks.findAll { it.name.startsWith("reference") }.each{ it.dependsOn.add("asciidoctor") }
+	}
+
+	asciidoctorj {
+		version = '1.5.2'
+	}
+
+	asciidoctor {
+		sourceDir = file("docs/src/reference/asciidoc")
+		backends = ['docbook5']
+		options eruby: 'erubis'
+		attributes docinfo: '',
+			copycss : '',
+			icons : 'font',
+			'source-highlighter': 'prettify',
+			sectanchors : '',
+			toc2: '',
+			idprefix: '',
+			idseparator: '-',
+			doctype: 'book',
+			numbered: '',
+			'spring-cloud-iot-version' : project.version,
+			revnumber : project.version
+	}
+
+	task api(type: Javadoc) {
+		group = 'Documentation'
+		description = 'Generates aggregated Javadoc API documentation.'
+		title = "${rootProject.description} ${version} API"
+		options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+		options.author = true
+		options.header = rootProject.description
+		options.links(
+			'http://docs.jboss.org/jbossas/javadoc/4.0.5/connector'
+		)
+
+		// disable javadocs for samples
+		source subprojects
+		.findAll { project ->
+			!project.name.contains('samples')
+		}
+		.collect { project ->
+			project.sourceSets.main.allJava
+		}
+
+		destinationDir = new File(buildDir, "api")
+		classpath = files(subprojects.collect { project ->
+			project.sourceSets.main.compileClasspath
+		})
+		maxMemory = '1024m'
+	}
+
+
+	task docsZip(type: Zip) {
+		group = 'Distribution'
+		classifier = 'docs'
+		description = "Builds -${classifier} archive containing api and reference for deployment."
+		from('src/dist') {
+			include 'changelog.txt'
+		}
+		from (api) {
+			into 'api'
+		}
+		from (reference) {
+			into 'reference'
+		}
+	}
+
+
+	artifacts {
+		archives docsZip
+	}
+
+	task wrapper(type: Wrapper) {
+		description = 'Generates gradlew[.bat] scripts'
+		gradleVersion = '3.1'
+	}
+}

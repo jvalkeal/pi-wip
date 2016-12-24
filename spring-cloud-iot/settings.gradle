@@ -1,0 +1,19 @@
+rootProject.name = 'spring-cloud-iot'
+
+include 'spring-cloud-iot-core'
+include 'spring-cloud-iot-boot'
+include 'spring-cloud-iot-pi4j'
+
+include 'spring-cloud-iot-samples'
+include 'spring-cloud-iot-samples:sunfounder-01'
+include 'spring-cloud-iot-samples:sunfounder-18'
+
+rootProject.children.find {
+	if (it.name == 'spring-cloud-iot-samples') {
+		it.name = 'spring-cloud-iot-samples-common'
+		it.children.each {
+			it.name = 'spring-cloud-iot-samples-' + it.name
+		}
+	}
+}
+

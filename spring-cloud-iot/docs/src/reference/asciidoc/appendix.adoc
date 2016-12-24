@@ -1,0 +1,26 @@
+[[appendices]]
+= Appendices
+
+:numbered!:
+
+[appendix]
+== Support Content
+This appendix provides generic information about used classes and
+material in this reference documentation.
+
+[appendix]
+== Spring IoT Concepts
+This appendix provides generic information about Iot.
+
+
+[glossary]
+=== Glossary
+
+*Pulse Width Modulation*::
+xxx.
+
+[[crashcourse]]
+=== An IOT Course
+This appendix provides generic crash course to IoT concepts.
+
+
