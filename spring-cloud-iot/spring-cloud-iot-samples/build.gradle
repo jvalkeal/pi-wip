@@ -34,3 +34,11 @@ project('spring-cloud-iot-samples-sunfounder-26') {
 		compile project(":spring-cloud-iot-samples-common")
 	}
 }
+
+project('spring-cloud-iot-samples-temperaturelcd') {
+	apply plugin: 'org.springframework.boot'
+	description = 'Spring Cloud IOT Temperature on LCD Sample'
+	dependencies {
+		compile project(":spring-cloud-iot-samples-common")
+	}
+}

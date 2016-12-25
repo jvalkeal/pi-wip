@@ -29,6 +29,7 @@ public class Pi4jPCF8574Lcd implements Lcd {
 
 	@Override
 	public void setText(String text) {
+		lcd.clear();
 		lcd.write(text);
 	}
 }

@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    iot:
+      platform: RASPBERRY
+      raspberry:
+        numberingScheme: BROADCOM
+        i2c:
+          addresses:
+            0x27:
+              type: lcd
