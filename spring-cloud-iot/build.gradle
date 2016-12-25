@@ -1,11 +1,12 @@
 buildscript {
 	ext {
-		springBootVersion = '1.4.2.RELEASE'
-		dependencyManagementVersion = '0.6.1.RELEASE'
+		springBootVersion = '2.0.0.BUILD-SNAPSHOT'
+//		dependencyManagementVersion = '0.6.1.RELEASE'
 	}
 	repositories {
 		mavenCentral()
-		maven { url 'http://repo.springsource.org/plugins-release' }
+		maven { url 'http://repo.spring.io/plugins-release' }
+		maven { url 'http://repo.spring.io/plugins-snapshot' }
 	}
 //	plugins {
 //		id "io.spring.dependency-management" version "0.6.1.RELEASE"
@@ -15,7 +16,7 @@ buildscript {
 		classpath('org.asciidoctor:asciidoctor-gradle-plugin:1.5.2')
 		classpath("io.spring.gradle:docbook-reference-plugin:0.3.1")
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		classpath("io.spring.gradle:dependency-management-plugin:${dependencyManagementVersion}")
+//		classpath("io.spring.gradle:dependency-management-plugin:${dependencyManagementVersion}")
 	}
 }
 
@@ -26,7 +27,6 @@ def sampleProjects() {
 }
 
 configure(allprojects) {
-println allprojects
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
 	apply plugin: 'io.spring.dependency-management'
@@ -40,6 +40,7 @@ println allprojects
 
 	repositories {
 		mavenCentral()
+		maven { url 'http://repo.spring.io/libs-snapshot' }
 	}
 
 	dependencyManagement {
@@ -88,6 +89,7 @@ project('spring-cloud-iot-core') {
 	description = "Spring Cloud IoT Core"
 
 	dependencies {
+		compile('io.projectreactor:reactor-core')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
 		testRuntime('org.springframework.boot:spring-boot-starter')
 	}
