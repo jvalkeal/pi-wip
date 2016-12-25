@@ -1,5 +1,5 @@
 <releaseinfo>{revnumber}</releaseinfo>
-<productname>Spring Statemachine</productname>
+<productname>Spring Cloud IoT</productname>
 <authorgroup>
   <author>
     <firstname>Janne</firstname>
@@ -9,8 +9,7 @@
 </authorgroup>
 
 <copyright>
-  <year>2015</year>
-  <year>2016</year>
+  <year>2017</year>
   <holder>Pivotal Software, Inc.</holder>
 </copyright>
 

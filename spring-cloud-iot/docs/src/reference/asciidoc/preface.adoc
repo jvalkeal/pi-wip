@@ -1,10 +1,15 @@
 [preface]
 == Preface
-Xxx.
+World is changing and every year more smaller and powerful little
+devices are introduced which are capable of running JVM's. All this
+will introduce new world to developers wanting to take their part of
+_Internet of Things(IoT)_.
 
 This reference documentation contains the following parts.
 
 <<introduction>> introduction to this reference documentation
+
+<<iot>> Spring Cloud Iot documentation
 
 <<appendices>> generic info about used material and IoT
 
