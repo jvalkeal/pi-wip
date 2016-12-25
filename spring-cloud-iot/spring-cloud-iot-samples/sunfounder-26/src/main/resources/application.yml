@@ -1,0 +1,6 @@
+spring:
+  cloud:
+    iot:
+      platform: RASPBERRY
+      raspberry:
+        numberingScheme: BROADCOM
