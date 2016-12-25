@@ -6,3 +6,5 @@ This reference documentation contains the following parts.
 
 <<introduction>> introduction to this reference documentation
 
+<<appendices>> generic info about used material and IoT
+
