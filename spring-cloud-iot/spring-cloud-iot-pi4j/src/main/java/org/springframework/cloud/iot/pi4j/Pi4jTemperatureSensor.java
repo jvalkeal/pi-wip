@@ -39,7 +39,7 @@ public class Pi4jTemperatureSensor implements TemperatureSensor {
 			public Double call() throws Exception {
 				return sensor.getTemperature();
 			}
-		});
+		}, Duration.ofSeconds(1));
 		try {
 			this.sensorValue.afterPropertiesSet();
 		} catch (Exception e) {
