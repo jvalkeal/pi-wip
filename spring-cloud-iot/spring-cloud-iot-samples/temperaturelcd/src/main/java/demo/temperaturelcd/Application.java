@@ -24,8 +24,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.iot.component.Lcd;
 import org.springframework.cloud.iot.component.TemperatureSensor;
 
-import reactor.core.publisher.Flux;
-
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
@@ -39,14 +37,10 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		sensor.asFlux().subscribe(temp -> {
-			log.info("set temp {}", temp);
-			lcd.setText(Double.toString(temp));
+		sensor.asFlux().subscribe(t -> {
+			log.info("New temperature {}", t);
+			lcd.setText(Double.toString(t));
 		});
-//		while(true) {
-//			lcd.setText(Double.toString(sensor.getTemperature()));
-//			Thread.sleep(1000);
-//		}
 	}
 
 	public static void main(String[] args) {
