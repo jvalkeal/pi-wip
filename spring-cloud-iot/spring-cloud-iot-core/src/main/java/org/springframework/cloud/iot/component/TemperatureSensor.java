@@ -15,9 +15,8 @@
  */
 package org.springframework.cloud.iot.component;
 
-import java.util.List;
-
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * {@code TemperatureSensor} is a {@link Sensor}
@@ -27,13 +26,6 @@ import reactor.core.publisher.Flux;
  *
  */
 public interface TemperatureSensor extends Sensor {
-
-	/**
-	 * Gets the logical device name.
-	 *
-	 * @return the device name
-	 */
-	String getName();
 
 	/**
 	 * Gets the temperature.
@@ -47,5 +39,12 @@ public interface TemperatureSensor extends Sensor {
 	 *
 	 * @return the flux of temperatures
 	 */
-	Flux<Double> asFlux();
+	Flux<Double> temperatureAsFlux();
+
+	/**
+	 * Get a {@link Mono} of temperature.
+	 *
+	 * @return the mono of temperature
+	 */
+	Mono<Double> temperatureAsMono();
 }

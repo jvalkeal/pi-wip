@@ -22,6 +22,7 @@ import org.springframework.cloud.iot.component.TemperatureSensor;
 import org.springframework.cloud.iot.support.SensorValue;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.core.publisher.TopicProcessor;
 
 public class Pi4jTemperatureSensor implements TemperatureSensor {
@@ -59,12 +60,12 @@ public class Pi4jTemperatureSensor implements TemperatureSensor {
 	}
 
 	@Override
-	public Flux<Double> asFlux() {
+	public Flux<Double> temperatureAsFlux() {
 		return sensorValue.asFlux();
-//		TopicProcessor<Double> topic = TopicProcessor.create();
-//		Flux.interval(Duration.ofSeconds(2)).doOnNext(i -> {
-//			topic.onNext(sensor.getTemperature());
-//		}).subscribe();
-//		return topic;
+	}
+
+	@Override
+	public Mono<Double> temperatureAsMono() {
+		return sensorValue.asMono();
 	}
 }

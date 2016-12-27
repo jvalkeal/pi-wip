@@ -37,7 +37,7 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		sensor.asFlux().subscribe(t -> {
+		sensor.temperatureAsFlux().subscribe(t -> {
 			log.info("New temperature {}", t);
 			lcd.setText(Double.toString(t));
 		});

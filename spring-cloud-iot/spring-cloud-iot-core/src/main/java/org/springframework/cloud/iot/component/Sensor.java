@@ -23,4 +23,10 @@ package org.springframework.cloud.iot.component;
  */
 public interface Sensor {
 
+	/**
+	 * Gets the logical sensor name.
+	 *
+	 * @return the sensor name
+	 */
+	String getName();
 }

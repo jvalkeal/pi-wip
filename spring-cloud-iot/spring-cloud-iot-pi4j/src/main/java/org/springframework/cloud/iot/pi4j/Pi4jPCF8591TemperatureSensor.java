@@ -20,6 +20,7 @@ import org.springframework.cloud.iot.component.TemperatureSensor;
 import com.pi4j.component.temperature.impl.Tmp102;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  *
@@ -57,7 +58,13 @@ public class Pi4jPCF8591TemperatureSensor implements TemperatureSensor {
 	}
 
 	@Override
-	public Flux<Double> asFlux() {
+	public Flux<Double> temperatureAsFlux() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Mono<Double> temperatureAsMono() {
 		// TODO Auto-generated method stub
 		return null;
 	}
