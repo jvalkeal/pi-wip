@@ -19,6 +19,8 @@ import org.springframework.cloud.iot.component.TemperatureSensor;
 
 import com.pi4j.component.temperature.impl.Tmp102;
 
+import reactor.core.publisher.Flux;
+
 /**
  *
  * @author Janne Valkealahti
@@ -52,5 +54,11 @@ public class Pi4jPCF8591TemperatureSensor implements TemperatureSensor {
 		double t = 1 / (((Math.log(Rt / 10000)) / 3950) + (1 / (273.15 + 25)));
 		t = t - 273.15;
 		return t;
+	}
+
+	@Override
+	public Flux<Double> asFlux() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

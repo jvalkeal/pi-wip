@@ -15,16 +15,37 @@
  */
 package org.springframework.cloud.iot.pi4j;
 
+import java.time.Duration;
+import java.util.concurrent.Callable;
+
 import org.springframework.cloud.iot.component.TemperatureSensor;
+import org.springframework.cloud.iot.support.SensorValue;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.TopicProcessor;
 
 public class Pi4jTemperatureSensor implements TemperatureSensor {
 
 	private String name;
 	private com.pi4j.component.temperature.TemperatureSensor sensor;
+	private SensorValue<Double> sensorValue;
 
 	public Pi4jTemperatureSensor(String name, com.pi4j.component.temperature.TemperatureSensor sensor) {
 		this.name = name;
 		this.sensor = sensor;
+		this.sensorValue = new SensorValue<>(new Callable<Double>() {
+
+			@Override
+			public Double call() throws Exception {
+				return sensor.getTemperature();
+			}
+		});
+		try {
+			this.sensorValue.afterPropertiesSet();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -35,5 +56,15 @@ public class Pi4jTemperatureSensor implements TemperatureSensor {
 	@Override
 	public double getTemperature() {
 		return sensor.getTemperature();
+	}
+
+	@Override
+	public Flux<Double> asFlux() {
+		return sensorValue.asFlux();
+//		TopicProcessor<Double> topic = TopicProcessor.create();
+//		Flux.interval(Duration.ofSeconds(2)).doOnNext(i -> {
+//			topic.onNext(sensor.getTemperature());
+//		}).subscribe();
+//		return topic;
 	}
 }

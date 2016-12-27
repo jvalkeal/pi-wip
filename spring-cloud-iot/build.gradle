@@ -89,6 +89,7 @@ project('spring-cloud-iot-core') {
 	description = "Spring Cloud IoT Core"
 
 	dependencies {
+		compile('org.springframework:spring-beans')
 		compile('io.projectreactor:reactor-core')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
 		testRuntime('org.springframework.boot:spring-boot-starter')
