@@ -15,6 +15,10 @@
  */
 package org.springframework.cloud.iot.component;
 
+import java.util.List;
+
+import reactor.core.publisher.Flux;
+
 /**
  * {@code TemperatureSensor} is a {@link Sensor}
  * returning a temperature.
@@ -37,4 +41,11 @@ public interface TemperatureSensor extends Sensor {
 	 * @return the temperature
 	 */
 	double getTemperature();
+
+	/**
+	 * Get a {@link Flux} of temperatures.
+	 *
+	 * @return the flux of temperatures
+	 */
+	Flux<Double> asFlux();
 }

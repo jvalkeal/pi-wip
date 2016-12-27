@@ -15,6 +15,8 @@
  */
 package demo.temperaturelcd;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -25,6 +27,8 @@ import org.springframework.cloud.iot.component.TemperatureSensor;
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
+	private final static Logger log = LoggerFactory.getLogger(Application.class);
+
 	@Autowired
 	private Lcd lcd;
 
@@ -33,10 +37,10 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		while(true) {
-			lcd.setText(Double.toString(sensor.getTemperature()));
-			Thread.sleep(1000);
-		}
+		sensor.asFlux().subscribe(t -> {
+			log.info("New temperature {}", t);
+			lcd.setText(Double.toString(t));
+		});
 	}
 
 	public static void main(String[] args) {
