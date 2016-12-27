@@ -19,10 +19,17 @@ import org.springframework.cloud.iot.component.TemperatureSensor;
 
 public class Pi4jTemperatureSensor implements TemperatureSensor {
 
+	private String name;
 	private com.pi4j.component.temperature.TemperatureSensor sensor;
 
-	public Pi4jTemperatureSensor(com.pi4j.component.temperature.TemperatureSensor sensor) {
+	public Pi4jTemperatureSensor(String name, com.pi4j.component.temperature.TemperatureSensor sensor) {
+		this.name = name;
 		this.sensor = sensor;
+	}
+
+	@Override
+	public String getName() {
+		return name;
 	}
 
 	@Override

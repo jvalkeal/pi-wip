@@ -84,7 +84,7 @@ public class I2CConfiguration implements ImportBeanDefinitionRegistrar, Environm
 				}
 				if (tmp102 != null) {
 					BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(I2CFactoryBean.class);
-					bdb.addConstructorArgValue(new Pi4jPCF8591TemperatureSensor(tmp102));
+					bdb.addConstructorArgValue(new Pi4jPCF8591TemperatureSensor(null, tmp102));
 					bdb.addConstructorArgValue(TemperatureSensor.class);
 					registry.registerBeanDefinition(BEAN_PREFIX + entry.getKey(), bdb.getBeanDefinition());
 				}

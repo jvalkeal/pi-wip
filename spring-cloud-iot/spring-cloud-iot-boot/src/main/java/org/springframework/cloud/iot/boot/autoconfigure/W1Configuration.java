@@ -47,8 +47,9 @@ public class W1Configuration implements ImportBeanDefinitionRegistrar, Environme
 		W1Master w1Master = new W1Master();
 		for (TemperatureSensor device : w1Master.getDevices(TemperatureSensor.class)) {
 			BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jTemperatureSensor.class);
+			bdb.addConstructorArgValue(device.getName().trim());
 			bdb.addConstructorArgValue(device);
-			registry.registerBeanDefinition(BEAN_PREFIX + device.getName(), bdb.getBeanDefinition());
+			registry.registerBeanDefinition(BEAN_PREFIX + device.getName().trim(), bdb.getBeanDefinition());
 		}
 	}
 }

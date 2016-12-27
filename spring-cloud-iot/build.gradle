@@ -113,6 +113,7 @@ project('spring-cloud-iot-boot') {
 	dependencies {
 		compile project(":spring-cloud-iot-pi4j")
 		compile('org.springframework.boot:spring-boot-autoconfigure')
+		compile('org.springframework.boot:spring-boot-actuator')
 		compile('org.slf4j:slf4j-api')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
 		testRuntime('org.springframework.boot:spring-boot-starter')

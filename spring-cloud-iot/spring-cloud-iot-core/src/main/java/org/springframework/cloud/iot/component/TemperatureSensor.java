@@ -25,6 +25,13 @@ package org.springframework.cloud.iot.component;
 public interface TemperatureSensor extends Sensor {
 
 	/**
+	 * Gets the logical device name.
+	 *
+	 * @return the device name
+	 */
+	String getName();
+
+	/**
 	 * Gets the temperature.
 	 *
 	 * @return the temperature

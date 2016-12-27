@@ -26,6 +26,7 @@ import com.pi4j.component.temperature.impl.Tmp102;
  */
 public class Pi4jPCF8591TemperatureSensor implements TemperatureSensor {
 
+	private String name;
 	private Tmp102 tmp102;
 
 	/**
@@ -33,8 +34,14 @@ public class Pi4jPCF8591TemperatureSensor implements TemperatureSensor {
 	 *
 	 * @param tmp102 the tmp102
 	 */
-	public Pi4jPCF8591TemperatureSensor(Tmp102 tmp102) {
+	public Pi4jPCF8591TemperatureSensor(String name, Tmp102 tmp102) {
+		this.name = name;
 		this.tmp102 = tmp102;
+	}
+
+	@Override
+	public String getName() {
+		return name;
 	}
 
 	@Override

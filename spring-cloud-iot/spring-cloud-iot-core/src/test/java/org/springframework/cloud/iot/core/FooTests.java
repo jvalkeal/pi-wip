@@ -15,6 +15,10 @@
  */
 package org.springframework.cloud.iot.core;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +44,12 @@ public class FooTests {
 			log.info("G_val {} {}", G_val, G_val2);
 		}
 
+	}
+
+	@Test
+	public void testXxx() throws IOException {
+		String deviceName = new String(Files.readAllBytes(new File("/tmp/", "data.txt").toPath())).trim();
+		log.info("XXX '{}'", deviceName);
 	}
 
 	private static int map(int x, int in_min, int in_max, int out_min, int out_max) {
