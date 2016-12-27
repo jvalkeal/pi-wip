@@ -33,7 +33,7 @@ import reactor.core.publisher.Mono;
  * sensor values.
  *
  * Sensor values can be requests as raw values, as a {@link Mono} or
- * as a {@link Flux}. If there are active subsribers to a flux sensor
+ * as a {@link Flux}. If there are active subscribers to a flux sensor
  * polling is done by intervals and {@link #getValue()} and {@link #asMono()}
  * may return cached value.
  *
@@ -53,7 +53,6 @@ public class SensorValue<T> implements InitializingBean {
 
 	/**
 	 * Instantiates a new sensor value.
-	 *
 	 *
 	 * @param valueCallable the callable producing sensor value
 	 * @param duration the duration how often sensor value is requested
