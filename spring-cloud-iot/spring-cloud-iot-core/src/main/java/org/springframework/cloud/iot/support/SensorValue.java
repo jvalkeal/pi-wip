@@ -43,7 +43,7 @@ public class SensorValue<T> implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		Flux<Long> intervalFlux = Flux.interval(Duration.ofSeconds(1)).doOnNext(i -> {
-			T value = getValue();
+			T value = getValueInternal();
 			if (!ObjectUtils.nullSafeEquals(value, last)) {
 				processor.onNext(getValue());
 			}
@@ -51,29 +51,30 @@ public class SensorValue<T> implements InitializingBean {
 		});
 
 		sensorFlux = processor.doOnSubscribe(c -> {
-			int i = subscriberCount.getAndIncrement();
-			if (i == 0) {
+			if (subscriberCount.getAndIncrement() == 0) {
 				disposable = intervalFlux.subscribe();
 			}
 		}).doFinally(c -> {
-			int i = subscriberCount.decrementAndGet();
-			if (i == 0) {
+			if (subscriberCount.decrementAndGet() == 0) {
 				disposable.dispose();
+				last = null;
 			}
 		});
 	}
 
 	public T getValue() {
-		try {
-			return valueCallable.call();
-		} catch (Exception e) {
-			throw new RuntimeException("Unable to query value", e);
+		T l = last;
+		if (subscriberCount.get() > 0 && l != null) {
+			return l;
+		} else {
+			return getValueInternal();
 		}
 	}
 
 	public Flux<T> asFlux() {
-		if (last != null) {
-			return Flux.merge(Flux.just(last), sensorFlux);
+		T l = last;
+		if (l != null) {
+			return Flux.merge(Flux.just(l), sensorFlux);
 		} else {
 			return sensorFlux;
 		}
@@ -81,5 +82,13 @@ public class SensorValue<T> implements InitializingBean {
 
 	public Mono<T> asMono() {
 		return Mono.fromCallable(valueCallable);
+	}
+
+	private T getValueInternal() {
+		try {
+			return valueCallable.call();
+		} catch (Exception e) {
+			throw new RuntimeException("Unable to query value", e);
+		}
 	}
 }
