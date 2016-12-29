@@ -96,10 +96,15 @@ public class I2CConfiguration implements ImportBeanDefinitionRegistrar, Environm
 					e.printStackTrace();
 				}
 				if (lcd != null) {
-					BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(I2CFactoryBean.class);
-					bdb.addConstructorArgValue(new Pi4jPCF8574Lcd(lcd));
-					bdb.addConstructorArgValue(Lcd.class);
+
+					BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jPCF8574Lcd.class);
+					bdb.addConstructorArgValue(lcd);
 					registry.registerBeanDefinition(BEAN_PREFIX + entry.getKey(), bdb.getBeanDefinition());
+
+//					BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(I2CFactoryBean.class);
+//					bdb.addConstructorArgValue(new Pi4jPCF8574Lcd(lcd));
+//					bdb.addConstructorArgValue(Lcd.class);
+//					registry.registerBeanDefinition(BEAN_PREFIX + entry.getKey(), bdb.getBeanDefinition());
 				}
 			}
 		}
@@ -108,7 +113,7 @@ public class I2CConfiguration implements ImportBeanDefinitionRegistrar, Environm
 	private IotConfigurationProperties buildProperties() {
 		IotConfigurationProperties iotConfigurationProperties = new IotConfigurationProperties();
 		PropertiesConfigurationFactory<Object> factory = new PropertiesConfigurationFactory<Object>(iotConfigurationProperties);
-		factory.setTargetName("spring.cloud.iot.raspberry");
+		factory.setTargetName("spring.cloud.iot");
 		factory.setPropertySources(environment.getPropertySources());
 
 		try {

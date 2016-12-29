@@ -81,7 +81,7 @@ public class GpioConfiguration implements ImportBeanDefinitionRegistrar, BeanFac
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
 		IotConfigurationProperties iotConfigurationProperties = new IotConfigurationProperties();
 		PropertiesConfigurationFactory<Object> factory = new PropertiesConfigurationFactory<Object>(iotConfigurationProperties);
-		factory.setTargetName("spring.cloud.iot.raspberry");
+		factory.setTargetName("spring.cloud.iot");
 		factory.setPropertySources(environment.getPropertySources());
 
 		try {

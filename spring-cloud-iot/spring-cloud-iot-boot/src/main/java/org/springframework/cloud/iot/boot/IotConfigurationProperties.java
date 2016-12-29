@@ -25,20 +25,20 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Janne Valkealahti
  *
  */
-@ConfigurationProperties(prefix = "spring.cloud.iot.raspberry")
+@ConfigurationProperties(prefix = "spring.cloud.iot")
 public class IotConfigurationProperties {
 
-	private NumberingScheme numberingScheme;
+//	private NumberingScheme numberingScheme;
 	private Map<String, Pins> pins;
 	private I2C i2c;
 
-	public NumberingScheme getNumberingScheme() {
-		return numberingScheme;
-	}
-
-	public void setNumberingScheme(NumberingScheme numberingScheme) {
-		this.numberingScheme = numberingScheme;
-	}
+//	public NumberingScheme getNumberingScheme() {
+//		return numberingScheme;
+//	}
+//
+//	public void setNumberingScheme(NumberingScheme numberingScheme) {
+//		this.numberingScheme = numberingScheme;
+//	}
 
 	public Map<String, Pins> getPins() {
 		return pins;
@@ -102,11 +102,5 @@ public class IotConfigurationProperties {
 	public enum NumberingScheme {
 		BROADCOM, WIRINGPI;
 	}
-
-	@Override
-	public String toString() {
-		return "IotConfigurationProperties [numberingScheme=" + numberingScheme + ", pins=" + pins + "]";
-	}
-
 
 }

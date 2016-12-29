@@ -90,7 +90,9 @@ project('spring-cloud-iot-core') {
 
 	dependencies {
 		compile('org.springframework:spring-beans')
+		compile('org.springframework:spring-context')
 		compile('io.projectreactor:reactor-core')
+		compile('org.slf4j:slf4j-api')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
 		testRuntime('org.springframework.boot:spring-boot-starter')
 	}

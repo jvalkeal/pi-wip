@@ -15,12 +15,16 @@
  */
 package org.springframework.cloud.iot.pi4j;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.component.Lcd;
+import org.springframework.cloud.iot.support.LifecycleObjectSupport;
 
 import com.pi4j.component.lcd.impl.I2CLcdDisplay;
 
-public class Pi4jPCF8574Lcd implements Lcd {
+public class Pi4jPCF8574Lcd extends LifecycleObjectSupport implements Lcd {
 
+	private final Logger log = LoggerFactory.getLogger(Pi4jPCF8574Lcd.class);
 	private I2CLcdDisplay lcd;
 
 	public Pi4jPCF8574Lcd(I2CLcdDisplay lcd) {
@@ -32,4 +36,12 @@ public class Pi4jPCF8574Lcd implements Lcd {
 		lcd.clear();
 		lcd.write(text);
 	}
+
+	@Override
+	protected void doDestroy() {
+		log.info("Stopping, clearing lcd");
+		lcd.clear();
+	}
+
+
 }
