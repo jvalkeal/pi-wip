@@ -30,17 +30,8 @@ public class IotConfigurationProperties {
 
 	public static final String NAMESPACE = "spring.cloud.iot";
 
-//	private NumberingScheme numberingScheme;
 	private Map<String, Pins> pins;
 	private I2C i2c;
-
-//	public NumberingScheme getNumberingScheme() {
-//		return numberingScheme;
-//	}
-//
-//	public void setNumberingScheme(NumberingScheme numberingScheme) {
-//		this.numberingScheme = numberingScheme;
-//	}
 
 	public Map<String, Pins> getPins() {
 		return pins;

@@ -4,6 +4,11 @@ management:
 spring:
   cloud:
     iot:
+      device:
+        lcd:
+          rows: 2
+          colums: 16
+          clearTextOnExit: true
       platform: RASPBERRY
       raspberry:
         numberingScheme: BROADCOM
