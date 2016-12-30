@@ -25,8 +25,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Janne Valkealahti
  *
  */
-@ConfigurationProperties(prefix = "spring.cloud.iot")
+@ConfigurationProperties(prefix = IotConfigurationProperties.NAMESPACE)
 public class IotConfigurationProperties {
+
+	public static final String NAMESPACE = "spring.cloud.iot";
 
 //	private NumberingScheme numberingScheme;
 	private Map<String, Pins> pins;

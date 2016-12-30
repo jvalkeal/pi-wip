@@ -19,29 +19,54 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.component.Lcd;
 import org.springframework.cloud.iot.support.LifecycleObjectSupport;
+import org.springframework.util.Assert;
 
 import com.pi4j.component.lcd.impl.I2CLcdDisplay;
 
+/**
+ * {@code Pi4jPCF8574Lcd} is {@link Lcd} device using PCF8574 IC2
+ * interface controlling a lcd.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class Pi4jPCF8574Lcd extends LifecycleObjectSupport implements Lcd {
 
 	private final Logger log = LoggerFactory.getLogger(Pi4jPCF8574Lcd.class);
-	private I2CLcdDisplay lcd;
+	private final I2CLcdDisplay lcd;
+	private boolean clearTextOnExit = true;
 
+	/**
+	 * Instantiates a new Pi4jPCF8574Lcd.
+	 *
+	 * @param lcd the instance of I2CLcdDisplay
+	 */
 	public Pi4jPCF8574Lcd(I2CLcdDisplay lcd) {
+		Assert.notNull(lcd, "I2CLcdDisplay lcd instance must be set");
 		this.lcd = lcd;
 	}
 
 	@Override
 	public void setText(String text) {
+		log.debug("Writing text {}", text);
 		lcd.clear();
 		lcd.write(text);
 	}
 
 	@Override
 	protected void doDestroy() {
-		log.info("Stopping, clearing lcd");
-		lcd.clear();
+		if (clearTextOnExit) {
+			lcd.clear();
+		}
 	}
 
+	/**
+	 * Sets if text is cleared when device is stopped.
+	 *
+	 * @param clearTextOnExit the new clear text on exit
+	 */
+	public void setClearTextOnExit(boolean clearTextOnExit) {
+		this.clearTextOnExit = clearTextOnExit;
+	}
 
 }

@@ -4,10 +4,11 @@ management:
 spring:
   cloud:
     iot:
-      i2c:
-        addresses:
-          0x27:
-            type: lcd
       platform: RASPBERRY
       raspberry:
         numberingScheme: BROADCOM
+      i2c:
+        addresses:
+          0x27:
+            bus: 1
+            type: lcd

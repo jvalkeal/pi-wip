@@ -24,22 +24,14 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.boot.bind.PropertiesConfigurationFactory;
 import org.springframework.cloud.iot.boot.IotConfigurationProperties;
 import org.springframework.cloud.iot.boot.IotConfigurationProperties.Addresses;
-import org.springframework.cloud.iot.component.Lcd;
-import org.springframework.cloud.iot.component.Sensor;
 import org.springframework.cloud.iot.component.TemperatureSensor;
 import org.springframework.cloud.iot.pi4j.Pi4jPCF8574Lcd;
 import org.springframework.cloud.iot.pi4j.Pi4jPCF8591TemperatureSensor;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.util.Assert;
-import org.springframework.validation.BindException;
 
 import com.pi4j.component.lcd.impl.I2CLcdDisplay;
 import com.pi4j.component.temperature.impl.Tmp102;
@@ -53,18 +45,10 @@ import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
  *
  */
 @Configuration
-public class I2CConfiguration implements ImportBeanDefinitionRegistrar, EnvironmentAware {
+public class I2CConfiguration extends AbstractConfigurationSupport implements ImportBeanDefinitionRegistrar {
 
 	private final Logger log = LoggerFactory.getLogger(I2CConfiguration.class);
 	private final static String BEAN_PREFIX = "I2C_";
-	private ConfigurableEnvironment environment;
-
-	@Override
-	public void setEnvironment(Environment environment) {
-		Assert.isInstanceOf(ConfigurableEnvironment.class, environment,
-				"environment must be of type ConfigurableEnvironment but was " + environment);
-		this.environment = (ConfigurableEnvironment)environment;
-	}
 
 	@Override
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
@@ -100,28 +84,9 @@ public class I2CConfiguration implements ImportBeanDefinitionRegistrar, Environm
 					BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jPCF8574Lcd.class);
 					bdb.addConstructorArgValue(lcd);
 					registry.registerBeanDefinition(BEAN_PREFIX + entry.getKey(), bdb.getBeanDefinition());
-
-//					BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(I2CFactoryBean.class);
-//					bdb.addConstructorArgValue(new Pi4jPCF8574Lcd(lcd));
-//					bdb.addConstructorArgValue(Lcd.class);
-//					registry.registerBeanDefinition(BEAN_PREFIX + entry.getKey(), bdb.getBeanDefinition());
 				}
 			}
 		}
-	}
-
-	private IotConfigurationProperties buildProperties() {
-		IotConfigurationProperties iotConfigurationProperties = new IotConfigurationProperties();
-		PropertiesConfigurationFactory<Object> factory = new PropertiesConfigurationFactory<Object>(iotConfigurationProperties);
-		factory.setTargetName("spring.cloud.iot");
-		factory.setPropertySources(environment.getPropertySources());
-
-		try {
-			factory.bindPropertiesToTarget();
-		} catch (BindException e) {
-			throw new RuntimeException("Unable to bind properties", e);
-		}
-		return iotConfigurationProperties;
 	}
 
 	public static class I2CFactoryBean implements FactoryBean<Object>, InitializingBean {
