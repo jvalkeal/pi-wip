@@ -25,14 +25,14 @@ import org.springframework.context.annotation.Import;
 
 public class GpioConfigurationTests {
 
-	@Test
-	public void testProperties() {
-		SpringApplication app = new SpringApplication(GpioAutoConfiguration.class);
-		app.setWebEnvironment(false);
-		ConfigurableApplicationContext context = app
-				.run(new String[] { "--spring.config.name=GpioConfigurationTests1" });
-		context.close();
-	}
+//	@Test
+//	public void testProperties() {
+//		SpringApplication app = new SpringApplication(GpioAutoConfiguration.class);
+//		app.setWebEnvironment(false);
+//		ConfigurableApplicationContext context = app
+//				.run(new String[] { "--spring.config.name=GpioConfigurationTests1" });
+//		context.close();
+//	}
 
 //	@Configuration
 //	@Import(GpioConfiguration.class)

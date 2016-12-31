@@ -42,6 +42,21 @@ public class IotConfigurationPropertiesTests {
 		assertThat(properties.getI2C().getAddresses().get(0x48).getType(), is("temperature"));
 	}
 
+	@Test
+	public void testDeviceProperties() {
+		SpringApplication app = new SpringApplication(TestConfiguration.class);
+		app.setWebEnvironment(false);
+		ConfigurableApplicationContext context = app
+				.run(new String[] { "--spring.config.name=IotConfigurationPropertiesTests2" });
+		IotConfigurationProperties properties = context.getBean(IotConfigurationProperties.class);
+		assertThat(properties, notNullValue());
+		assertThat(properties.getDevice(), notNullValue());
+		assertThat(properties.getDevice().getLcd(), notNullValue());
+		assertThat(properties.getDevice().getLcd().getRows(), is(2));
+		assertThat(properties.getDevice().getLcd().getColums(), is(16));
+		assertThat(properties.getDevice().getLcd().isClearTextOnExit(), is(true));
+	}
+
 	@Configuration
 	@EnableConfigurationProperties({ IotConfigurationProperties.class })
 	protected static class TestConfiguration {

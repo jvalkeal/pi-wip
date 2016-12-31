@@ -49,6 +49,55 @@ public class IotConfigurationProperties {
 		this.i2c = i2c;
 	}
 
+	private Device device;
+
+	public void setDevice(Device device) {
+		this.device = device;
+	}
+
+	public Device getDevice() {
+		return device;
+	}
+
+	public static class Device {
+
+		private Lcd lcd;
+
+		public Lcd getLcd() {
+			return lcd;
+		}
+
+		public void setLcd(Lcd lcd) {
+			this.lcd = lcd;
+		}
+
+	}
+
+	public static class Lcd {
+		private int rows = 2;
+		private int colums = 16;
+		private boolean clearTextOnExit = true;
+		public int getRows() {
+			return rows;
+		}
+		public void setRows(int rows) {
+			this.rows = rows;
+		}
+		public int getColums() {
+			return colums;
+		}
+		public void setColums(int colums) {
+			this.colums = colums;
+		}
+		public boolean isClearTextOnExit() {
+			return clearTextOnExit;
+		}
+		public void setClearTextOnExit(boolean clearTextOnExit) {
+			this.clearTextOnExit = clearTextOnExit;
+		}
+	}
+
+
 	public static class Pins {
 
 		private String type;
@@ -82,6 +131,7 @@ public class IotConfigurationProperties {
 
 	public static class Addresses {
 		private String type;
+		private int bus;
 
 		public String getType() {
 			return type;
@@ -89,6 +139,13 @@ public class IotConfigurationProperties {
 
 		public void setType(String type) {
 			this.type = type;
+		}
+		public int getBus() {
+			return bus;
+		}
+
+		public void setBus(int bus) {
+			this.bus = bus;
 		}
 	}
 

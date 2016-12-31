@@ -75,12 +75,13 @@ public class I2CConfiguration extends AbstractConfigurationSupport implements Im
 			} else if (entry.getValue().getType().equals("lcd")) {
 				I2CLcdDisplay lcd = null;
 				try {
-					lcd = new I2CLcdDisplay(2, 16, I2CBus.BUS_1, entry.getKey(), 3, 0, 1, 2, 7, 6, 5, 4);
+					lcd = new I2CLcdDisplay(properties.getDevice().getLcd().getRows(), properties.getDevice().getLcd().getColums(),
+							entry.getValue().getBus(), entry.getKey(), 3, 0, 1, 2, 7, 6, 5, 4);
 				} catch (Exception e) {
+					log.error("Error creating I2CLcdDisplay", e);
 					e.printStackTrace();
 				}
 				if (lcd != null) {
-
 					BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jPCF8574Lcd.class);
 					bdb.addConstructorArgValue(lcd);
 					registry.registerBeanDefinition(BEAN_PREFIX + entry.getKey(), bdb.getBeanDefinition());
