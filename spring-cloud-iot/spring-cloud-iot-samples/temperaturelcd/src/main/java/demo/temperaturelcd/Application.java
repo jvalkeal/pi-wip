@@ -20,9 +20,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.ExportMetricWriter;
+import org.springframework.boot.actuate.metrics.Metric;
+import org.springframework.boot.actuate.metrics.writer.MessageChannelMetricWriter;
+import org.springframework.boot.actuate.metrics.writer.MetricWriter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.iot.component.Lcd;
 import org.springframework.cloud.iot.component.TemperatureSensor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
+import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
+import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
+import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHandler;
+import org.springframework.messaging.support.MessageBuilder;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -41,6 +56,48 @@ public class Application implements CommandLineRunner {
 			log.info("New temperature {}", t);
 			lcd.setText(Double.toString(t));
 		});
+	}
+
+	@Bean
+	public MqttPahoClientFactory mqttClientFactory() {
+		DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
+		factory.setServerURIs("tcp://192.168.1.96:1883");
+		factory.setUserName("scdf");
+		factory.setPassword("scdf");
+		return factory;
+	}
+
+	@Bean
+	@ServiceActivator(inputChannel = "mqttOutboundChannel")
+	public MessageHandler mqttOutbound() {
+		MqttPahoMessageHandler messageHandler = new MqttPahoMessageHandler("testClient", mqttClientFactory());
+		messageHandler.setAsync(true);
+		messageHandler.setDefaultTopic("testTopic");
+		messageHandler.setConverter(new BetterPahoMessageConverter());
+		return messageHandler;
+	}
+
+	@Bean
+	public MessageChannel mqttOutboundChannel() {
+		return new DirectChannel();
+	}
+
+	@Bean
+	@ExportMetricWriter
+	public MetricWriter metricWriter() {
+		return new MessageChannelMetricWriter(mqttOutboundChannel());
+	}
+
+	private static class BetterPahoMessageConverter extends DefaultPahoMessageConverter {
+
+		@Override
+		protected byte[] messageToMqttBytes(Message<?> message) {
+			if (message.getPayload() instanceof Metric) {
+				return super.messageToMqttBytes(MessageBuilder.createMessage(message.getPayload().toString(), message.getHeaders()));
+			} else {
+				return super.messageToMqttBytes(message);
+			}
+		}
 	}
 
 	public static void main(String[] args) {

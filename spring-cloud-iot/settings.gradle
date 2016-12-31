@@ -10,6 +10,7 @@ include 'spring-cloud-iot-samples:sunfounder-18'
 include 'spring-cloud-iot-samples:sunfounder-26'
 include 'spring-cloud-iot-samples:sunfounder-30'
 include 'spring-cloud-iot-samples:temperaturelcd'
+include 'spring-cloud-iot-samples:gateway'
 
 rootProject.children.find {
 	if (it.name == 'spring-cloud-iot-samples') {

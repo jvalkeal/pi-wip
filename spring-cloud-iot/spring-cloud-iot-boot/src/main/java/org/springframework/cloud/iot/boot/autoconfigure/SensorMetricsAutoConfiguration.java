@@ -44,7 +44,7 @@ public class SensorMetricsAutoConfiguration {
 
 	public static class MetricAdder {
 
-		@Autowired
+		@Autowired(required = false)
 		private List<TemperatureSensor> temperatureSensors;
 
 		private GaugeService gaugeService;
@@ -55,8 +55,10 @@ public class SensorMetricsAutoConfiguration {
 
 		@Scheduled(fixedRate = 1000)
 		public void updateMetrics() {
-			for (TemperatureSensor sensor : temperatureSensors) {
-				this.gaugeService.submit("iot.temperature." + sensor.getName(), sensor.getTemperature());
+			if (temperatureSensors != null) {
+				for (TemperatureSensor sensor : temperatureSensors) {
+					this.gaugeService.submit("iot.temperature." + sensor.getName(), sensor.getTemperature());
+				}
 			}
 		}
 
