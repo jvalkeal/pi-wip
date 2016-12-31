@@ -2,9 +2,9 @@ spring:
   cloud:
     iot:
       platform: RASPBERRY
+      i2c:
+        addresses:
+          0x48:
+            type: temperature
       raspberry:
         numberingScheme: BROADCOM
-        i2c:
-          addresses:
-            0x48:
-              type: temperature

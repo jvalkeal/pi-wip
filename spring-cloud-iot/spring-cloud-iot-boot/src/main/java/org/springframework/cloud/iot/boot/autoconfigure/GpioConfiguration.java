@@ -16,33 +16,19 @@
 package org.springframework.cloud.iot.boot.autoconfigure;
 
 import java.util.Map.Entry;
-import java.util.Set;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.BeanNameGenerator;
-import org.springframework.beans.factory.support.DefaultBeanNameGenerator;
-import org.springframework.boot.bind.PropertiesConfigurationFactory;
 import org.springframework.cloud.iot.boot.IotConfigurationProperties;
 import org.springframework.cloud.iot.boot.IotConfigurationProperties.Pins;
-import org.springframework.cloud.iot.component.ColorLed;
 import org.springframework.cloud.iot.component.DimmedLed;
 import org.springframework.cloud.iot.pi4j.Pi4jDimmedLed;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.util.Assert;
-import org.springframework.validation.BindException;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioPinPwmOutput;
@@ -56,40 +42,13 @@ import com.pi4j.io.gpio.RaspiPin;
  *
  */
 @Configuration
-public class GpioConfiguration implements ImportBeanDefinitionRegistrar, BeanFactoryAware, EnvironmentAware {
+public class GpioConfiguration extends AbstractConfigurationSupport implements ImportBeanDefinitionRegistrar {
 
 	private final static String BEAN_PREFIX = "GPIO_";
-	private BeanFactory beanFactory;
-	private ConfigurableEnvironment environment;
-	private final BeanNameGenerator beanNameGenerator = new DefaultBeanNameGenerator();
-
-	@Override
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		Assert.isInstanceOf(ListableBeanFactory.class, beanFactory,
-				"beanFactory must be of type ListableBeanFactory but was " + beanFactory);
-		this.beanFactory = beanFactory;
-	}
-
-	@Override
-	public void setEnvironment(Environment environment) {
-		Assert.isInstanceOf(ConfigurableEnvironment.class, environment,
-				"environment must be of type ConfigurableEnvironment but was " + environment);
-		this.environment = (ConfigurableEnvironment)environment;
-	}
 
 	@Override
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-		IotConfigurationProperties iotConfigurationProperties = new IotConfigurationProperties();
-		PropertiesConfigurationFactory<Object> factory = new PropertiesConfigurationFactory<Object>(iotConfigurationProperties);
-		factory.setTargetName("spring.cloud.iot");
-		factory.setPropertySources(environment.getPropertySources());
-
-		try {
-			factory.bindPropertiesToTarget();
-		} catch (BindException e) {
-			e.printStackTrace();
-		}
-
+		IotConfigurationProperties iotConfigurationProperties = buildProperties();
 		if (iotConfigurationProperties.getPins() != null) {
 			for (Entry<String, Pins> entry : iotConfigurationProperties.getPins().entrySet()) {
 				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(GpioFactoryBean.class);
