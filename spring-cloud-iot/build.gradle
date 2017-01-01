@@ -48,6 +48,9 @@ configure(allprojects) {
 //			mavenBom "org.springframework.cloud:spring-cloud-dependencies:Camden.SR3"
 			mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
 		}
+		dependencies {
+			dependency 'org.eclipse.californium:californium-core:2.0.0-M2'
+		}
 	}
 
 }
@@ -117,6 +120,18 @@ project('spring-cloud-iot-boot') {
 		compile project(":spring-cloud-iot-pi4j")
 		compile('org.springframework.boot:spring-boot-autoconfigure')
 		compile('org.springframework.boot:spring-boot-actuator')
+		compile('org.slf4j:slf4j-api')
+		testCompile('org.springframework.boot:spring-boot-starter-test')
+		testRuntime('org.springframework.boot:spring-boot-starter')
+	}
+}
+
+project('spring-cloud-iot-integration-coap') {
+	description = "Spring Cloud IoT Integration CoAP"
+
+	dependencies {
+		compile('org.springframework.integration:spring-integration-core')
+		compile('org.eclipse.californium:californium-core')
 		compile('org.slf4j:slf4j-api')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
 		testRuntime('org.springframework.boot:spring-boot-starter')

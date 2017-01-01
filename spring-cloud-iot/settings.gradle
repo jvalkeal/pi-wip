@@ -2,6 +2,7 @@ rootProject.name = 'spring-cloud-iot'
 
 include 'spring-cloud-iot-core'
 include 'spring-cloud-iot-boot'
+include 'spring-cloud-iot-integration-coap'
 include 'spring-cloud-iot-pi4j'
 
 include 'spring-cloud-iot-samples'
