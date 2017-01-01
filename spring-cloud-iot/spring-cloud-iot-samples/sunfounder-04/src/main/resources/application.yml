@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    iot:
+      platform: RASPBERRY
+      pins:
+        17:
+          pin: digitaloutput
+          type: relay
+      raspberry:
+        numberingScheme: BROADCOM
