@@ -35,6 +35,7 @@ public class Pi4jPCF8591TemperatureSensor implements TemperatureSensor {
 	/**
 	 * Instantiates a new pi4j pc f8591 temperature sensor.
 	 *
+	 * @param name the name
 	 * @param tmp102 the tmp102
 	 */
 	public Pi4jPCF8591TemperatureSensor(String name, Tmp102 tmp102) {

@@ -40,6 +40,7 @@ public class IotConfigurationPropertiesTests {
 		assertThat(properties.getI2C().getAddresses(), notNullValue());
 		assertThat(properties.getI2C().getAddresses().get(0x48), notNullValue());
 		assertThat(properties.getI2C().getAddresses().get(0x48).getType(), is("temperature"));
+		context.close();
 	}
 
 	@Test
@@ -55,6 +56,7 @@ public class IotConfigurationPropertiesTests {
 		assertThat(properties.getDevice().getLcd().getRows(), is(2));
 		assertThat(properties.getDevice().getLcd().getColums(), is(16));
 		assertThat(properties.getDevice().getLcd().isClearTextOnExit(), is(true));
+		context.close();
 	}
 
 	@Configuration
