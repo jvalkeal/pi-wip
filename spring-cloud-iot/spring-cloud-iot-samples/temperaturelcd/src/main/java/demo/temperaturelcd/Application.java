@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.ExportMetricWriter;
-import org.springframework.boot.actuate.metrics.Metric;
 import org.springframework.boot.actuate.metrics.writer.MessageChannelMetricWriter;
 import org.springframework.boot.actuate.metrics.writer.MetricWriter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -29,15 +28,14 @@ import org.springframework.cloud.iot.component.Lcd;
 import org.springframework.cloud.iot.component.TemperatureSensor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.annotation.Transformer;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.json.ObjectToJsonTransformer;
 import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
-import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.support.MessageBuilder;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -68,12 +66,17 @@ public class Application implements CommandLineRunner {
 	}
 
 	@Bean
-	@ServiceActivator(inputChannel = "mqttOutboundChannel")
+	@Transformer(inputChannel = "mqttOutboundChannel", outputChannel = "convertedMqttOutboundChannel")
+	public ObjectToJsonTransformer metricToJsonTransformer() {
+		return new ObjectToJsonTransformer();
+	}
+
+	@Bean
+	@ServiceActivator(inputChannel = "convertedMqttOutboundChannel")
 	public MessageHandler mqttOutbound() {
 		MqttPahoMessageHandler messageHandler = new MqttPahoMessageHandler("testClient", mqttClientFactory());
 		messageHandler.setAsync(true);
 		messageHandler.setDefaultTopic("testTopic");
-		messageHandler.setConverter(new BetterPahoMessageConverter());
 		return messageHandler;
 	}
 
@@ -86,18 +89,6 @@ public class Application implements CommandLineRunner {
 	@ExportMetricWriter
 	public MetricWriter metricWriter() {
 		return new MessageChannelMetricWriter(mqttOutboundChannel());
-	}
-
-	private static class BetterPahoMessageConverter extends DefaultPahoMessageConverter {
-
-		@Override
-		protected byte[] messageToMqttBytes(Message<?> message) {
-			if (message.getPayload() instanceof Metric) {
-				return super.messageToMqttBytes(MessageBuilder.createMessage(message.getPayload().toString(), message.getHeaders()));
-			} else {
-				return super.messageToMqttBytes(message);
-			}
-		}
 	}
 
 	public static void main(String[] args) {
