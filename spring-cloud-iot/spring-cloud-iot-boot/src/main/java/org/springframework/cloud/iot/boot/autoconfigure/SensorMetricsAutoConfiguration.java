@@ -74,9 +74,9 @@ public class SensorMetricsAutoConfiguration {
 
 		@PreDestroy
 		public void destroy() {
-			disposables.stream().forEach(d -> {
+			for (Disposable d : disposables) {
 				d.dispose();
-			});
+			}
 			disposables.clear();
 		}
 
