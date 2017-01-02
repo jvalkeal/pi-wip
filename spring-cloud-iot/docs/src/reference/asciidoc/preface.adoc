@@ -11,5 +11,7 @@ This reference documentation contains the following parts.
 
 <<iot>> Spring Cloud Iot documentation
 
+<<iot-examples>> Spring Cloud Iot Samples
+
 <<appendices>> generic info about used material and IoT
 

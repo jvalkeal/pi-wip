@@ -1,22 +1,17 @@
 buildscript {
 	ext {
 		springBootVersion = '2.0.0.BUILD-SNAPSHOT'
-//		dependencyManagementVersion = '0.6.1.RELEASE'
 	}
 	repositories {
 		mavenCentral()
 		maven { url 'http://repo.spring.io/plugins-release' }
 		maven { url 'http://repo.spring.io/plugins-snapshot' }
 	}
-//	plugins {
-//		id "io.spring.dependency-management" version "0.6.1.RELEASE"
-//	}
 	dependencies {
 		classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
 		classpath('org.asciidoctor:asciidoctor-gradle-plugin:1.5.2')
 		classpath("io.spring.gradle:docbook-reference-plugin:0.3.1")
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-//		classpath("io.spring.gradle:dependency-management-plugin:${dependencyManagementVersion}")
 	}
 }
 
@@ -45,7 +40,6 @@ configure(allprojects) {
 
 	dependencyManagement {
 		imports {
-//			mavenBom "org.springframework.cloud:spring-cloud-dependencies:Camden.SR3"
 			mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
 		}
 		dependencies {
@@ -138,14 +132,13 @@ project('spring-cloud-iot-integration-coap') {
 	}
 }
 
-//project('spring-cloud-iot-samples-common') {
-//	configurations.archives.artifacts.removeAll { it.archiveTask.is jar }
-//	tasks.findByPath("artifactoryPublish")?.enabled = false
-//}
+project('spring-cloud-iot-samples-common') {
+	configurations.archives.artifacts.removeAll { it.archiveTask.is jar }
+	tasks.findByPath("artifactoryPublish")?.enabled = false
+}
 
 configure(sampleProjects()) {
-//	apply plugin: 'org.springframework.boot'
-//	configurations.archives.artifacts.removeAll { it.archiveTask.is jar }
+	configurations.archives.artifacts.removeAll { it.archiveTask.is jar }
 	tasks.findByPath("artifactoryPublish")?.enabled = false
 	dependencies {
 		compile project(":spring-cloud-iot-boot")
@@ -156,8 +149,8 @@ configure(sampleProjects()) {
 configure(rootProject) {
 	apply plugin: 'org.asciidoctor.gradle.asciidoctor'
 	apply plugin: "docbook-reference"
-//	apply from: "${rootProject.projectDir}/publish-maven.gradle"
-//	configurations.archives.artifacts.clear()
+	apply from: "${rootProject.projectDir}/publish-maven.gradle"
+	configurations.archives.artifacts.clear()
 
 	reference {
 		sourceDir = new File(asciidoctor.outputDir , 'docbook5')
