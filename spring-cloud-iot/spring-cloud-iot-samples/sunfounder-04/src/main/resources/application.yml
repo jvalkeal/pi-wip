@@ -2,9 +2,9 @@ spring:
   cloud:
     iot:
       platform: RASPBERRY
-      pins:
-        17:
-          pin: digitaloutput
-          type: relay
+      gpio:
+        pins:
+          17:
+            component: RELAY
       raspberry:
         numberingScheme: BROADCOM

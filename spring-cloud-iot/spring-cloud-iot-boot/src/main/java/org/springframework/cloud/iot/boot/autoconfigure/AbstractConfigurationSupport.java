@@ -16,6 +16,7 @@
 package org.springframework.cloud.iot.boot.autoconfigure;
 
 import org.springframework.boot.bind.PropertiesConfigurationFactory;
+import org.springframework.cloud.iot.boot.GpioConfigurationProperties;
 import org.springframework.cloud.iot.boot.IotConfigurationProperties;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -54,9 +55,9 @@ public class AbstractConfigurationSupport implements EnvironmentAware {
 	 *
 	 * @return the iot configuration properties
 	 */
-	protected IotConfigurationProperties buildProperties() {
-		IotConfigurationProperties iotConfigurationProperties = new IotConfigurationProperties();
-		PropertiesConfigurationFactory<Object> factory = new PropertiesConfigurationFactory<Object>(iotConfigurationProperties);
+	protected IotConfigurationProperties buildIotProperties() {
+		IotConfigurationProperties properties = new IotConfigurationProperties();
+		PropertiesConfigurationFactory<Object> factory = new PropertiesConfigurationFactory<Object>(properties);
 		factory.setTargetName(IotConfigurationProperties.NAMESPACE);
 		factory.setPropertySources(environment.getPropertySources());
 		try {
@@ -64,6 +65,24 @@ public class AbstractConfigurationSupport implements EnvironmentAware {
 		} catch (BindException e) {
 			throw new RuntimeException("Unable to bind properties", e);
 		}
-		return iotConfigurationProperties;
+		return properties;
+	}
+
+	/**
+	 * Builds the gpio properties.
+	 *
+	 * @return the gpio configuration properties
+	 */
+	protected GpioConfigurationProperties buildGpioProperties() {
+		GpioConfigurationProperties properties = new GpioConfigurationProperties();
+		PropertiesConfigurationFactory<Object> factory = new PropertiesConfigurationFactory<Object>(properties);
+		factory.setTargetName(GpioConfigurationProperties.NAMESPACE);
+		factory.setPropertySources(environment.getPropertySources());
+		try {
+			factory.bindPropertiesToTarget();
+		} catch (BindException e) {
+			throw new RuntimeException("Unable to bind properties", e);
+		}
+		return properties;
 	}
 }

@@ -2,10 +2,11 @@ spring:
   cloud:
     iot:
       platform: RASPBERRY
-      pins:
-        17:
-          type: colorled
-        18:
-          type: colorled
+      gpio:
+        pins:
+          17:
+            type: DIMMEDLED
+          18:
+            type: DIMMEDLED
       raspberry:
         numberingScheme: BROADCOM

@@ -30,16 +30,7 @@ public class IotConfigurationProperties {
 
 	public static final String NAMESPACE = "spring.cloud.iot";
 
-	private Map<String, Pins> pins;
 	private I2C i2c;
-
-	public Map<String, Pins> getPins() {
-		return pins;
-	}
-
-	public void setPins(Map<String, Pins> pins) {
-		this.pins = pins;
-	}
 
 	public I2C getI2C() {
 		return i2c;
@@ -94,25 +85,6 @@ public class IotConfigurationProperties {
 		}
 		public void setClearTextOnExit(boolean clearTextOnExit) {
 			this.clearTextOnExit = clearTextOnExit;
-		}
-	}
-
-
-	public static class Pins {
-
-		private String type;
-
-		public String getType() {
-			return type;
-		}
-
-		public void setType(String type) {
-			this.type = type;
-		}
-
-		@Override
-		public String toString() {
-			return "Pins [type=" + type + "]";
 		}
 	}
 

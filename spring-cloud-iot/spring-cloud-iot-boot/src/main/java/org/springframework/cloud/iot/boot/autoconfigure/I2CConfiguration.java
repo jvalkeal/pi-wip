@@ -52,7 +52,7 @@ public class I2CConfiguration extends AbstractConfigurationSupport implements Im
 
 	@Override
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-		IotConfigurationProperties properties = buildProperties();
+		IotConfigurationProperties properties = buildIotProperties();
 		if (properties.getI2C() == null || properties.getI2C().getAddresses() == null) {
 			return;
 		}

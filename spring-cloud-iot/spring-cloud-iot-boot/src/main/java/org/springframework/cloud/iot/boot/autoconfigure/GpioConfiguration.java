@@ -22,8 +22,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.cloud.iot.boot.IotConfigurationProperties;
-import org.springframework.cloud.iot.boot.IotConfigurationProperties.Pins;
+import org.springframework.cloud.iot.boot.GpioConfigurationProperties;
+import org.springframework.cloud.iot.boot.GpioConfigurationProperties.PinComponentType;
+import org.springframework.cloud.iot.boot.GpioConfigurationProperties.PinProperties;
 import org.springframework.cloud.iot.component.DimmedLed;
 import org.springframework.cloud.iot.component.Relay;
 import org.springframework.cloud.iot.pi4j.Pi4jDimmedLed;
@@ -51,19 +52,16 @@ public class GpioConfiguration extends AbstractConfigurationSupport implements I
 
 	@Override
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-		IotConfigurationProperties iotConfigurationProperties = buildProperties();
-		if (iotConfigurationProperties.getPins() != null) {
-			for (Entry<String, Pins> entry : iotConfigurationProperties.getPins().entrySet()) {
-
-				if (entry.getValue().getType().equals("colorled")) {
-					BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jDimmedLedGpioFactoryBean.class);
-					bdb.addConstructorArgValue(entry.getKey());
-					registry.registerBeanDefinition(BEAN_PREFIX + entry.getKey(), bdb.getBeanDefinition());
-				} else if (entry.getValue().getType().equals("relay")) {
-					BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jGpioRelayComponentGpioFactoryBean.class);
-					bdb.addConstructorArgValue(entry.getKey());
-					registry.registerBeanDefinition(BEAN_PREFIX + entry.getKey(), bdb.getBeanDefinition());
-				}
+		GpioConfigurationProperties gpioProperties = buildGpioProperties();
+		for (Entry<Integer, PinProperties> entry : gpioProperties.getPins().entrySet()) {
+			if (entry.getValue().getComponent() == PinComponentType.DIMMEDLED) {
+				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jDimmedLedGpioFactoryBean.class);
+				bdb.addConstructorArgValue(entry.getKey());
+				registry.registerBeanDefinition(BEAN_PREFIX + entry.getKey(), bdb.getBeanDefinition());
+			} else if (entry.getValue().getComponent() == PinComponentType.RELAY) {
+				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jGpioRelayComponentGpioFactoryBean.class);
+				bdb.addConstructorArgValue(entry.getKey());
+				registry.registerBeanDefinition(BEAN_PREFIX + entry.getKey(), bdb.getBeanDefinition());
 			}
 		}
 	}
