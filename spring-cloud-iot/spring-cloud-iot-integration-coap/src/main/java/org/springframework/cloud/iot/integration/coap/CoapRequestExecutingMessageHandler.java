@@ -15,13 +15,14 @@
  */
 package org.springframework.cloud.iot.integration.coap;
 
-import org.springframework.integration.handler.AbstractMessageHandler;
+import org.springframework.integration.handler.AbstractReplyProducingMessageHandler;
 import org.springframework.messaging.Message;
 
-public class CoapSendingMessageHandler extends AbstractMessageHandler {
+public class CoapRequestExecutingMessageHandler extends AbstractReplyProducingMessageHandler  {
 
 	@Override
-	protected void handleMessageInternal(Message<?> message) throws Exception {
+	protected Object handleRequestMessage(Message<?> requestMessage) {
+		return null;
 	}
 
 }

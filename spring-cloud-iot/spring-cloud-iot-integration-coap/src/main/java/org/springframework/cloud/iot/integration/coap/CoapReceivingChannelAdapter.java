@@ -31,7 +31,7 @@ public class CoapReceivingChannelAdapter extends MessageProducerSupport {
 
 	private final int port;
 
-	private volatile XDCoapServer server;
+	private volatile IntegrationCoapServer server;
 
 	/**
 	 * Instantiates a new coap receiving channel adapter.
@@ -44,7 +44,7 @@ public class CoapReceivingChannelAdapter extends MessageProducerSupport {
 
 	@Override
 	protected void doStart() {
-		this.server = new XDCoapServer();
+		this.server = new IntegrationCoapServer();
 		this.server.start();
 	}
 
@@ -53,9 +53,9 @@ public class CoapReceivingChannelAdapter extends MessageProducerSupport {
 		this.server.stop();
 	}
 
-	private class XDCoapServer extends CoapServer {
+	private class IntegrationCoapServer extends CoapServer {
 
-		public XDCoapServer() {
+		public IntegrationCoapServer() {
 			super(port);
 			add(new Resource());
 		}
@@ -65,8 +65,8 @@ public class CoapReceivingChannelAdapter extends MessageProducerSupport {
 	private class Resource extends CoapResource {
 
 		public Resource() {
-			super("xd");
-			getAttributes().setTitle("XD Source Resource");
+			super("spring-integration-coap");
+			getAttributes().setTitle("Integration Source Resource");
 		}
 
 		@Override
