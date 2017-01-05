@@ -21,4 +21,11 @@ public class IotUtils {
 		return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 	}
 
+	static public double getSteinhartHartTemperature(double analog, float vSupply, int bits, int r, int b2550, double refTemp) {
+		double vR = vSupply * analog / (Math.pow(2, bits) - 1);
+		double rT = r * vR / (vSupply - vR);
+		double kelvin = 1 / (((Math.log(rT / r)) / b2550) + (1 / (273.15 + refTemp)));
+		return kelvin - 273.15;
+	}
+
 }

@@ -15,6 +15,8 @@
  */
 package org.springframework.cloud.iot.boot.autoconfigure;
 
+import java.io.IOException;
+
 import org.springframework.boot.bind.PropertiesConfigurationFactory;
 import org.springframework.cloud.iot.boot.GpioConfigurationProperties;
 import org.springframework.cloud.iot.boot.IotConfigurationProperties;
@@ -23,6 +25,9 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindException;
+
+import com.pi4j.component.temperature.impl.Tmp102;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
 /**
  * Support class for various configuration classes.
@@ -84,5 +89,13 @@ public class AbstractConfigurationSupport implements EnvironmentAware {
 			throw new RuntimeException("Unable to bind properties", e);
 		}
 		return properties;
+	}
+
+	protected Tmp102 getTmp102(int i2cBus, int i2cAddr) {
+		try {
+			return new Tmp102(i2cBus, i2cAddr);
+		} catch (Exception e) {
+			throw new RuntimeException();
+		}
 	}
 }

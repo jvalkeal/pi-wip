@@ -29,6 +29,7 @@ import org.springframework.cloud.iot.boot.IotConfigurationProperties.Addresses;
 import org.springframework.cloud.iot.component.TemperatureSensor;
 import org.springframework.cloud.iot.pi4j.Pi4jPCF8574Lcd;
 import org.springframework.cloud.iot.pi4j.Pi4jPCF8591TemperatureSensor;
+import org.springframework.cloud.iot.pi4j.support.Termistor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
@@ -58,20 +59,37 @@ public class I2CConfiguration extends AbstractConfigurationSupport implements Im
 		}
 		for (Entry<Integer, Addresses> entry : properties.getI2C().getAddresses().entrySet()) {
 			if (entry.getValue().getType().equals("temperature")) {
-				Tmp102 tmp102 = null;
+//				Tmp102 tmp102 = null;
+//				try {
+//					tmp102 = new Tmp102(I2CBus.BUS_1, entry.getKey());
+//				} catch (UnsupportedBusNumberException e) {
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//				if (tmp102 != null) {
+//					BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(I2CFactoryBean.class);
+//					bdb.addConstructorArgValue(new Pi4jPCF8591TemperatureSensor(null, tmp102));
+//					bdb.addConstructorArgValue(TemperatureSensor.class);
+//					registry.registerBeanDefinition(BEAN_PREFIX + entry.getKey(), bdb.getBeanDefinition());
+//				}
+
+				Termistor termistor = null;
 				try {
-					tmp102 = new Tmp102(I2CBus.BUS_1, entry.getKey());
+					termistor = new Termistor(I2CBus.BUS_1, entry.getKey());
 				} catch (UnsupportedBusNumberException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				if (tmp102 != null) {
+				if (termistor != null) {
 					BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(I2CFactoryBean.class);
-					bdb.addConstructorArgValue(new Pi4jPCF8591TemperatureSensor(null, tmp102));
+					bdb.addConstructorArgValue(new Pi4jPCF8591TemperatureSensor(null, termistor));
 					bdb.addConstructorArgValue(TemperatureSensor.class);
 					registry.registerBeanDefinition(BEAN_PREFIX + entry.getKey(), bdb.getBeanDefinition());
 				}
+
+//				Termistor termistor = new Termistor(I2CBus.BUS_1, entry.getKey());
 			} else if (entry.getValue().getType().equals("lcd")) {
 				I2CLcdDisplay lcd = null;
 				try {
@@ -102,6 +120,9 @@ public class I2CConfiguration extends AbstractConfigurationSupport implements Im
 
 		@Override
 		public void afterPropertiesSet() throws Exception {
+			if (device instanceof InitializingBean) {
+				((InitializingBean)device).afterPropertiesSet();
+			}
 		}
 
 		@Override
