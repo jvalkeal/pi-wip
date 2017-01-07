@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.iot.boot.properties.DimmedLedProperties;
+import org.springframework.cloud.iot.boot.properties.RelayProperties;
 
 /**
  * Properties for "spring.cloud.iot.gpio".
@@ -31,33 +33,36 @@ public class GpioConfigurationProperties {
 
 	public static final String NAMESPACE = "spring.cloud.iot.gpio";
 
-	private Map<Integer, PinProperties> pins = new HashMap<>();
+	private Map<Integer, PinType> pins = new HashMap<>();
 
-	public Map<Integer, PinProperties> getPins() {
+	public Map<Integer, PinType> getPins() {
 		return pins;
 	}
 
-	public void setPins(Map<Integer, PinProperties> pins) {
+	public void setPins(Map<Integer, PinType> pins) {
 		this.pins = pins;
 	}
 
-	/**
-	 * Configuration for gpio pin.
-	 */
-	public static class PinProperties {
+	public static class PinType {
 
-		private PinComponentType component;
+		private DimmedLedProperties dimmedLed;
+		private RelayProperties relay;
 
-		public PinComponentType getComponent() {
-			return component;
+		public DimmedLedProperties getDimmedLed() {
+			return dimmedLed;
 		}
 
-		public void setComponent(PinComponentType component) {
-			this.component = component;
+		public void setDimmedLed(DimmedLedProperties dimmedLed) {
+			this.dimmedLed = dimmedLed;
+		}
+
+		public RelayProperties getRelay() {
+			return relay;
+		}
+
+		public void setRelay(RelayProperties relay) {
+			this.relay = relay;
 		}
 	}
 
-	public static enum PinComponentType {
-		DIMMEDLED,RELAY,TERMISTOR;
-	}
 }

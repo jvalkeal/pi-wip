@@ -23,8 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.cloud.iot.boot.GpioConfigurationProperties;
-import org.springframework.cloud.iot.boot.GpioConfigurationProperties.PinComponentType;
-import org.springframework.cloud.iot.boot.GpioConfigurationProperties.PinProperties;
+import org.springframework.cloud.iot.boot.GpioConfigurationProperties.PinType;
 import org.springframework.cloud.iot.component.DimmedLed;
 import org.springframework.cloud.iot.component.Relay;
 import org.springframework.cloud.iot.pi4j.Pi4jDimmedLed;
@@ -53,15 +52,21 @@ public class GpioConfiguration extends AbstractConfigurationSupport implements I
 	@Override
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
 		GpioConfigurationProperties gpioProperties = buildGpioProperties();
-		for (Entry<Integer, PinProperties> entry : gpioProperties.getPins().entrySet()) {
-			if (entry.getValue().getComponent() == PinComponentType.DIMMEDLED) {
+
+		for (Entry<Integer, PinType> entry : gpioProperties.getPins().entrySet()) {
+			Integer pin = entry.getKey();
+			PinType type = entry.getValue();
+
+			if (type.getDimmedLed() != null) {
 				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jDimmedLedGpioFactoryBean.class);
-				bdb.addConstructorArgValue(entry.getKey());
-				registry.registerBeanDefinition(BEAN_PREFIX + entry.getKey(), bdb.getBeanDefinition());
-			} else if (entry.getValue().getComponent() == PinComponentType.RELAY) {
+				bdb.addConstructorArgValue(String.valueOf(pin));
+				registry.registerBeanDefinition(BEAN_PREFIX + pin, bdb.getBeanDefinition());
+			}
+
+			if (type.getRelay() != null) {
 				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jGpioRelayComponentGpioFactoryBean.class);
-				bdb.addConstructorArgValue(entry.getKey());
-				registry.registerBeanDefinition(BEAN_PREFIX + entry.getKey(), bdb.getBeanDefinition());
+				bdb.addConstructorArgValue(String.valueOf(pin));
+				registry.registerBeanDefinition(BEAN_PREFIX + pin, bdb.getBeanDefinition());
 			}
 		}
 	}

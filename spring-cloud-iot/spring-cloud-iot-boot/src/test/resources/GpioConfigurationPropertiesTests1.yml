@@ -6,9 +6,10 @@ spring:
         pins: 
           17:
             dimmedLed:
-              enabled: true
+              enabled: false
           18:
             dimmedLed:
               enabled: true
-      raspberry:
-        numberingScheme: BROADCOM
+          19:
+            relay:
+              enabled: true

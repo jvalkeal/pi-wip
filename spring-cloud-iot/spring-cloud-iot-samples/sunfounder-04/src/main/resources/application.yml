@@ -5,6 +5,7 @@ spring:
       gpio:
         pins:
           17:
-            component: RELAY
+            relay:
+              enabled: true
       raspberry:
         numberingScheme: BROADCOM
