@@ -141,10 +141,12 @@ project('spring-cloud-iot-integration-coap') {
 }
 
 project('spring-cloud-iot-samples-common') {
+	configurations.archives.artifacts.removeAll { it.archiveTask.is jar }
 	tasks.findByPath("artifactoryPublish")?.enabled = false
 }
 
 configure(sampleProjects()) {
+	configurations.archives.artifacts.removeAll { it.archiveTask.is jar }
 	tasks.findByPath("artifactoryPublish")?.enabled = false
 	dependencies {
 		compile project(":spring-cloud-iot-boot")
