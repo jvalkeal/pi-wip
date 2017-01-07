@@ -3,7 +3,7 @@ description = 'Spring Cloud IOT Samples Common'
 configurations.archives.artifacts.removeAll { it.archiveTask.is jar }
 tasks.findByPath("artifactoryPublish")?.enabled = false
 
-project('spring-cloud-iot-samples-sunfounder-01') {
+project('spring-cloud-iot-samples-sunfounder-sensor-01') {
 	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Sunfounder Sample'
 	dependencies {
@@ -11,7 +11,7 @@ project('spring-cloud-iot-samples-sunfounder-01') {
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-04') {
+project('spring-cloud-iot-samples-sunfounder-sensor-04') {
 	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Sunfounder Sample'
 	dependencies {
@@ -19,7 +19,7 @@ project('spring-cloud-iot-samples-sunfounder-04') {
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-18') {
+project('spring-cloud-iot-samples-sunfounder-sensor-18') {
 	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Sunfounder Sample'
 	dependencies {
@@ -27,7 +27,7 @@ project('spring-cloud-iot-samples-sunfounder-18') {
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-30') {
+project('spring-cloud-iot-samples-sunfounder-sensor-30') {
 	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Sunfounder Sample'
 	dependencies {
@@ -35,7 +35,7 @@ project('spring-cloud-iot-samples-sunfounder-30') {
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-26') {
+project('spring-cloud-iot-samples-sunfounder-sensor-26') {
 	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Sunfounder Sample'
 	dependencies {
