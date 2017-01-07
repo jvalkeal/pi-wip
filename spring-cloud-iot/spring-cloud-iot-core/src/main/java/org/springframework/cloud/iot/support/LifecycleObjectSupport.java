@@ -18,8 +18,8 @@ package org.springframework.cloud.iot.support;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -34,7 +34,7 @@ import org.springframework.context.SmartLifecycle;
  */
 public abstract class LifecycleObjectSupport implements InitializingBean, DisposableBean, SmartLifecycle {
 
-	private static final Log log = LogFactory.getLog(LifecycleObjectSupport.class);
+	private static final Logger log = LoggerFactory.getLogger(LifecycleObjectSupport.class);
 
 	// fields for lifecycle
 	private volatile boolean autoStartup = false;

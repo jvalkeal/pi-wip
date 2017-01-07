@@ -15,10 +15,31 @@
  */
 package org.springframework.cloud.iot.support;
 
-public class IotUtils {
+/**
+ * IoT utilities.
+ *
+ * @author Janne Valkealahti
+ *
+ */
+public abstract class IotUtils {
 
-	public static int map(int x, int in_min, int in_max, int out_min, int out_max) {
-		return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+	/**
+	 * Gets the steinhart hart temperature which is based on value connected
+	 * to ADC as Kelvin.
+	 *
+	 * @param analogValue the analog singal value
+	 * @param voltageSupply the system voltage supply
+	 * @param dacBits the ADC bits
+	 * @param resistance the resistance
+	 * @param beta the beta parameter value
+	 * @param referenceTemp the refeference temp
+	 * @return the steinhart hart temperature
+	 */
+	static public double getSteinhartHartTemperature(float analogValue, double voltageSupply, int dacBits, int resistance, double beta,
+			double referenceTemp) {
+		double vR = voltageSupply * analogValue / (Math.pow(2, dacBits) - 1);
+		double rT = resistance * vR / (voltageSupply - vR);
+		double kelvin = 1 / (((Math.log(rT / resistance)) / beta) + (1 / (273.15 + referenceTemp)));
+		return kelvin;
 	}
-
 }

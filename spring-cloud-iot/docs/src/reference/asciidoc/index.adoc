@@ -16,5 +16,6 @@
 include::preface.adoc[]
 include::introduction.adoc[]
 include::iot.adoc[]
+include::iot-examples.adoc[]
 include::appendix.adoc[]
 

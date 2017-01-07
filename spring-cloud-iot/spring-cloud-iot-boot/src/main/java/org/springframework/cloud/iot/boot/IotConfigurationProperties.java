@@ -18,6 +18,7 @@ package org.springframework.cloud.iot.boot;
 import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.iot.boot.GpioConfigurationProperties.PinComponentType;
 
 /**
  * Properties for "spring.cloud.iot".
@@ -30,16 +31,7 @@ public class IotConfigurationProperties {
 
 	public static final String NAMESPACE = "spring.cloud.iot";
 
-	private Map<String, Pins> pins;
 	private I2C i2c;
-
-	public Map<String, Pins> getPins() {
-		return pins;
-	}
-
-	public void setPins(Map<String, Pins> pins) {
-		this.pins = pins;
-	}
 
 	public I2C getI2C() {
 		return i2c;
@@ -97,25 +89,6 @@ public class IotConfigurationProperties {
 		}
 	}
 
-
-	public static class Pins {
-
-		private String type;
-
-		public String getType() {
-			return type;
-		}
-
-		public void setType(String type) {
-			this.type = type;
-		}
-
-		@Override
-		public String toString() {
-			return "Pins [type=" + type + "]";
-		}
-	}
-
 	public static class I2C {
 
 		private Map<Integer, Addresses> addresses;
@@ -130,14 +103,14 @@ public class IotConfigurationProperties {
 	}
 
 	public static class Addresses {
-		private String type;
+		private PinComponentType type;
 		private int bus;
 
-		public String getType() {
+		public PinComponentType getType() {
 			return type;
 		}
 
-		public void setType(String type) {
+		public void setType(PinComponentType type) {
 			this.type = type;
 		}
 		public int getBus() {

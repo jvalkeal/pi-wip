@@ -4,7 +4,11 @@ spring:
       i2c:
         addresses:
           0x48:
-            type: temperature
+            type: TERMISTOR
+            termistor:
+              r: 10000
+              v: 5.0
+              refTemp: 25.0
       platform: RASPBERRY
       raspberry:
         numberingScheme: BROADCOM

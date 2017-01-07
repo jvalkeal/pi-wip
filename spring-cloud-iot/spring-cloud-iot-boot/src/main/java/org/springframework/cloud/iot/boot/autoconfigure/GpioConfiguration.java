@@ -22,15 +22,19 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.cloud.iot.boot.IotConfigurationProperties;
-import org.springframework.cloud.iot.boot.IotConfigurationProperties.Pins;
+import org.springframework.cloud.iot.boot.GpioConfigurationProperties;
+import org.springframework.cloud.iot.boot.GpioConfigurationProperties.PinComponentType;
+import org.springframework.cloud.iot.boot.GpioConfigurationProperties.PinProperties;
 import org.springframework.cloud.iot.component.DimmedLed;
+import org.springframework.cloud.iot.component.Relay;
 import org.springframework.cloud.iot.pi4j.Pi4jDimmedLed;
+import org.springframework.cloud.iot.pi4j.Pi4jGpioRelayComponent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 
 import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.RaspiPin;
@@ -48,25 +52,62 @@ public class GpioConfiguration extends AbstractConfigurationSupport implements I
 
 	@Override
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-		IotConfigurationProperties iotConfigurationProperties = buildProperties();
-		if (iotConfigurationProperties.getPins() != null) {
-			for (Entry<String, Pins> entry : iotConfigurationProperties.getPins().entrySet()) {
-				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(GpioFactoryBean.class);
+		GpioConfigurationProperties gpioProperties = buildGpioProperties();
+		for (Entry<Integer, PinProperties> entry : gpioProperties.getPins().entrySet()) {
+			if (entry.getValue().getComponent() == PinComponentType.DIMMEDLED) {
+				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jDimmedLedGpioFactoryBean.class);
+				bdb.addConstructorArgValue(entry.getKey());
+				registry.registerBeanDefinition(BEAN_PREFIX + entry.getKey(), bdb.getBeanDefinition());
+			} else if (entry.getValue().getComponent() == PinComponentType.RELAY) {
+				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jGpioRelayComponentGpioFactoryBean.class);
 				bdb.addConstructorArgValue(entry.getKey());
 				registry.registerBeanDefinition(BEAN_PREFIX + entry.getKey(), bdb.getBeanDefinition());
 			}
 		}
-
 	}
 
-	public static class GpioFactoryBean implements FactoryBean<Object>, InitializingBean {
+	public static class Pi4jGpioRelayComponentGpioFactoryBean implements FactoryBean<Object>, InitializingBean {
+
+		@Autowired
+		private GpioController gpioController;
+		private String pinName;
+		private Pi4jGpioRelayComponent object;
+
+		public Pi4jGpioRelayComponentGpioFactoryBean(String pinName) {
+			this.pinName = pinName;
+		}
+
+		@Override
+		public void afterPropertiesSet() throws Exception {
+			Pin pin = RaspiPin.getPinByName("GPIO " + pinName);
+			GpioPinDigitalOutput output = gpioController.provisionDigitalOutputPin(pin);
+			object = new Pi4jGpioRelayComponent(output);
+		}
+
+		@Override
+		public Object getObject() throws Exception {
+			return object;
+		}
+
+		@Override
+		public Class<?> getObjectType() {
+			return Relay.class;
+		}
+
+		@Override
+		public boolean isSingleton() {
+			return true;
+		}
+	}
+
+	public static class Pi4jDimmedLedGpioFactoryBean implements FactoryBean<Object>, InitializingBean {
 
 		@Autowired
 		private GpioController gpioController;
 		private String pinName;
 		private Pi4jDimmedLed object;
 
-		public GpioFactoryBean(String pinName) {
+		public Pi4jDimmedLedGpioFactoryBean(String pinName) {
 			this.pinName = pinName;
 		}
 

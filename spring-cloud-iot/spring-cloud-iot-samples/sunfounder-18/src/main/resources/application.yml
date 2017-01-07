@@ -5,6 +5,12 @@ spring:
       i2c:
         addresses:
           0x48:
-            type: temperature
+            bus: 1
+            termistor:
+              resistance: 10000
+              supplyVoltage: 5.0
+              referenceTemp: 25.0
+              dacBits: 8
+              beta: 3950
       raspberry:
         numberingScheme: BROADCOM

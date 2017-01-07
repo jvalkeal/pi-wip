@@ -21,7 +21,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.iot.component.DimmedLed;
-import org.springframework.cloud.iot.support.IotUtils;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -41,12 +40,16 @@ public class Application implements CommandLineRunner {
 		for (int color : colors) {
 			int R_val = color  >> 8;
 			int G_val = color & 0x00FF;
-			ledR.setPercentage(IotUtils.map(R_val, 0, 255, 0, 100));
-			ledG.setPercentage(IotUtils.map(G_val, 0, 255, 0, 100));
+			ledR.setPercentage(mapColor(R_val, 0, 255, 0, 100));
+			ledG.setPercentage(mapColor(G_val, 0, 255, 0, 100));
 			Thread.sleep(500);
 		}
 		ledR.setEnabled(false);
 		ledG.setEnabled(false);
+	}
+
+	private static int mapColor(int x, int in_min, int in_max, int out_min, int out_max) {
+		return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 	}
 
 	public static void main(String[] args) {

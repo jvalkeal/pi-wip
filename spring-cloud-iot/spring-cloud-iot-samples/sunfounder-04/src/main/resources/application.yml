@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    iot:
+      platform: RASPBERRY
+      gpio:
+        pins:
+          17:
+            component: RELAY
+      raspberry:
+        numberingScheme: BROADCOM

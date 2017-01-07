@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.iot.boot.IotConfigurationProperties;
+import org.springframework.cloud.iot.boot.GpioConfigurationProperties.PinComponentType;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
@@ -39,7 +40,8 @@ public class IotConfigurationPropertiesTests {
 		assertThat(properties.getI2C(), notNullValue());
 		assertThat(properties.getI2C().getAddresses(), notNullValue());
 		assertThat(properties.getI2C().getAddresses().get(0x48), notNullValue());
-		assertThat(properties.getI2C().getAddresses().get(0x48).getType(), is("temperature"));
+		assertThat(properties.getI2C().getAddresses().get(0x48).getType(), is(PinComponentType.TERMISTOR));
+		context.close();
 	}
 
 	@Test
@@ -55,6 +57,7 @@ public class IotConfigurationPropertiesTests {
 		assertThat(properties.getDevice().getLcd().getRows(), is(2));
 		assertThat(properties.getDevice().getLcd().getColums(), is(16));
 		assertThat(properties.getDevice().getLcd().isClearTextOnExit(), is(true));
+		context.close();
 	}
 
 	@Configuration
