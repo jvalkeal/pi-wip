@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration;
 import org.springframework.boot.test.util.EnvironmentTestUtils;
+import org.springframework.cloud.iot.component.Button;
 import org.springframework.cloud.iot.component.DimmedLed;
 import org.springframework.cloud.iot.component.Relay;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -34,8 +35,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.GpioPinPwmOutput;
+import com.pi4j.io.gpio.PinPullResistance;
 
 public class GpioConfigurationTests {
 
@@ -59,6 +62,15 @@ public class GpioConfigurationTests {
 		assertThat(context.getBeansOfType(Relay.class).size(), is(1));
 	}
 
+	@Test
+	public void testButton() {
+		load(TestConfig.class,
+				"spring.cloud.iot.gpio.pins.20.button.enabled=true"
+				);
+		assertThat(context.containsBean("GPIO_20"), is(true));
+		assertThat(context.getBeansOfType(Button.class).size(), is(1));
+	}
+
 	@Configuration
 	@Import(TestI2GpioConfiguration.class)
 	public static class TestConfig {
@@ -67,9 +79,11 @@ public class GpioConfigurationTests {
 		GpioController gpioController() {
 			GpioController gpioController = Mockito.mock(GpioController.class);
 			GpioPinPwmOutput gpioPinPwmOutput = Mockito.mock(GpioPinPwmOutput.class);
+			GpioPinDigitalInput gpioPinDigitalInput = Mockito.mock(GpioPinDigitalInput.class);
 			GpioPinDigitalOutput gpioPinDigitalOutput = Mockito.mock(GpioPinDigitalOutput.class);
 			when(gpioController.provisionSoftPwmOutputPin(any(), anyInt())).thenReturn(gpioPinPwmOutput);
 			when(gpioController.provisionDigitalOutputPin(any())).thenReturn(gpioPinDigitalOutput);
+			when(gpioController.provisionDigitalInputPin(any(), any(PinPullResistance.class))).thenReturn(gpioPinDigitalInput);
 			return gpioController;
 		}
 

@@ -24,18 +24,28 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.cloud.iot.boot.GpioConfigurationProperties;
 import org.springframework.cloud.iot.boot.GpioConfigurationProperties.PinType;
+import org.springframework.cloud.iot.boot.IotConfigurationProperties.NumberingScheme;
+import org.springframework.cloud.iot.boot.IotConfigurationProperties;
+import org.springframework.cloud.iot.boot.RaspberryConfigurationProperties;
+import org.springframework.cloud.iot.component.Button;
 import org.springframework.cloud.iot.component.DimmedLed;
 import org.springframework.cloud.iot.component.Relay;
+import org.springframework.cloud.iot.pi4j.Pi4jButton;
 import org.springframework.cloud.iot.pi4j.Pi4jDimmedLed;
 import org.springframework.cloud.iot.pi4j.Pi4jGpioRelayComponent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 
+import com.pi4j.component.button.impl.GpioButtonComponent;
 import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.PinMode;
+import com.pi4j.io.gpio.PinPullResistance;
+import com.pi4j.io.gpio.RaspiBcmPin;
 import com.pi4j.io.gpio.RaspiPin;
 
 /**
@@ -51,6 +61,7 @@ public class GpioConfiguration extends AbstractConfigurationSupport implements I
 
 	@Override
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+		RaspberryConfigurationProperties raspberryProperties = buildRaspberryProperties();
 		GpioConfigurationProperties gpioProperties = buildGpioProperties();
 
 		for (Entry<Integer, PinType> entry : gpioProperties.getPins().entrySet()) {
@@ -60,14 +71,65 @@ public class GpioConfiguration extends AbstractConfigurationSupport implements I
 			if (type.getDimmedLed() != null) {
 				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jDimmedLedGpioFactoryBean.class);
 				bdb.addConstructorArgValue(String.valueOf(pin));
+				bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
 				registry.registerBeanDefinition(BEAN_PREFIX + pin, bdb.getBeanDefinition());
 			}
 
 			if (type.getRelay() != null) {
 				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jGpioRelayComponentGpioFactoryBean.class);
 				bdb.addConstructorArgValue(String.valueOf(pin));
+				bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
 				registry.registerBeanDefinition(BEAN_PREFIX + pin, bdb.getBeanDefinition());
 			}
+
+			if (type.getButton() != null) {
+				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jGpioButtonComponentGpioFactoryBean.class);
+				bdb.addConstructorArgValue(String.valueOf(pin));
+				bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
+				registry.registerBeanDefinition(BEAN_PREFIX + pin, bdb.getBeanDefinition());
+			}
+		}
+	}
+
+	public static class Pi4jGpioButtonComponentGpioFactoryBean implements FactoryBean<Object>, InitializingBean {
+
+		@Autowired
+		private GpioController gpioController;
+		private String pinName;
+		private NumberingScheme numberingScheme;
+		private Pi4jButton object;
+
+		public Pi4jGpioButtonComponentGpioFactoryBean(String pinName, NumberingScheme numberingScheme) {
+			this.pinName = pinName;
+			this.numberingScheme = numberingScheme;
+		}
+
+		@Override
+		public void afterPropertiesSet() throws Exception {
+			Pin pin = numberingScheme == NumberingScheme.BROADCOM ? RaspiBcmPin.getPinByName("GPIO " + pinName) : RaspiPin.getPinByName("GPIO " + pinName);
+//			Pin pin = RaspiPin.getPinByName("GPIO " + pinName);
+//			Pin pin = RaspiBcmPin.getPinByName("GPIO " + pinName);
+			GpioPinDigitalInput input = gpioController.provisionDigitalInputPin(pin, PinPullResistance.PULL_UP);
+			object = new Pi4jButton(input);
+			if (object instanceof InitializingBean) {
+				((InitializingBean)object).afterPropertiesSet();
+			}
+
+		}
+
+		@Override
+		public Object getObject() throws Exception {
+			return object;
+		}
+
+		@Override
+		public Class<?> getObjectType() {
+			return Button.class;
+		}
+
+		@Override
+		public boolean isSingleton() {
+			return true;
 		}
 	}
 
@@ -76,15 +138,19 @@ public class GpioConfiguration extends AbstractConfigurationSupport implements I
 		@Autowired
 		private GpioController gpioController;
 		private String pinName;
+		private NumberingScheme numberingScheme;
 		private Pi4jGpioRelayComponent object;
 
-		public Pi4jGpioRelayComponentGpioFactoryBean(String pinName) {
+		public Pi4jGpioRelayComponentGpioFactoryBean(String pinName, NumberingScheme numberingScheme) {
 			this.pinName = pinName;
+			this.numberingScheme = numberingScheme;
 		}
 
 		@Override
 		public void afterPropertiesSet() throws Exception {
-			Pin pin = RaspiPin.getPinByName("GPIO " + pinName);
+			Pin pin = numberingScheme == NumberingScheme.BROADCOM ? RaspiBcmPin.getPinByName("GPIO " + pinName) : RaspiPin.getPinByName("GPIO " + pinName);
+//			Pin pin = RaspiPin.getPinByName("GPIO " + pinName);
+//			Pin pin = RaspiBcmPin.getPinByName("GPIO " + pinName);
 			GpioPinDigitalOutput output = gpioController.provisionDigitalOutputPin(pin);
 			object = new Pi4jGpioRelayComponent(output);
 		}
@@ -110,16 +176,26 @@ public class GpioConfiguration extends AbstractConfigurationSupport implements I
 		@Autowired
 		private GpioController gpioController;
 		private String pinName;
+		private NumberingScheme numberingScheme;
 		private Pi4jDimmedLed object;
 
-		public Pi4jDimmedLedGpioFactoryBean(String pinName) {
+		public Pi4jDimmedLedGpioFactoryBean(String pinName, NumberingScheme numberingScheme) {
 			this.pinName = pinName;
+			this.numberingScheme = numberingScheme;
 		}
 
 		@Override
 		public void afterPropertiesSet() throws Exception {
-			Pin pin = RaspiPin.getPinByName("GPIO " + pinName);
-			GpioPinPwmOutput output = gpioController.provisionSoftPwmOutputPin(pin, 0);
+			Pin pin = numberingScheme == NumberingScheme.BROADCOM ? RaspiBcmPin.getPinByName("GPIO " + pinName) : RaspiPin.getPinByName("GPIO " + pinName);
+//			Pin pin = RaspiPin.getPinByName("GPIO " + pinName);
+//			Pin pin = RaspiBcmPin.getPinByName("GPIO " + pinName);
+			GpioPinPwmOutput output = null;
+			if (pin.getSupportedPinModes().contains(PinMode.PWM_OUTPUT)) {
+				output = gpioController.provisionPwmOutputPin(pin, 0);
+			} else {
+				output = gpioController.provisionSoftPwmOutputPin(pin, 0);
+			}
+
 			object = new Pi4jDimmedLed(output);
 		}
 

@@ -13,3 +13,6 @@ spring:
           19:
             relay:
               enabled: true
+          20:
+            button:
+              enabled: true

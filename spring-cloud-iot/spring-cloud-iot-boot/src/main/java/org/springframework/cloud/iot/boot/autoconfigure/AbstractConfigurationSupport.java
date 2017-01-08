@@ -20,6 +20,7 @@ import org.springframework.cloud.iot.IotSystemException;
 import org.springframework.cloud.iot.boot.GpioConfigurationProperties;
 import org.springframework.cloud.iot.boot.I2cConfigurationProperties;
 import org.springframework.cloud.iot.boot.IotConfigurationProperties;
+import org.springframework.cloud.iot.boot.RaspberryConfigurationProperties;
 import org.springframework.cloud.iot.pi4j.support.Termistor;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -64,6 +65,19 @@ public class AbstractConfigurationSupport implements EnvironmentAware {
 		IotConfigurationProperties properties = new IotConfigurationProperties();
 		PropertiesConfigurationFactory<Object> factory = new PropertiesConfigurationFactory<Object>(properties);
 		factory.setTargetName(IotConfigurationProperties.NAMESPACE);
+		factory.setPropertySources(environment.getPropertySources());
+		try {
+			factory.bindPropertiesToTarget();
+		} catch (BindException e) {
+			throw new RuntimeException("Unable to bind properties", e);
+		}
+		return properties;
+	}
+
+	protected RaspberryConfigurationProperties buildRaspberryProperties() {
+		RaspberryConfigurationProperties properties = new RaspberryConfigurationProperties();
+		PropertiesConfigurationFactory<Object> factory = new PropertiesConfigurationFactory<Object>(properties);
+		factory.setTargetName(RaspberryConfigurationProperties.NAMESPACE);
 		factory.setPropertySources(environment.getPropertySources());
 		try {
 			factory.bindPropertiesToTarget();

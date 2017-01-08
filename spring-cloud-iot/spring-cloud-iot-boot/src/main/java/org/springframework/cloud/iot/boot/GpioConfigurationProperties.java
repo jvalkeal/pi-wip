@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.iot.boot.properties.ButtonProperties;
 import org.springframework.cloud.iot.boot.properties.DimmedLedProperties;
 import org.springframework.cloud.iot.boot.properties.RelayProperties;
 
@@ -47,6 +48,7 @@ public class GpioConfigurationProperties {
 
 		private DimmedLedProperties dimmedLed;
 		private RelayProperties relay;
+		private ButtonProperties button;
 
 		public DimmedLedProperties getDimmedLed() {
 			return dimmedLed;
@@ -62,6 +64,14 @@ public class GpioConfigurationProperties {
 
 		public void setRelay(RelayProperties relay) {
 			this.relay = relay;
+		}
+
+		public ButtonProperties getButton() {
+			return button;
+		}
+
+		public void setButton(ButtonProperties button) {
+			this.button = button;
 		}
 	}
 

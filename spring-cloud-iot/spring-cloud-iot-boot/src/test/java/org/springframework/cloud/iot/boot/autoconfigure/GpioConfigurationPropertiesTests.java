@@ -50,6 +50,10 @@ public class GpioConfigurationPropertiesTests {
 		assertThat(properties.getPins().get(19).getRelay(), notNullValue());
 		assertThat(properties.getPins().get(19).getRelay().isEnabled(), is(true));
 
+		assertThat(properties.getPins().get(20), notNullValue());
+		assertThat(properties.getPins().get(20).getButton(), notNullValue());
+		assertThat(properties.getPins().get(20).getButton().isEnabled(), is(true));
+
 		context.close();
 	}
 

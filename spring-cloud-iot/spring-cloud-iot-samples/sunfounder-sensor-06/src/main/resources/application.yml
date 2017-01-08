@@ -1,0 +1,27 @@
+spring:
+  cloud:
+    iot:
+      platform: RASPBERRY
+      gpio:
+        pins: 
+#          17:
+#            button:
+#              enabled: true
+#          18:
+#            dimmedLed:
+#              enabled: true
+#          27:
+#            dimmedLed:
+#              enabled: true
+          0:
+            button:
+              enabled: true
+          1:
+            dimmedLed:
+              enabled: true
+          2:
+            dimmedLed:
+              enabled: true
+      raspberry:
+        numberingScheme: WIRINGPI
+#        numberingScheme: BROADCOM
