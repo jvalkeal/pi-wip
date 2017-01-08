@@ -17,10 +17,7 @@ package org.springframework.cloud.iot.boot.autoconfigure;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.iot.Board;
 import org.springframework.cloud.iot.boot.IotConfigurationProperties;
-import org.springframework.cloud.iot.pi4j.RaspberryPiBoard;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
@@ -30,8 +27,4 @@ public class IotAutoConfiguration {
 	@Autowired
 	private IotConfigurationProperties iotConfigurationProperties;
 
-	@Bean
-	public Board iotBoard() {
-		return new RaspberryPiBoard();
-	}
 }
