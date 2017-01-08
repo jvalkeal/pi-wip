@@ -51,6 +51,13 @@ configure(allprojects) {
 		}
 	}
 
+	// for github.com/spring-gradle-plugins/dependency-management-plugin/issues/141
+	project.tasks.withType(Upload).all { uploadTask ->
+		uploadTask.repositories.withType(MavenResolver).all { resolver ->
+			resolver.pom.withXml(dependencyManagement.pomConfigurer);
+		}
+	}
+
 }
 
 configure(subprojects) { subproject ->
