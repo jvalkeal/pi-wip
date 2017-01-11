@@ -18,44 +18,34 @@ package org.springframework.cloud.iot.integration.coap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.net.URI;
-
-import org.eclipse.californium.core.CoapClient;
-import org.eclipse.californium.core.CoapResponse;
+import org.eclipse.californium.core.CoapServer;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.junit.Test;
 import org.springframework.cloud.iot.integration.coap.inbound.CoapReceivingChannelAdapter;
+import org.springframework.cloud.iot.integration.coap.outbound.CoapRequestExecutingMessageHandler;
 import org.springframework.integration.channel.QueueChannel;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
 
-
-/**
- * The Class CoapReceivingChannelAdapterTests.
- *
- * @author Janne Valkealahti
- */
-public class CoapReceivingChannelAdapterTests {
+public class CoapRequestExecutingMessageHandlerTests {
 
 	@Test
-	public void test() throws Exception {
+	public void test() {
 		CoapReceivingChannelAdapter adapter = new CoapReceivingChannelAdapter(15683);
 		QueueChannel outputChannel = new QueueChannel();
 		adapter.setOutputChannel(outputChannel);
 		adapter.start();
 
-		doSend();
-		Message<?> request = outputChannel.receive(10000);
-		assertNotNull(request);
-		assertEquals("bar", request.getPayload());
-		System.out.println(request);
+		CoapRequestExecutingMessageHandler handler = new CoapRequestExecutingMessageHandler();
+		QueueChannel replyChannel = new QueueChannel();
+		handler.setOutputChannel(replyChannel);
+		handler.handleMessage(MessageBuilder.withPayload("hello").build());
+		Message<?> receive = outputChannel.receive();
+		assertNotNull(receive);
+		Message<?> receive2 = replyChannel.receive();
+		assertNotNull(receive2);
 		adapter.stop();
 	}
 
-	private void doSend() throws Exception {
-		URI uri = new URI("coap", null, "localhost", 15683, "/spring-integration-coap", null, null);
-		CoapClient client = new CoapClient(uri);
-
-		CoapResponse response = client.post("bar".getBytes(), 0);
-		assertEquals(ResponseCode.CREATED, response.getCode());
-	}
 }

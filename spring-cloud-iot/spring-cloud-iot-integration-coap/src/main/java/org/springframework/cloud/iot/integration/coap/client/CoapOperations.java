@@ -13,16 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.integration.coap;
+package org.springframework.cloud.iot.integration.coap.client;
 
-import org.springframework.integration.handler.AbstractReplyProducingMessageHandler;
-import org.springframework.messaging.Message;
+public interface CoapOperations {
 
-public class CoapRequestExecutingMessageHandler extends AbstractReplyProducingMessageHandler  {
-
-	@Override
-	protected Object handleRequestMessage(Message<?> requestMessage) {
-		return null;
-	}
+	<T> T getForObject(Class<T> responseType, Object... uriVariables);
 
 }
