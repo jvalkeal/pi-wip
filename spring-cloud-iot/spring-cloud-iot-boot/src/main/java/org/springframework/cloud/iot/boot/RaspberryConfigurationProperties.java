@@ -18,8 +18,10 @@ package org.springframework.cloud.iot.boot;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.iot.boot.IotConfigurationProperties.NumberingScheme;
 
-@ConfigurationProperties(prefix = "spring.cloud.iot.raspberry")
+@ConfigurationProperties(prefix = RaspberryConfigurationProperties.NAMESPACE)
 public class RaspberryConfigurationProperties {
+
+	public static final String NAMESPACE = "spring.cloud.iot.raspberry";
 
 	private NumberingScheme numberingScheme;
 

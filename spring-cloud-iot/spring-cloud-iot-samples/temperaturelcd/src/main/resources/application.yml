@@ -14,6 +14,17 @@ spring:
         numberingScheme: BROADCOM
       i2c:
         addresses:
+          0x48:
+            bus: 1
+            termistor:
+              resistance: 10000
+              supplyVoltage: 5.0
+              referenceTemp: 25.0
+              dacBits: 8
+              beta: 3950
           0x27:
             bus: 1
-            type: lcd
+            lcd:
+              rows: 2
+              colums: 16
+              clearTextOnExit: true

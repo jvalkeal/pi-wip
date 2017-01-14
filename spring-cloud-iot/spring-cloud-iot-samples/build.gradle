@@ -3,7 +3,7 @@ description = 'Spring Cloud IOT Samples Common'
 configurations.archives.artifacts.removeAll { it.archiveTask.is jar }
 tasks.findByPath("artifactoryPublish")?.enabled = false
 
-project('spring-cloud-iot-samples-sunfounder-01') {
+project('spring-cloud-iot-samples-sunfounder-sensor-01') {
 	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Sunfounder Sample'
 	dependencies {
@@ -11,7 +11,7 @@ project('spring-cloud-iot-samples-sunfounder-01') {
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-18') {
+project('spring-cloud-iot-samples-sunfounder-sensor-04') {
 	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Sunfounder Sample'
 	dependencies {
@@ -19,7 +19,16 @@ project('spring-cloud-iot-samples-sunfounder-18') {
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-30') {
+project('spring-cloud-iot-samples-sunfounder-sensor-06') {
+	apply plugin: 'org.springframework.boot'
+	description = 'Spring Cloud IOT Sunfounder Sample'
+	dependencies {
+		compile project(":spring-cloud-iot-samples-common")
+		runtime('org.springframework.boot:spring-boot-starter-web')
+	}
+}
+
+project('spring-cloud-iot-samples-sunfounder-sensor-18') {
 	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Sunfounder Sample'
 	dependencies {
@@ -27,11 +36,28 @@ project('spring-cloud-iot-samples-sunfounder-30') {
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-26') {
+project('spring-cloud-iot-samples-sunfounder-sensor-30') {
 	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Sunfounder Sample'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
+	}
+}
+
+project('spring-cloud-iot-samples-sunfounder-sensor-26') {
+	apply plugin: 'org.springframework.boot'
+	description = 'Spring Cloud IOT Sunfounder Sample'
+	dependencies {
+		compile project(":spring-cloud-iot-samples-common")
+	}
+}
+
+project('spring-cloud-iot-samples-sunfounder-sensor-27') {
+	apply plugin: 'org.springframework.boot'
+	description = 'Spring Cloud IOT Sunfounder Sample'
+	dependencies {
+		compile project(":spring-cloud-iot-samples-common")
+		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
 }
 
@@ -40,6 +66,17 @@ project('spring-cloud-iot-samples-temperaturelcd') {
 	description = 'Spring Cloud IOT Temperature on LCD Sample'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
+		compile('org.springframework.integration:spring-integration-mqtt')
 		runtime('org.springframework.boot:spring-boot-starter-web')
+	}
+}
+
+project('spring-cloud-iot-samples-gateway') {
+	apply plugin: 'org.springframework.boot'
+	description = 'Spring Cloud IOT Gateway Sample'
+	dependencies {
+//		compile project(":spring-cloud-iot-samples-common")
+		runtime('org.springframework.boot:spring-boot-starter-web')
+		compile('org.springframework.integration:spring-integration-mqtt')
 	}
 }

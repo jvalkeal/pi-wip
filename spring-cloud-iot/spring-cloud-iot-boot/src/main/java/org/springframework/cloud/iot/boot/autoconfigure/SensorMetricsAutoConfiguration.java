@@ -15,7 +15,11 @@
  */
 package org.springframework.cloud.iot.boot.autoconfigure;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +27,8 @@ import org.springframework.boot.actuate.metrics.GaugeService;
 import org.springframework.cloud.iot.component.TemperatureSensor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.Scheduled;
+
+import reactor.core.Disposable;
 
 @Configuration
 public class SensorMetricsAutoConfiguration {
@@ -44,8 +49,10 @@ public class SensorMetricsAutoConfiguration {
 
 	public static class MetricAdder {
 
-		@Autowired
+		@Autowired(required = false)
 		private List<TemperatureSensor> temperatureSensors;
+
+		private final List<Disposable> disposables = new ArrayList<>();
 
 		private GaugeService gaugeService;
 
@@ -53,11 +60,24 @@ public class SensorMetricsAutoConfiguration {
 			this.gaugeService = gaugeService;
 		}
 
-		@Scheduled(fixedRate = 1000)
-		public void updateMetrics() {
-			for (TemperatureSensor sensor : temperatureSensors) {
-				this.gaugeService.submit("iot.temperature." + sensor.getName(), sensor.getTemperature());
+		@PostConstruct
+		public void setup() {
+			if (temperatureSensors != null && gaugeService != null) {
+				for (TemperatureSensor sensor : temperatureSensors) {
+					Disposable disposable = sensor.temperatureAsFlux().subscribe(t -> {
+						this.gaugeService.submit("iot.temperature." + sensor.getName(), t);
+					});
+					disposables.add(disposable);
+				}
 			}
+		}
+
+		@PreDestroy
+		public void destroy() {
+			for (Disposable d : disposables) {
+				d.dispose();
+			}
+			disposables.clear();
 		}
 
 	}
