@@ -27,15 +27,6 @@ import org.springframework.cloud.iot.component.Button;
 import org.springframework.cloud.iot.component.IncrementalRotary;
 import org.springframework.cloud.iot.listener.ButtonListener;
 import org.springframework.cloud.iot.listener.RotaryListener;
-import org.springframework.cloud.iot.support.RotaryWaveform;
-
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioPinDigitalInput;
-import com.pi4j.io.gpio.PinEdge;
-import com.pi4j.io.gpio.PinPullResistance;
-import com.pi4j.io.gpio.RaspiBcmPin;
-import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
