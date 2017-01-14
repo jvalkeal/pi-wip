@@ -26,7 +26,7 @@ import org.springframework.cloud.iot.component.Relay;
 public class Application implements CommandLineRunner {
 
 	@Autowired
-	@Qualifier("GPIO_17")
+	@Qualifier("GPIO_myRelay")
 	private Relay relay;
 
 	@Override

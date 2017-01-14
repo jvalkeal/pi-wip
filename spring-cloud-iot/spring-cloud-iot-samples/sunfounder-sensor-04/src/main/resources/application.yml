@@ -2,10 +2,10 @@ spring:
   cloud:
     iot:
       platform: RASPBERRY
-      gpio:
-        pins:
-          17:
-            relay:
-              enabled: true
+      components:
+        myRelay:
+          relay:
+            gpio:
+              pin: 17
       raspberry:
         numberingScheme: BROADCOM

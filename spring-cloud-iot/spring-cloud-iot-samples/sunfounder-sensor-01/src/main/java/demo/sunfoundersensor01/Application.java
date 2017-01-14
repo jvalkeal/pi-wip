@@ -28,11 +28,11 @@ public class Application implements CommandLineRunner {
 	private static final int[] colors = new int[] { 0xFF00, 0x00FF, 0x0FF0, 0xF00F };
 
 	@Autowired
-	@Qualifier("GPIO_17")
+	@Qualifier("GPIO_myDimmedLedRed")
 	private DimmedLed ledR;
 
 	@Autowired
-	@Qualifier("GPIO_18")
+	@Qualifier("GPIO_myDimmedLedGreen")
 	private DimmedLed ledG;
 
 	@Override

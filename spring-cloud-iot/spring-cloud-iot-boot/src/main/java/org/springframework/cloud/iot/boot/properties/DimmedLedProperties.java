@@ -17,4 +17,26 @@ package org.springframework.cloud.iot.boot.properties;
 
 public class DimmedLedProperties extends ComponentProperties {
 
+	private GpioType gpio;
+
+	public GpioType getGpio() {
+		return gpio;
+	}
+
+	public void setGpio(GpioType gpio) {
+		this.gpio = gpio;
+	}
+
+	public static class GpioType {
+		private Integer pin;
+
+		public Integer getPin() {
+			return pin;
+		}
+
+		public void setPin(Integer pin) {
+			this.pin = pin;
+		}
+	}
+
 }

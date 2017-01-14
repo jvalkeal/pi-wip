@@ -2,16 +2,18 @@ spring:
   cloud:
     iot:
       platform: RASPBERRY
-      gpio:
-        pins: 
-          17:
-            button:
-              enabled: true
-          18:
-            dimmedLed:
-              enabled: true
-          27:
-            dimmedLed:
-              enabled: true
+      components:
+        myButton:
+          button:
+            gpio:
+              pin: 17
+        myDimmedLedRed:
+          dimmedLed:
+            gpio:
+              pin: 18
+        myDimmedLedGreen:
+          dimmedLed:
+            gpio:
+              pin: 27
       raspberry:
         numberingScheme: BROADCOM

@@ -26,9 +26,10 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration;
 import org.springframework.boot.test.util.EnvironmentTestUtils;
-import org.springframework.cloud.iot.boot.autoconfigure.GpioConfigurationTests.TestConfig;
 import org.springframework.cloud.iot.component.Button;
+import org.springframework.cloud.iot.component.DimmedLed;
 import org.springframework.cloud.iot.component.IncrementalRotary;
+import org.springframework.cloud.iot.component.Relay;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -62,6 +63,26 @@ public class ComponentsConfigurationTests {
 				);
 		assertThat(context.containsBean("GPIO_myButton"), is(true));
 		assertThat(context.getBeansOfType(Button.class).size(), is(1));
+	}
+
+	@Test
+	public void testDimmedLeds() {
+		load(TestConfig.class,
+				"spring.cloud.iot.components.myDimmedLedRed.dimmedLed.gpio.pin=17",
+				"spring.cloud.iot.components.myDimmedLedGreen.dimmedLed.gpio.pin=18"
+				);
+		assertThat(context.containsBean("GPIO_myDimmedLedRed"), is(true));
+		assertThat(context.containsBean("GPIO_myDimmedLedGreen"), is(true));
+		assertThat(context.getBeansOfType(DimmedLed.class).size(), is(2));
+	}
+
+	@Test
+	public void testRelay() {
+		load(TestConfig.class,
+				"spring.cloud.iot.components.myRelay.relay.gpio.pin=19"
+				);
+		assertThat(context.containsBean("GPIO_myRelay"), is(true));
+		assertThat(context.getBeansOfType(Relay.class).size(), is(1));
 	}
 
 	@Configuration

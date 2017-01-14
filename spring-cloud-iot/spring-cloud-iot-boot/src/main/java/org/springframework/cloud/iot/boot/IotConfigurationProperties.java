@@ -19,7 +19,9 @@ import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.ButtonProperties;
+import org.springframework.cloud.iot.boot.properties.DimmedLedProperties;
 import org.springframework.cloud.iot.boot.properties.IncrementalRotaryProperties;
+import org.springframework.cloud.iot.boot.properties.RelayProperties;
 
 /**
  * Properties for "spring.cloud.iot".
@@ -46,6 +48,8 @@ public class IotConfigurationProperties {
 
 		private IncrementalRotaryProperties incrementalRotary;
 		private ButtonProperties button;
+		private DimmedLedProperties dimmedLed;
+		private RelayProperties relay;
 
 		public IncrementalRotaryProperties getIncrementalRotary() {
 			return incrementalRotary;
@@ -61,6 +65,22 @@ public class IotConfigurationProperties {
 
 		public void setButton(ButtonProperties button) {
 			this.button = button;
+		}
+
+		public DimmedLedProperties getDimmedLed() {
+			return dimmedLed;
+		}
+
+		public void setDimmedLed(DimmedLedProperties dimmedLed) {
+			this.dimmedLed = dimmedLed;
+		}
+
+		public RelayProperties getRelay() {
+			return relay;
+		}
+
+		public void setRelay(RelayProperties relay) {
+			this.relay = relay;
 		}
 	}
 
