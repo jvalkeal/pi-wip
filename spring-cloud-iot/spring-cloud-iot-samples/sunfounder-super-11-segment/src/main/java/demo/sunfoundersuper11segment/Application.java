@@ -15,10 +15,6 @@
  */
 package demo.sunfoundersuper11segment;
 
-import javax.annotation.PreDestroy;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -29,7 +25,6 @@ import org.springframework.cloud.iot.component.display.SevenSegmentDisplay;
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
-	private final static Logger log = LoggerFactory.getLogger(Application.class);
 	private final char[] chars = new char[]{'a', 'b', 'c', 'd', 'e', 'f'};
 
 	@Autowired
@@ -38,21 +33,21 @@ public class Application implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		SevenSegmentDisplay segmentDisplay = new SevenSegmentDisplay(shiftRegister);
+
+		// to show or not to show
 		boolean dot = false;
 
+		// set nums 0..9
 		for (int i = 0; i < 10; i++) {
 			segmentDisplay.setInt(i, dot = !dot);
 			Thread.sleep(500);
 		}
 
+		// set chars a..f
 		for (int i = 0; i < chars.length; i++) {
 			segmentDisplay.setChar(chars[i], dot = !dot);
 			Thread.sleep(500);
 		}
-	}
-
-	@PreDestroy
-	public void clean() {
 	}
 
 	public static void main(String[] args) {

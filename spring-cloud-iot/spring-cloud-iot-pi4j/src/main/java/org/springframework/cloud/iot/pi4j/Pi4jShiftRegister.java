@@ -49,6 +49,13 @@ public class Pi4jShiftRegister implements ShiftRegister {
 	private final GpioPinDigitalOutput rclk;
 	private final GpioPinDigitalOutput srclk;
 
+	/**
+	 * Instantiates a new pi4j shift register.
+	 *
+	 * @param sdi the sdi output
+	 * @param rclk the rclk output
+	 * @param srclk the srclk output
+	 */
 	public Pi4jShiftRegister(GpioPinDigitalOutput sdi, GpioPinDigitalOutput rclk, GpioPinDigitalOutput srclk) {
 		this.sdi = sdi;
 		this.rclk = rclk;
@@ -57,26 +64,29 @@ public class Pi4jShiftRegister implements ShiftRegister {
 
 	@Override
 	public void shift(int bits) {
-		for (int i = 128; i >= 1; i/=2) {
+		// check individual bits and set sdi
+		// to high or low. below table shows
+		// a logic used in for loop.
+		// 128 0x80 10000000
+		// 64  0x40 01000000
+		// 32  0x20 00100000
+		// 16  0x10 00010000
+		// 8   0x08 00001000
+		// 4   0x04 00000100
+		// 2   0x02 00000010
+		// 1   0x01 00000001
+		for (int i = 128; i >= 1; i /= 2) {
 			sdi.setState(IotUtils.isBitSet(i, bits));
 			srclk.setState(PinState.HIGH);
-			sleep(10);
 			srclk.setState(PinState.LOW);
 		}
 	}
 
 	@Override
 	public void store() {
+		// bounce rclk to transfer stuff from
+		// a register into a memory
 		rclk.setState(PinState.HIGH);
-		sleep(10);
 		rclk.setState(PinState.LOW);
 	}
-
-	private void sleep(long t) {
-		try {
-			Thread.sleep(t);
-		} catch (InterruptedException e) {
-		}
-	}
-
 }
