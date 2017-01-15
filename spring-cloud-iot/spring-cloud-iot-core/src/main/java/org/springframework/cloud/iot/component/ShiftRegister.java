@@ -17,7 +17,8 @@ package org.springframework.cloud.iot.component;
 
 public interface ShiftRegister {
 
-	void shift(int... bit);
+//	void shift(int... bit);
+	void shift(int bits);
 
 	void store();
 

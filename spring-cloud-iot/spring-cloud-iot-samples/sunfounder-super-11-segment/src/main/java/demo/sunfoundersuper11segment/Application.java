@@ -24,6 +24,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.iot.component.ShiftRegister;
+import org.springframework.cloud.iot.component.display.SevenSegmentDisplay;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -31,21 +32,43 @@ public class Application implements CommandLineRunner {
 	private final static Logger log = LoggerFactory.getLogger(Application.class);
 	private final int[] segCode = new int[] { 0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f, 0x77, 0x7c, 0x39, 0x5e, 0x79,
 			0x71, 0x80 };
+//	private final int[] segCode = new int[] { 0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F };
+//	private final int[] segCode = new int[] { 0x7F };
+	private final char[] chars = new char[]{'a', 'b', 'c', 'd', 'e', 'f'};
 
 	@Autowired
 	private ShiftRegister shiftRegister;
 
 	@Override
 	public void run(String... args) throws Exception {
-		int[] bits = new int[8];
-		for (int j = 0; j < segCode.length; j++) {
-			for (int i = 0; i < 8; i++) {
-				bits[i] = (0x80 & (segCode[j] << i));
-			}
-			shiftRegister.shift(bits);
-			shiftRegister.store();
+		SevenSegmentDisplay d = new SevenSegmentDisplay(shiftRegister);
+
+		for (int i = 0; i < 10; i++) {
+			d.setInt(i);
 			Thread.sleep(500);
 		}
+
+		for (int i = 0; i < chars.length; i++) {
+			d.setChar(chars[i]);
+			Thread.sleep(500);
+		}
+
+//		for (int j = 0; j < segCode.length; j++) {
+//			shiftRegister.shift(segCode[j]);
+//			shiftRegister.store();
+//			Thread.sleep(500);
+//		}
+
+
+//		int[] bits = new int[8];
+//		for (int j = 0; j < segCode.length; j++) {
+//			for (int i = 0; i < 8; i++) {
+//				bits[i] = (0x80 & (segCode[j] << i));
+//			}
+//			shiftRegister.shift(bits);
+//			shiftRegister.store();
+//			Thread.sleep(500);
+//		}
 	}
 
 	@PreDestroy
