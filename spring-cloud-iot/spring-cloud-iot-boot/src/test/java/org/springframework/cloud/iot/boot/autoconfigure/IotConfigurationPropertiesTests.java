@@ -50,6 +50,14 @@ public class IotConfigurationPropertiesTests {
 		assertThat(properties.getComponents().get("myRotary").getIncrementalRotary().getGpio().getLeftPin(), is(17));
 		assertThat(properties.getComponents().get("myRotary").getIncrementalRotary().getGpio().getRightPin(), is(18));
 		assertThat(properties.getComponents().get("myRotary").getIncrementalRotary().getGpio().getClickPin(), is(27));
+
+		assertThat(properties.getComponents().get("myShiftRegister"), notNullValue());
+		assertThat(properties.getComponents().get("myShiftRegister").getShiftRegister(), notNullValue());
+		assertThat(properties.getComponents().get("myShiftRegister").getShiftRegister().isEnabled(), is(true));
+		assertThat(properties.getComponents().get("myShiftRegister").getShiftRegister().getGpio().getSdiPin(), is(17));
+		assertThat(properties.getComponents().get("myShiftRegister").getShiftRegister().getGpio().getRclkPin(), is(18));
+		assertThat(properties.getComponents().get("myShiftRegister").getShiftRegister().getGpio().getSrclkPin(), is(27));
+
 		context.close();
 	}
 

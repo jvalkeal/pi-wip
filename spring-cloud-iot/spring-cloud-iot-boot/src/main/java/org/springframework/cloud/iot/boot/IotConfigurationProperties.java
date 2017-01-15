@@ -22,6 +22,7 @@ import org.springframework.cloud.iot.boot.properties.ButtonProperties;
 import org.springframework.cloud.iot.boot.properties.DimmedLedProperties;
 import org.springframework.cloud.iot.boot.properties.IncrementalRotaryProperties;
 import org.springframework.cloud.iot.boot.properties.RelayProperties;
+import org.springframework.cloud.iot.boot.properties.ShiftRegisterProperties;
 
 /**
  * Properties for "spring.cloud.iot".
@@ -50,6 +51,7 @@ public class IotConfigurationProperties {
 		private ButtonProperties button;
 		private DimmedLedProperties dimmedLed;
 		private RelayProperties relay;
+		private ShiftRegisterProperties shiftRegister;
 
 		public IncrementalRotaryProperties getIncrementalRotary() {
 			return incrementalRotary;
@@ -82,55 +84,15 @@ public class IotConfigurationProperties {
 		public void setRelay(RelayProperties relay) {
 			this.relay = relay;
 		}
-	}
 
-//	private Device device;
-//
-//	public void setDevice(Device device) {
-//		this.device = device;
-//	}
-//
-//	public Device getDevice() {
-//		return device;
-//	}
-//
-//	public static class Device {
-//
-//		private Lcd lcd;
-//
-//		public Lcd getLcd() {
-//			return lcd;
-//		}
-//
-//		public void setLcd(Lcd lcd) {
-//			this.lcd = lcd;
-//		}
-//
-//	}
-//
-//	public static class Lcd {
-//		private int rows = 2;
-//		private int colums = 16;
-//		private boolean clearTextOnExit = true;
-//		public int getRows() {
-//			return rows;
-//		}
-//		public void setRows(int rows) {
-//			this.rows = rows;
-//		}
-//		public int getColums() {
-//			return colums;
-//		}
-//		public void setColums(int colums) {
-//			this.colums = colums;
-//		}
-//		public boolean isClearTextOnExit() {
-//			return clearTextOnExit;
-//		}
-//		public void setClearTextOnExit(boolean clearTextOnExit) {
-//			this.clearTextOnExit = clearTextOnExit;
-//		}
-//	}
+		public ShiftRegisterProperties getShiftRegister() {
+			return shiftRegister;
+		}
+
+		public void setShiftRegister(ShiftRegisterProperties shiftRegister) {
+			this.shiftRegister = shiftRegister;
+		}
+	}
 
 	public enum NumberingScheme {
 		BROADCOM, WIRINGPI;

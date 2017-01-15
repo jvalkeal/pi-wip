@@ -30,6 +30,7 @@ import org.springframework.cloud.iot.component.Button;
 import org.springframework.cloud.iot.component.DimmedLed;
 import org.springframework.cloud.iot.component.IncrementalRotary;
 import org.springframework.cloud.iot.component.Relay;
+import org.springframework.cloud.iot.component.ShiftRegister;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,6 +43,18 @@ import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.gpio.PinPullResistance;
 
 public class ComponentsConfigurationTests {
+
+	@Test
+	public void testShiftRegister() {
+		load(TestConfig.class,
+				"spring.cloud.iot.components.myShiftRegister.shiftRegister.enabled=true",
+				"spring.cloud.iot.components.myShiftRegister.shiftRegister.gpio.sdiPin=17",
+				"spring.cloud.iot.components.myShiftRegister.shiftRegister.gpio.rclkPin=18",
+				"spring.cloud.iot.components.myShiftRegister.shiftRegister.gpio.srclkPin=27"
+				);
+		assertThat(context.containsBean("GPIO_myShiftRegister"), is(true));
+		assertThat(context.getBeansOfType(ShiftRegister.class).size(), is(1));
+	}
 
 	@Test
 	public void testIncrementalRotary() {

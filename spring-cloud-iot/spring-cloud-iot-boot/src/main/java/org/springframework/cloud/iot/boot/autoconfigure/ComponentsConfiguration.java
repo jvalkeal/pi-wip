@@ -30,15 +30,18 @@ import org.springframework.cloud.iot.component.Button;
 import org.springframework.cloud.iot.component.DimmedLed;
 import org.springframework.cloud.iot.component.IncrementalRotary;
 import org.springframework.cloud.iot.component.Relay;
+import org.springframework.cloud.iot.component.ShiftRegister;
 import org.springframework.cloud.iot.pi4j.Pi4jButton;
 import org.springframework.cloud.iot.pi4j.Pi4jDimmedLed;
 import org.springframework.cloud.iot.pi4j.Pi4jGpioRelayComponent;
 import org.springframework.cloud.iot.pi4j.Pi4jIncrementalRotary;
+import org.springframework.cloud.iot.pi4j.Pi4jShiftRegister;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 
 import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioPinAnalogOutput;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.GpioPinPwmOutput;
@@ -84,9 +87,70 @@ public class ComponentsConfiguration extends AbstractConfigurationSupport implem
 				bdb.addConstructorArgValue(String.valueOf(type.getDimmedLed().getGpio().getPin()));
 				bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
 				registry.registerBeanDefinition(BEAN_PREFIX + name, bdb.getBeanDefinition());
+			} else if (type.getShiftRegister() != null) {
+				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jGpioShiftRegisterComponentGpioFactoryBean.class);
+				bdb.addConstructorArgValue(String.valueOf(type.getShiftRegister().getGpio().getSdiPin()));
+				bdb.addConstructorArgValue(String.valueOf(type.getShiftRegister().getGpio().getRclkPin()));
+				bdb.addConstructorArgValue(String.valueOf(type.getShiftRegister().getGpio().getSrclkPin()));
+				bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
+				registry.registerBeanDefinition(BEAN_PREFIX + name, bdb.getBeanDefinition());
 			}
 		}
 
+	}
+
+	public static class Pi4jGpioShiftRegisterComponentGpioFactoryBean implements FactoryBean<Object>, InitializingBean {
+
+		@Autowired
+		private GpioController gpioController;
+		private NumberingScheme numberingScheme;
+		private String sdiPinName;
+		private String rclkPinName;
+		private String srclkPinName;
+		private Pi4jShiftRegister object;
+
+		public Pi4jGpioShiftRegisterComponentGpioFactoryBean(String sdiPinName, String rclkPinName, String srclkPinName,
+				NumberingScheme numberingScheme) {
+			this.sdiPinName = sdiPinName;
+			this.rclkPinName = rclkPinName;
+			this.srclkPinName = srclkPinName;
+			this.numberingScheme = numberingScheme;
+		}
+
+		@Override
+		public void afterPropertiesSet() throws Exception {
+			Pin sdiPin = numberingScheme == NumberingScheme.BROADCOM ? RaspiBcmPin.getPinByName("GPIO " + sdiPinName)
+					: RaspiPin.getPinByName("GPIO " + sdiPinName);
+			Pin rclkPin = numberingScheme == NumberingScheme.BROADCOM ? RaspiBcmPin.getPinByName("GPIO " + rclkPinName)
+					: RaspiPin.getPinByName("GPIO " + rclkPinName);
+			Pin srclkPin = numberingScheme == NumberingScheme.BROADCOM ? RaspiBcmPin.getPinByName("GPIO " + srclkPinName)
+					: RaspiPin.getPinByName("GPIO " + srclkPinName);
+
+
+			GpioPinDigitalOutput sdi = gpioController.provisionDigitalOutputPin(sdiPin);
+			GpioPinDigitalOutput rclk = gpioController.provisionDigitalOutputPin(rclkPin);
+			GpioPinDigitalOutput srclk = gpioController.provisionDigitalOutputPin(srclkPin);
+			object = new Pi4jShiftRegister(sdi, rclk, srclk);
+			if (object instanceof InitializingBean) {
+				((InitializingBean)object).afterPropertiesSet();
+			}
+
+		}
+
+		@Override
+		public Object getObject() throws Exception {
+			return object;
+		}
+
+		@Override
+		public Class<?> getObjectType() {
+			return ShiftRegister.class;
+		}
+
+		@Override
+		public boolean isSingleton() {
+			return true;
+		}
 	}
 
 	public static class Pi4jGpioIncrementalRotaryComponentGpioFactoryBean implements FactoryBean<Object>, InitializingBean {
