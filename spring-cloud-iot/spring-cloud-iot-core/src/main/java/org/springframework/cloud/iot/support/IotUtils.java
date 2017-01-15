@@ -24,7 +24,7 @@ package org.springframework.cloud.iot.support;
 public abstract class IotUtils {
 
 	/**
-	 * Gets the steinhart hart temperature which is based on value connected
+	 * Get the steinhart hart temperature which is based on value connected
 	 * to ADC as Kelvin.
 	 *
 	 * @param analogValue the analog singal value
@@ -41,5 +41,41 @@ public abstract class IotUtils {
 		double rT = resistance * vR / (voltageSupply - vR);
 		double kelvin = 1 / (((Math.log(rT / resistance)) / beta) + (1 / (273.15 + referenceTemp)));
 		return kelvin;
+	}
+
+	/**
+	 * Checks if bits are set by doing 'bitwise and' operation
+	 * with value and flags.
+	 *
+	 * @param value the value
+	 * @param flags the flags
+	 * @return true, if is bit set
+	 */
+	public static boolean isBitSet(int value, int flags) {
+		return (flags & value) == value;
+	}
+
+	/**
+	 * Sets the bits for value using 'bitwise or' operation
+	 * and return new modified value.
+	 *
+	 * @param value the value
+	 * @param flags the flags
+	 * @return the modified value
+	 */
+	public static int setBit(int value, int flags) {
+		return (flags | value);
+	}
+
+	/**
+	 * Unset bits for value using 'bitwise and' operation
+	 * and return modified value.
+	 *
+	 * @param value the value
+	 * @param flags the flags
+	 * @return the modified value
+	 */
+	public static int unsetBit(int value, int flags) {
+		return value &= flags;
 	}
 }

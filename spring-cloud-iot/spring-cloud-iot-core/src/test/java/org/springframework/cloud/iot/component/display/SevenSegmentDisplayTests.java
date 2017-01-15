@@ -96,9 +96,20 @@ public class SevenSegmentDisplayTests {
 		}
 	}
 
+	@Test
+	public void test5() {
+
+		System.out.println(0x00);
+		System.out.println(setBit(0x00, 0x80));
+	}
+
 	public static boolean isFlagSet(int value, int flags)
 	{
 		return (flags & value) == value;
+	}
+
+	public static int setBit(int value, int flags) {
+		return (flags | value);
 	}
 
 	public static byte setFlag(byte value, byte flags)

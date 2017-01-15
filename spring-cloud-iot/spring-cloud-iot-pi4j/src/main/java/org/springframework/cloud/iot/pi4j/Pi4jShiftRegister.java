@@ -16,6 +16,7 @@
 package org.springframework.cloud.iot.pi4j;
 
 import org.springframework.cloud.iot.component.ShiftRegister;
+import org.springframework.cloud.iot.support.IotUtils;
 
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
@@ -54,25 +55,10 @@ public class Pi4jShiftRegister implements ShiftRegister {
 		this.srclk = srclk;
 	}
 
-
-//	@Override
-//	public void shift(int... bit) {
-//		for (int b : bit) {
-//			if (b <= 0) {
-//				sdi.setState(PinState.LOW);
-//			} else {
-//				sdi.setState(PinState.HIGH);
-//			}
-//			srclk.setState(PinState.HIGH);
-//			sleep(10);
-//			srclk.setState(PinState.LOW);
-//		}
-//	}
-
 	@Override
 	public void shift(int bits) {
 		for (int i = 128; i >= 1; i/=2) {
-			sdi.setState(isBitSet(i, bits));
+			sdi.setState(IotUtils.isBitSet(i, bits));
 			srclk.setState(PinState.HIGH);
 			sleep(10);
 			srclk.setState(PinState.LOW);
@@ -84,10 +70,6 @@ public class Pi4jShiftRegister implements ShiftRegister {
 		rclk.setState(PinState.HIGH);
 		sleep(10);
 		rclk.setState(PinState.LOW);
-	}
-
-	private static boolean isBitSet(int value, int flags) {
-		return (flags & value) == value;
 	}
 
 	private void sleep(long t) {

@@ -16,6 +16,8 @@
 package org.springframework.cloud.iot.component.display;
 
 import org.springframework.cloud.iot.component.ShiftRegister;
+import org.springframework.cloud.iot.support.IotUtils;
+import org.springframework.util.Assert;
 
 public class SevenSegmentDisplay {
 
@@ -33,6 +35,7 @@ public class SevenSegmentDisplay {
 	}
 
 	public SevenSegmentDisplay(ShiftRegister shiftRegister) {
+		Assert.notNull(shiftRegister, "'shiftRegister' cannot be empty");
 		this.shiftRegister = shiftRegister;
 	}
 
@@ -41,7 +44,7 @@ public class SevenSegmentDisplay {
 	}
 
 	public void setChar(char c, boolean dot) {
-		shiftRegister.shift(charMapping[(int)c]);
+		shiftRegister.shift(dot ? IotUtils.setBit(charMapping[(int)c], 0x80) : charMapping[(int)c]);
 		shiftRegister.store();
 	}
 
@@ -50,8 +53,7 @@ public class SevenSegmentDisplay {
 	}
 
 	public void setInt(int i, boolean dot) {
-		shiftRegister.shift(intMapping[i % 10]);
+		shiftRegister.shift(dot ? IotUtils.setBit(intMapping[i % 10], 0x80) : intMapping[i % 10]);
 		shiftRegister.store();
 	}
-
 }
