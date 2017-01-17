@@ -24,6 +24,7 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.springframework.util.Assert;
 
 /**
+ * Factory bean building an instance of a Californium {@link CoapServer}.
  *
  * @author Janne Valkealahti
  *

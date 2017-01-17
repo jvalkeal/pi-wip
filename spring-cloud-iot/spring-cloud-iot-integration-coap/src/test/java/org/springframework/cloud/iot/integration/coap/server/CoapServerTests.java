@@ -13,50 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.integration.coap.client;
+package org.springframework.cloud.iot.integration.coap.server;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.junit.Test;
 import org.springframework.cloud.iot.integration.coap.AbstractCoapTests;
 import org.springframework.cloud.iot.integration.coap.TestCoapServerConfiguration;
+import org.springframework.cloud.iot.integration.coap.client.CoapTemplate;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
- * Tests for {@link CoapTemplate}.
+ * Tests for {@link CoapServerFactoryBean} and other generic concepts.
  *
  * @author Janne Valkealahti
  *
  */
-public class CoapTemplateTests extends AbstractCoapTests {
+public class CoapServerTests extends AbstractCoapTests {
 
 	@Test
-	public void testGetForObject() throws URISyntaxException {
+	public void testResourceAcceptsAllNestedPaths() throws Exception {
 		context.register(TestCoapServerConfiguration.class);
 		context.refresh();
 
-		URI uri = new URI("coap", null, "localhost", 5683, "/testresource1", null, null);
+		URI uri = new URI("coap", null, "localhost", 5683, "/testresource2", null, null);
 		CoapTemplate template = new CoapTemplate(uri);
 		String object = template.getForObject(String.class);
 		assertThat(object, notNullValue());
-		assertThat(object, is("hello"));
-	}
+		assertThat(object, is("hello2"));
 
-	@Test
-	public void testPostForObject() throws URISyntaxException {
-		context.register(TestCoapServerConfiguration.class);
-		context.refresh();
-
-		URI uri = new URI("coap", null, "localhost", 5683, "/testresource1", null, null);
-		CoapTemplate template = new CoapTemplate(uri);
-		String object = template.postForObject(String.class);
+		uri = new URI("coap", null, "localhost", 5683, "/testresource2/wildcard", null, null);
+		template = new CoapTemplate(uri);
+		object = template.getForObject(String.class);
 		assertThat(object, notNullValue());
-		assertThat(object, is("hello"));
+		assertThat(object, is("hello2"));
+
+		uri = new URI("coap", null, "localhost", 5683, "/testresource2/*", null, null);
+		template = new CoapTemplate(uri);
+		object = template.getForObject(String.class);
+		assertThat(object, notNullValue());
+		assertThat(object, is("hello2"));
+
+		uri = new URI("coap", null, "localhost", 5683, "/testresource2/*/*/*/*/xxx", null, null);
+		template = new CoapTemplate(uri);
+		object = template.getForObject(String.class);
+		assertThat(object, notNullValue());
+		assertThat(object, is("hello2"));
 	}
 
 	@Override

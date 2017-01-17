@@ -22,6 +22,7 @@ import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.core.server.resources.Resource;
+import org.springframework.cloud.iot.integration.coap.server.AbstractCoapResource;
 import org.springframework.cloud.iot.integration.coap.server.CoapServerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +35,7 @@ public class TestCoapServerConfiguration {
 		CoapServerFactoryBean factory = new CoapServerFactoryBean();
 		List<Resource> coapResources = new ArrayList<>();
 		coapResources.add(new TestResource1());
+		coapResources.add(new TestResource2());
 		factory.setCoapResources(coapResources);
 		return factory;
 	}
@@ -52,6 +54,23 @@ public class TestCoapServerConfiguration {
 		@Override
 		public void handlePOST(CoapExchange exchange) {
 			exchange.respond(ResponseCode.VALID, "hello".getBytes());
+		}
+	}
+
+	private class TestResource2 extends AbstractCoapResource {
+
+		public TestResource2() {
+			super("testresource2");
+		}
+
+		@Override
+		public void handleGET(CoapExchange exchange) {
+			exchange.respond(ResponseCode.VALID, "hello2".getBytes());
+		}
+
+		@Override
+		public void handlePOST(CoapExchange exchange) {
+			exchange.respond(ResponseCode.VALID, "hello2".getBytes());
 		}
 	}
 
