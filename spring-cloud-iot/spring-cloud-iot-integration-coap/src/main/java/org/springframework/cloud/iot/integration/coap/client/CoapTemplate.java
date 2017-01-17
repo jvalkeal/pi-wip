@@ -21,10 +21,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.californium.core.CoapClient;
+import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResponse;
 import org.springframework.cloud.iot.integration.coap.converter.CoapMessageConverter;
 import org.springframework.cloud.iot.integration.coap.converter.StringCoapMessageConverter;
 import org.springframework.util.Assert;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.UnicastProcessor;
 
 public class CoapTemplate implements CoapOperations {
 
@@ -50,8 +54,48 @@ public class CoapTemplate implements CoapOperations {
 		return doExecute(CoapMethod.POST, responseExtractor);
 	}
 
+	@Override
+	public <T> Flux<T> observeForObject(Class<T> responseType, Object... uriVariables) {
+		CoapMessageConverterExtractor<T> responseExtractor =
+				new CoapMessageConverterExtractor<>(responseType, getMessageConverters());
+		return doObserve(responseExtractor);
+	}
+
 	public List<CoapMessageConverter<?>> getMessageConverters() {
 		return messageConverters;
+	}
+
+	protected <T> Flux<T> doObserve(ResponseExtractor<T> responseExtractor) {
+
+		final UnicastProcessor<T> processor = UnicastProcessor.create();
+
+		client.observe(new CoapHandler() {
+
+			@Override
+			public void onLoad(CoapResponse response) {
+				System.out.println("EEEE1");
+				final byte[] payload = response.getPayload();
+				ClientCoapResponse r = new ClientCoapResponse() {
+					@Override
+					public byte[] getBody() {
+						return payload;
+					}
+				};
+
+				try {
+					processor.onNext(responseExtractor.extractData(r));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			public void onError() {
+				System.out.println("EEEE2");
+			}
+		});
+
+		return processor;
 	}
 
 	protected <T> T doExecute(CoapMethod method, ResponseExtractor<T> responseExtractor) {

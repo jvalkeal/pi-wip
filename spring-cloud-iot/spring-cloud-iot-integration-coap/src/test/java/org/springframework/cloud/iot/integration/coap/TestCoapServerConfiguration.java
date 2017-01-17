@@ -17,9 +17,12 @@ package org.springframework.cloud.iot.integration.coap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
+import org.eclipse.californium.core.coap.CoAP.Type;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.core.server.resources.Resource;
 import org.springframework.cloud.iot.integration.coap.server.AbstractCoapResource;
@@ -36,6 +39,7 @@ public class TestCoapServerConfiguration {
 		List<Resource> coapResources = new ArrayList<>();
 		coapResources.add(new TestResource1());
 		coapResources.add(new TestResource2());
+		coapResources.add(new TestResource3());
 		factory.setCoapResources(coapResources);
 		return factory;
 	}
@@ -71,6 +75,35 @@ public class TestCoapServerConfiguration {
 		@Override
 		public void handlePOST(CoapExchange exchange) {
 			exchange.respond(ResponseCode.VALID, "hello2".getBytes());
+		}
+	}
+
+	private class TestResource3 extends AbstractCoapResource {
+
+		public TestResource3() {
+			super("testresource3");
+			setObservable(true);
+			setObserveType(Type.CON);
+			Timer timer = new Timer();
+			timer.schedule(new UpdateTask(), 2000, 1000);
+		}
+
+		@Override
+		public void handleGET(CoapExchange exchange) {
+			exchange.respond(ResponseCode.VALID, "hello2".getBytes());
+		}
+
+		@Override
+		public void handlePOST(CoapExchange exchange) {
+			exchange.respond(ResponseCode.VALID, "hello2".getBytes());
+		}
+
+		private class UpdateTask extends TimerTask {
+			@Override
+			public void run() {
+				System.out.println("DDDD");
+				changed();
+			}
 		}
 	}
 

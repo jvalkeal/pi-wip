@@ -15,10 +15,14 @@
  */
 package org.springframework.cloud.iot.integration.coap.client;
 
+import reactor.core.publisher.Flux;
+
 public interface CoapOperations {
 
 	<T> T getForObject(Class<T> responseType, Object... uriVariables);
 
 	<T> T postForObject(Class<T> responseType, Object... uriVariables);
+
+	<T> Flux<T> observeForObject(Class<T> responseType, Object... uriVariables);
 
 }
