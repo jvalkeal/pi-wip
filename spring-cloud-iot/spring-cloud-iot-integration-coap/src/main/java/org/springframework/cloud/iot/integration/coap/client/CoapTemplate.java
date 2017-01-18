@@ -22,13 +22,13 @@ import java.util.List;
 
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapHandler;
+import org.eclipse.californium.core.CoapObserveRelation;
 import org.eclipse.californium.core.CoapResponse;
 import org.springframework.cloud.iot.integration.coap.converter.CoapMessageConverter;
 import org.springframework.cloud.iot.integration.coap.converter.StringCoapMessageConverter;
 import org.springframework.util.Assert;
 
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.UnicastProcessor;
 
 public class CoapTemplate implements CoapOperations {
 
@@ -67,35 +67,33 @@ public class CoapTemplate implements CoapOperations {
 
 	protected <T> Flux<T> doObserve(ResponseExtractor<T> responseExtractor) {
 
-		final UnicastProcessor<T> processor = UnicastProcessor.create();
+		return Flux.<T>create(emitter -> {
+			CoapObserveRelation observe = client.observe(new CoapHandler() {
+				@Override
+				public void onLoad(CoapResponse response) {
+					final byte[] payload = response.getPayload();
+					System.out.println("WWW1 " + new String(payload));
+					ClientCoapResponse r = new DefaultClientCoapResponse(payload);
 
-		client.observe(new CoapHandler() {
-
-			@Override
-			public void onLoad(CoapResponse response) {
-				System.out.println("EEEE1");
-				final byte[] payload = response.getPayload();
-				ClientCoapResponse r = new ClientCoapResponse() {
-					@Override
-					public byte[] getBody() {
-						return payload;
+					try {
+						emitter.next(responseExtractor.extractData(r));
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
-				};
 
-				try {
-					processor.onNext(responseExtractor.extractData(r));
-				} catch (IOException e) {
-					e.printStackTrace();
 				}
-			}
 
-			@Override
-			public void onError() {
-				System.out.println("EEEE2");
-			}
+				@Override
+				public void onError() {
+				}
+			});
+
+			emitter.setCancellation(() -> {
+				observe.proactiveCancel();
+			});
+
 		});
 
-		return processor;
 	}
 
 	protected <T> T doExecute(CoapMethod method, ResponseExtractor<T> responseExtractor) {
@@ -114,12 +112,7 @@ public class CoapTemplate implements CoapOperations {
 		} else if (method == CoapMethod.POST) {
 			CoapResponse r = client.post(new byte[0], 0);
 			final byte[] payload = r.getPayload();
-			response = new ClientCoapResponse() {
-				@Override
-				public byte[] getBody() {
-					return payload;
-				}
-			};
+			response = new DefaultClientCoapResponse(payload);
 		}
 
 		try {

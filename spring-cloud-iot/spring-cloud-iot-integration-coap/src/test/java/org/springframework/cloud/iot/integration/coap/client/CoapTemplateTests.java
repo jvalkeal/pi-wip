@@ -16,7 +16,6 @@
 package org.springframework.cloud.iot.integration.coap.client;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
@@ -72,9 +71,12 @@ public class CoapTemplateTests extends AbstractCoapTests {
 		CoapTemplate template = new CoapTemplate(uri);
 		Flux<String> flux = template.observeForObject(String.class);
 		ArrayList<String> rr = new ArrayList<>();
-		flux.take(2).map(s -> rr.add(s)).subscribe();
+		flux.take(3).doOnNext(s -> {
+			System.out.println("WWW2 " + s);
+			rr.add(s);
+		}).subscribe();
 		Thread.sleep(5000);
-		assertThat(rr.size(), is(2));
+		assertThat(rr.size(), is(3));
 	}
 
 	@Override
