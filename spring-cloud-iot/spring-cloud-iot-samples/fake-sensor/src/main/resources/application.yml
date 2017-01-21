@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    iot:
+      metrics:
+        mqtt:
+          export:
+            enabled: true
+        coap:
+          export:
+            enabled: true

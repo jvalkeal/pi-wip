@@ -1,10 +1,25 @@
 spring:
   cloud:
     iot:
-      i2c:
-        addresses:
-          0x48:
-            type: temperature
-      platform: RASPBERRY
-      raspberry:
-        numberingScheme: BROADCOM
+      components:
+        myButton:
+          button:
+            enabled: true
+            gpio:
+              pin: 27
+        myRotary:
+          incrementalRotary:
+            enabled: true
+            incrementSteps: 20
+            gpio:
+              leftPin: 17
+              rightPin: 18
+              clickPin: 27
+        myShiftRegister:
+          shiftRegister:
+            enabled: true
+            gpio:
+              sdiPin: 17
+              rclkPin: 18
+              srclkPin: 27
+              

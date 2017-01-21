@@ -29,17 +29,36 @@ import org.springframework.context.annotation.Configuration;
 public class IotConfigurationPropertiesTests {
 
 	@Test
-	public void testI2CProperties() {
+	public void testComponentsProperties() {
 		SpringApplication app = new SpringApplication(TestConfiguration.class);
 		app.setWebEnvironment(false);
 		ConfigurableApplicationContext context = app
 				.run(new String[] { "--spring.config.name=IotConfigurationPropertiesTests1" });
 		IotConfigurationProperties properties = context.getBean(IotConfigurationProperties.class);
 		assertThat(properties, notNullValue());
-		assertThat(properties.getI2C(), notNullValue());
-		assertThat(properties.getI2C().getAddresses(), notNullValue());
-		assertThat(properties.getI2C().getAddresses().get(0x48), notNullValue());
-		assertThat(properties.getI2C().getAddresses().get(0x48).getType(), is("temperature"));
+		assertThat(properties.getComponents(), notNullValue());
+
+		assertThat(properties.getComponents().get("myButton"), notNullValue());
+		assertThat(properties.getComponents().get("myButton").getButton(), notNullValue());
+		assertThat(properties.getComponents().get("myButton").getButton().isEnabled(), is(true));
+		assertThat(properties.getComponents().get("myButton").getButton().getGpio().getPin(), is(27));
+
+		assertThat(properties.getComponents().get("myRotary"), notNullValue());
+		assertThat(properties.getComponents().get("myRotary").getIncrementalRotary(), notNullValue());
+		assertThat(properties.getComponents().get("myRotary").getIncrementalRotary().isEnabled(), is(true));
+		assertThat(properties.getComponents().get("myRotary").getIncrementalRotary().getIncrementSteps(), is(20));
+		assertThat(properties.getComponents().get("myRotary").getIncrementalRotary().getGpio().getLeftPin(), is(17));
+		assertThat(properties.getComponents().get("myRotary").getIncrementalRotary().getGpio().getRightPin(), is(18));
+		assertThat(properties.getComponents().get("myRotary").getIncrementalRotary().getGpio().getClickPin(), is(27));
+
+		assertThat(properties.getComponents().get("myShiftRegister"), notNullValue());
+		assertThat(properties.getComponents().get("myShiftRegister").getShiftRegister(), notNullValue());
+		assertThat(properties.getComponents().get("myShiftRegister").getShiftRegister().isEnabled(), is(true));
+		assertThat(properties.getComponents().get("myShiftRegister").getShiftRegister().getGpio().getSdiPin(), is(17));
+		assertThat(properties.getComponents().get("myShiftRegister").getShiftRegister().getGpio().getRclkPin(), is(18));
+		assertThat(properties.getComponents().get("myShiftRegister").getShiftRegister().getGpio().getSrclkPin(), is(27));
+
+		context.close();
 	}
 
 	@Test
@@ -50,11 +69,12 @@ public class IotConfigurationPropertiesTests {
 				.run(new String[] { "--spring.config.name=IotConfigurationPropertiesTests2" });
 		IotConfigurationProperties properties = context.getBean(IotConfigurationProperties.class);
 		assertThat(properties, notNullValue());
-		assertThat(properties.getDevice(), notNullValue());
-		assertThat(properties.getDevice().getLcd(), notNullValue());
-		assertThat(properties.getDevice().getLcd().getRows(), is(2));
-		assertThat(properties.getDevice().getLcd().getColums(), is(16));
-		assertThat(properties.getDevice().getLcd().isClearTextOnExit(), is(true));
+//		assertThat(properties.getDevice(), notNullValue());
+//		assertThat(properties.getDevice().getLcd(), notNullValue());
+//		assertThat(properties.getDevice().getLcd().getRows(), is(2));
+//		assertThat(properties.getDevice().getLcd().getColums(), is(16));
+//		assertThat(properties.getDevice().getLcd().isClearTextOnExit(), is(true));
+		context.close();
 	}
 
 	@Configuration

@@ -15,10 +15,67 @@
  */
 package org.springframework.cloud.iot.support;
 
-public class IotUtils {
+/**
+ * IoT utilities.
+ *
+ * @author Janne Valkealahti
+ *
+ */
+public abstract class IotUtils {
 
-	public static int map(int x, int in_min, int in_max, int out_min, int out_max) {
-		return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+	/**
+	 * Get the steinhart hart temperature which is based on value connected
+	 * to ADC as Kelvin.
+	 *
+	 * @param analogValue the analog singal value
+	 * @param voltageSupply the system voltage supply
+	 * @param dacBits the ADC bits
+	 * @param resistance the resistance
+	 * @param beta the beta parameter value
+	 * @param referenceTemp the refeference temp
+	 * @return the steinhart hart temperature
+	 */
+	static public double getSteinhartHartTemperature(float analogValue, double voltageSupply, int dacBits, int resistance, double beta,
+			double referenceTemp) {
+		double vR = voltageSupply * analogValue / (Math.pow(2, dacBits) - 1);
+		double rT = resistance * vR / (voltageSupply - vR);
+		double kelvin = 1 / (((Math.log(rT / resistance)) / beta) + (1 / (273.15 + referenceTemp)));
+		return kelvin;
 	}
 
+	/**
+	 * Checks if bits are set by doing 'bitwise and' operation
+	 * with value and flags.
+	 *
+	 * @param value the value
+	 * @param flags the flags
+	 * @return true, if is bit set
+	 */
+	public static boolean isBitSet(int value, int flags) {
+		return (flags & value) == value;
+	}
+
+	/**
+	 * Sets the bits for value using 'bitwise or' operation
+	 * and return new modified value.
+	 *
+	 * @param value the value
+	 * @param flags the flags
+	 * @return the modified value
+	 */
+	public static int setBit(int value, int flags) {
+		return (flags | value);
+	}
+
+	/**
+	 * Unset bits for value using 'bitwise and' operation
+	 * and return modified value.
+	 *
+	 * @param value the value
+	 * @param flags the flags
+	 * @return the modified value
+	 */
+	public static int unsetBit(int value, int flags) {
+		return value &= flags;
+	}
 }
