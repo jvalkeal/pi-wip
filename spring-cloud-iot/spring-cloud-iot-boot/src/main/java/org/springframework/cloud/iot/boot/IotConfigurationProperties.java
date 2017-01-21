@@ -22,6 +22,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.ButtonProperties;
 import org.springframework.cloud.iot.boot.properties.DimmedLedProperties;
 import org.springframework.cloud.iot.boot.properties.IncrementalRotaryProperties;
+import org.springframework.cloud.iot.boot.properties.PotentiometerProperties;
 import org.springframework.cloud.iot.boot.properties.RelayProperties;
 import org.springframework.cloud.iot.boot.properties.ShiftRegisterProperties;
 
@@ -53,6 +54,7 @@ public class IotConfigurationProperties {
 		private DimmedLedProperties dimmedLed;
 		private RelayProperties relay;
 		private ShiftRegisterProperties shiftRegister;
+		private PotentiometerProperties potentiometer;
 
 		public IncrementalRotaryProperties getIncrementalRotary() {
 			return incrementalRotary;
@@ -92,6 +94,14 @@ public class IotConfigurationProperties {
 
 		public void setShiftRegister(ShiftRegisterProperties shiftRegister) {
 			this.shiftRegister = shiftRegister;
+		}
+
+		public PotentiometerProperties getPotentiometer() {
+			return potentiometer;
+		}
+
+		public void setPotentiometer(PotentiometerProperties potentiometer) {
+			this.potentiometer = potentiometer;
 		}
 	}
 

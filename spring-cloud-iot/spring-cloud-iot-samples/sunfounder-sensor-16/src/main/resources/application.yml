@@ -9,5 +9,7 @@ spring:
             i2c:
               bus: 1
               address: 0x48
+              min: 0
+              max: 255
       raspberry:
-        numberingScheme: BROADCOM
+        numberingScheme: BROADCOM 

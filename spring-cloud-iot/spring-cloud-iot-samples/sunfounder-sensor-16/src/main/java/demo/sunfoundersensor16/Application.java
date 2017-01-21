@@ -18,29 +18,23 @@ package demo.sunfoundersensor16;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.iot.component.TemperatureSensor;
-
-import com.pi4j.io.i2c.I2CDevice;
-import com.pi4j.io.i2c.I2CFactory;
+import org.springframework.cloud.iot.component.Potentiometer;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
 	private final static Logger log = LoggerFactory.getLogger(Application.class);
 
-//	@Autowired
-//	@Qualifier("I2C_72")
-//	private TemperatureSensor sensor;
+	@Autowired
+	private Potentiometer potentiometer;
 
 	@Override
 	public void run(String... args) throws Exception {
-		I2CDevice device = I2CFactory.getInstance(1).getDevice(0x48);
 		while(true) {
-			log.info("Value {}", device.read());
+			log.info("Value {}", potentiometer.getValue());
 			Thread.sleep(500);
 		}
 	}

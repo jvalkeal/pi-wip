@@ -35,13 +35,13 @@ import org.springframework.cloud.iot.pi4j.Pi4jButton;
 import org.springframework.cloud.iot.pi4j.Pi4jDimmedLed;
 import org.springframework.cloud.iot.pi4j.Pi4jGpioRelayComponent;
 import org.springframework.cloud.iot.pi4j.Pi4jIncrementalRotary;
+import org.springframework.cloud.iot.pi4j.Pi4jPCF8591Potentiometer;
 import org.springframework.cloud.iot.pi4j.Pi4jShiftRegister;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 
 import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioPinAnalogOutput;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.GpioPinPwmOutput;
@@ -54,7 +54,8 @@ import com.pi4j.io.gpio.RaspiPin;
 @Configuration
 public class ComponentsConfiguration extends AbstractConfigurationSupport implements ImportBeanDefinitionRegistrar {
 
-	private final static String BEAN_PREFIX = "GPIO_";
+	private final static String BEAN_PREFIX_GPIO = "GPIO_";
+	private final static String BEAN_PREFIX_I2C = "I2C_";
 
 	@Override
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
@@ -71,29 +72,36 @@ public class ComponentsConfiguration extends AbstractConfigurationSupport implem
 				bdb.addConstructorArgValue(String.valueOf(type.getIncrementalRotary().getGpio().getLeftPin()));
 				bdb.addConstructorArgValue(String.valueOf(type.getIncrementalRotary().getGpio().getRightPin()));
 				bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
-				registry.registerBeanDefinition(BEAN_PREFIX + name, bdb.getBeanDefinition());
+				registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, bdb.getBeanDefinition());
 			} else if (type.getButton() != null) {
 				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jGpioButtonComponentGpioFactoryBean.class);
 				bdb.addConstructorArgValue(String.valueOf(type.getButton().getGpio().getPin()));
 				bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
-				registry.registerBeanDefinition(BEAN_PREFIX + name, bdb.getBeanDefinition());
+				registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, bdb.getBeanDefinition());
 			} else if (type.getRelay() != null) {
 				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jGpioRelayComponentGpioFactoryBean.class);
 				bdb.addConstructorArgValue(String.valueOf(type.getRelay().getGpio().getPin()));
 				bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
-				registry.registerBeanDefinition(BEAN_PREFIX + name, bdb.getBeanDefinition());
+				registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, bdb.getBeanDefinition());
 			} else if (type.getDimmedLed() != null) {
 				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jDimmedLedGpioFactoryBean.class);
 				bdb.addConstructorArgValue(String.valueOf(type.getDimmedLed().getGpio().getPin()));
 				bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
-				registry.registerBeanDefinition(BEAN_PREFIX + name, bdb.getBeanDefinition());
+				registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, bdb.getBeanDefinition());
 			} else if (type.getShiftRegister() != null) {
 				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jGpioShiftRegisterComponentGpioFactoryBean.class);
 				bdb.addConstructorArgValue(String.valueOf(type.getShiftRegister().getGpio().getSdiPin()));
 				bdb.addConstructorArgValue(String.valueOf(type.getShiftRegister().getGpio().getRclkPin()));
 				bdb.addConstructorArgValue(String.valueOf(type.getShiftRegister().getGpio().getSrclkPin()));
 				bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
-				registry.registerBeanDefinition(BEAN_PREFIX + name, bdb.getBeanDefinition());
+				registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, bdb.getBeanDefinition());
+			} else if (type.getPotentiometer() != null) {
+				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jPCF8591Potentiometer.class);
+				bdb.addConstructorArgValue(type.getPotentiometer().getI2c().getBus());
+				bdb.addConstructorArgValue(type.getPotentiometer().getI2c().getAddress());
+				bdb.addConstructorArgValue(type.getPotentiometer().getI2c().getMin());
+				bdb.addConstructorArgValue(type.getPotentiometer().getI2c().getMax());
+				registry.registerBeanDefinition(BEAN_PREFIX_I2C + name, bdb.getBeanDefinition());
 			}
 		}
 
