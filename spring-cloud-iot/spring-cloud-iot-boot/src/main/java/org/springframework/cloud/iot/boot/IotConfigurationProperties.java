@@ -15,6 +15,7 @@
  */
 package org.springframework.cloud.iot.boot;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -35,7 +36,7 @@ public class IotConfigurationProperties {
 
 	public static final String NAMESPACE = "spring.cloud.iot";
 
-	private Map<String, ComponentType> components;
+	private Map<String, ComponentType> components = new HashMap<>();
 
 	public Map<String, ComponentType> getComponents() {
 		return components;
