@@ -99,8 +99,8 @@ public class ComponentsConfiguration extends AbstractConfigurationSupport implem
 				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jPCF8591Potentiometer.class);
 				bdb.addConstructorArgValue(type.getPotentiometer().getI2c().getBus());
 				bdb.addConstructorArgValue(type.getPotentiometer().getI2c().getAddress());
-				bdb.addConstructorArgValue(type.getPotentiometer().getI2c().getMin());
-				bdb.addConstructorArgValue(type.getPotentiometer().getI2c().getMax());
+				bdb.addConstructorArgValue(type.getPotentiometer().getMin());
+				bdb.addConstructorArgValue(type.getPotentiometer().getMax());
 				registry.registerBeanDefinition(BEAN_PREFIX_I2C + name, bdb.getBeanDefinition());
 			}
 		}

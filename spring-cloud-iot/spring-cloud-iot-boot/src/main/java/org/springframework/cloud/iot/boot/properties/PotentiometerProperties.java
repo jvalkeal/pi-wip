@@ -18,6 +18,24 @@ package org.springframework.cloud.iot.boot.properties;
 public class PotentiometerProperties extends ComponentProperties {
 
 	private I2CType i2c;
+	private Integer min;
+	private Integer max;
+
+	public Integer getMin() {
+		return min;
+	}
+
+	public void setMin(Integer min) {
+		this.min = min;
+	}
+
+	public Integer getMax() {
+		return max;
+	}
+
+	public void setMax(Integer max) {
+		this.max = max;
+	}
 
 	public I2CType getI2c() {
 		return i2c;
@@ -31,8 +49,6 @@ public class PotentiometerProperties extends ComponentProperties {
 
 		private Integer bus;
 		private Integer address;
-		private Integer min;
-		private Integer max;
 
 		public Integer getBus() {
 			return bus;
@@ -48,22 +64,6 @@ public class PotentiometerProperties extends ComponentProperties {
 
 		public void setAddress(Integer address) {
 			this.address = address;
-		}
-
-		public Integer getMin() {
-			return min;
-		}
-
-		public void setMin(Integer min) {
-			this.min = min;
-		}
-
-		public Integer getMax() {
-			return max;
-		}
-
-		public void setMax(Integer max) {
-			this.max = max;
 		}
 	}
 }
