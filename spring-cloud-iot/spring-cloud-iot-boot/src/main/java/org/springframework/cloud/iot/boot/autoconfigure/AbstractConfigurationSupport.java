@@ -18,7 +18,6 @@ package org.springframework.cloud.iot.boot.autoconfigure;
 import org.springframework.boot.bind.PropertiesConfigurationFactory;
 import org.springframework.cloud.iot.IotSystemException;
 import org.springframework.cloud.iot.boot.GpioConfigurationProperties;
-import org.springframework.cloud.iot.boot.I2cConfigurationProperties;
 import org.springframework.cloud.iot.boot.IotConfigurationProperties;
 import org.springframework.cloud.iot.boot.RaspberryConfigurationProperties;
 import org.springframework.cloud.iot.pi4j.support.Termistor;
@@ -96,24 +95,6 @@ public class AbstractConfigurationSupport implements EnvironmentAware {
 		GpioConfigurationProperties properties = new GpioConfigurationProperties();
 		PropertiesConfigurationFactory<Object> factory = new PropertiesConfigurationFactory<Object>(properties);
 		factory.setTargetName(GpioConfigurationProperties.NAMESPACE);
-		factory.setPropertySources(environment.getPropertySources());
-		try {
-			factory.bindPropertiesToTarget();
-		} catch (BindException e) {
-			throw new RuntimeException("Unable to bind properties", e);
-		}
-		return properties;
-	}
-
-	/**
-	 * Builds the i2c properties.
-	 *
-	 * @return the i2c configuration properties
-	 */
-	protected I2cConfigurationProperties buildI2cProperties() {
-		I2cConfigurationProperties properties = new I2cConfigurationProperties();
-		PropertiesConfigurationFactory<Object> factory = new PropertiesConfigurationFactory<Object>(properties);
-		factory.setTargetName(I2cConfigurationProperties.NAMESPACE);
 		factory.setPropertySources(environment.getPropertySources());
 		try {
 			factory.bindPropertiesToTarget();
