@@ -158,8 +158,9 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 		if (this.expectReply) {
 			try {
 				reply = this.sendAndReceiveMessage(message);
+				logger.info("reply message " + reply);
 			} catch (MessageTimeoutException e) {
-
+				logger.error("reply error", e);
 			}
 		} else {
 			this.send(message);

@@ -15,6 +15,7 @@
  */
 package org.springframework.cloud.iot.gateway.config;
 
+import org.springframework.cloud.iot.integration.coap.dsl.Coap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.MessagingGateway;
@@ -40,45 +41,14 @@ import org.springframework.messaging.MessageHandler;
 @Configuration
 public class IotGatewayServerConfiguration {
 
-	private static class CoapServerConfiguration {
-
-	}
-
-	private static class MQTTConfig {
-		@Bean
-		public MqttPahoClientFactory mqttClientFactory() {
-			DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
-			factory.setServerURIs("tcp://192.168.1.96:1883");
-			factory.setUserName("scdf");
-			factory.setPassword("scdf");
-			return factory;
-		}
+	@Configuration
+	public static class CoapServerConfiguration {
 
 		@Bean
-		public MessageProducerSupport mqttInbound() {
-			MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter("testTopicConsumer",
-					mqttClientFactory(), "testTopic");
-			adapter.setCompletionTimeout(5000);
-			adapter.setConverter(new DefaultPahoMessageConverter());
-			adapter.setQos(1);
-			return adapter;
-		}
-
-
-		@Bean
-		@ServiceActivator(inputChannel = "mqttOutboundChannel")
-		public MessageHandler mqttOutbound() {
-			MqttPahoMessageHandler messageHandler = new MqttPahoMessageHandler("testClient", mqttClientFactory());
-			messageHandler.setAsync(true);
-			messageHandler.setDefaultTopic("testTopic");
-			return messageHandler;
-		}
-
-		@Bean
-		public IntegrationFlow mqttInFlow() {
-			return IntegrationFlows.from(mqttInbound())
-					.transform(p -> p + ", received from MQTT")
-					.handle(logger())
+		public IntegrationFlow coapInboundFlow() {
+			return IntegrationFlows
+					.from(Coap.inboundGateway())
+					.<String>handle((p, h) -> "echo:" + p)
 					.get();
 		}
 
@@ -88,16 +58,62 @@ public class IotGatewayServerConfiguration {
 			return loggingHandler;
 		}
 
-		@Bean
-		public MessageChannel mqttOutboundChannel() {
-			return new DirectChannel();
-		}
-
-		@MessagingGateway(defaultRequestChannel = "mqttOutboundChannel")
-		public interface MyGateway {
-
-			void sendToMqtt(String data);
-		}
 	}
+
+//	private static class MQTTConfig {
+//		@Bean
+//		public MqttPahoClientFactory mqttClientFactory() {
+//			DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
+//			factory.setServerURIs("tcp://192.168.1.96:1883");
+//			factory.setUserName("scdf");
+//			factory.setPassword("scdf");
+//			return factory;
+//		}
+//
+//		@Bean
+//		public MessageProducerSupport mqttInbound() {
+//			MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter("testTopicConsumer",
+//					mqttClientFactory(), "testTopic");
+//			adapter.setCompletionTimeout(5000);
+//			adapter.setConverter(new DefaultPahoMessageConverter());
+//			adapter.setQos(1);
+//			return adapter;
+//		}
+//
+//
+//		@Bean
+//		@ServiceActivator(inputChannel = "mqttOutboundChannel")
+//		public MessageHandler mqttOutbound() {
+//			MqttPahoMessageHandler messageHandler = new MqttPahoMessageHandler("testClient", mqttClientFactory());
+//			messageHandler.setAsync(true);
+//			messageHandler.setDefaultTopic("testTopic");
+//			return messageHandler;
+//		}
+//
+//		@Bean
+//		public IntegrationFlow mqttInFlow() {
+//			return IntegrationFlows.from(mqttInbound())
+//					.transform(p -> p + ", received from MQTT")
+//					.handle(logger())
+//					.get();
+//		}
+//
+//		private LoggingHandler logger() {
+//			LoggingHandler loggingHandler = new LoggingHandler("INFO");
+//			loggingHandler.setLoggerName("siSample");
+//			return loggingHandler;
+//		}
+//
+//		@Bean
+//		public MessageChannel mqttOutboundChannel() {
+//			return new DirectChannel();
+//		}
+//
+//		@MessagingGateway(defaultRequestChannel = "mqttOutboundChannel")
+//		public interface MyGateway {
+//
+//			void sendToMqtt(String data);
+//		}
+//	}
 
 }

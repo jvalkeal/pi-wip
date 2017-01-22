@@ -15,17 +15,39 @@
  */
 package demo.fakesensor;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.iot.component.TemperatureSensor;
+import org.springframework.cloud.iot.gateway.EnableIotGatewayClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.integration.annotation.MessagingGateway;
 
 @SpringBootApplication
-public class Application {
+@EnableIotGatewayClient
+public class Application implements CommandLineRunner {
+
+	@Autowired
+	MyGateway myGateway;
+
+	@MessagingGateway(defaultRequestChannel = "requestChannel")
+	public interface MyGateway {
+
+		void sendToCoap(String data);
+	}
 
 	@Bean
 	public TemperatureSensor fakeTemperatureSensor() {
 		return new FakeTemperatureSensor();
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		while (true) {
+			myGateway.sendToCoap("hello");
+			Thread.sleep(1000);
+		}
 	}
 
 	public static void main(String[] args) {
