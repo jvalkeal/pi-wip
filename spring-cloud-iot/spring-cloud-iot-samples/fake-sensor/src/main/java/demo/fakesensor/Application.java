@@ -22,20 +22,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.iot.component.TemperatureSensor;
 import org.springframework.cloud.iot.gateway.EnableIotGatewayClient;
 import org.springframework.context.annotation.Bean;
-import org.springframework.integration.annotation.MessagingGateway;
 
-@SpringBootApplication
 @EnableIotGatewayClient
+@SpringBootApplication
 public class Application implements CommandLineRunner {
 
 	@Autowired
-	MyGateway myGateway;
-
-	@MessagingGateway(defaultRequestChannel = "requestChannel")
-	public interface MyGateway {
-
-		void sendToCoap(String data);
-	}
+	private SensorGateway sensorGateway;
 
 	@Bean
 	public TemperatureSensor fakeTemperatureSensor() {
@@ -44,13 +37,13 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		while (true) {
-			myGateway.sendToCoap("hello");
-			Thread.sleep(1000);
-		}
+		fakeTemperatureSensor().temperatureAsFlux().subscribe(t -> {
+			sensorGateway.sendSensorValue(Double.toString(t), "/path");
+		});
 	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
+
 }

@@ -46,14 +46,14 @@ public class IotGatewayClientConfiguration {
 		}
 
 		@Bean
-		public DirectChannel requestChannel() {
+		public DirectChannel iotSensorValueChannel() {
 			return MessageChannels.direct().get();
 		}
 
 		@Bean
 		public IntegrationFlow coapOutboundFlow() throws URISyntaxException {
 			return IntegrationFlows
-				.from(requestChannel())
+				.from(iotSensorValueChannel())
 				.handle(Coap
 						.outboundGateway(coapOperations())
 						.expectedResponseType(String.class))
