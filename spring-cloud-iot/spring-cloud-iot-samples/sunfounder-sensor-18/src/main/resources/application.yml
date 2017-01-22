@@ -2,15 +2,17 @@ spring:
   cloud:
     iot:
       platform: RASPBERRY
-      i2c:
-        addresses:
-          0x48:
-            bus: 1
-            termistor:
-              resistance: 10000
-              supplyVoltage: 5.0
-              referenceTemp: 25.0
-              dacBits: 8
-              beta: 3950
+      components:
+        myTermistor:
+          termistor:
+            enabled: true
+            resistance: 10000
+            supplyVoltage: 5.0
+            referenceTemp: 25.0
+            dacBits: 8
+            beta: 3950
+            i2c:
+              bus: 1
+              address: 0x48
       raspberry:
         numberingScheme: BROADCOM
