@@ -22,9 +22,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.ButtonProperties;
 import org.springframework.cloud.iot.boot.properties.DimmedLedProperties;
 import org.springframework.cloud.iot.boot.properties.IncrementalRotaryProperties;
+import org.springframework.cloud.iot.boot.properties.LcdProperties;
 import org.springframework.cloud.iot.boot.properties.PotentiometerProperties;
 import org.springframework.cloud.iot.boot.properties.RelayProperties;
 import org.springframework.cloud.iot.boot.properties.ShiftRegisterProperties;
+import org.springframework.cloud.iot.boot.properties.TermistorProperties;
 
 /**
  * Properties for "spring.cloud.iot".
@@ -55,6 +57,8 @@ public class IotConfigurationProperties {
 		private RelayProperties relay;
 		private ShiftRegisterProperties shiftRegister;
 		private PotentiometerProperties potentiometer;
+		private LcdProperties lcd;
+		private TermistorProperties termistor;
 
 		public IncrementalRotaryProperties getIncrementalRotary() {
 			return incrementalRotary;
@@ -102,6 +106,22 @@ public class IotConfigurationProperties {
 
 		public void setPotentiometer(PotentiometerProperties potentiometer) {
 			this.potentiometer = potentiometer;
+		}
+
+		public LcdProperties getLcd() {
+			return lcd;
+		}
+
+		public void setLcd(LcdProperties lcd) {
+			this.lcd = lcd;
+		}
+
+		public TermistorProperties getTermistor() {
+			return termistor;
+		}
+
+		public void setTermistor(TermistorProperties termistor) {
+			this.termistor = termistor;
 		}
 	}
 

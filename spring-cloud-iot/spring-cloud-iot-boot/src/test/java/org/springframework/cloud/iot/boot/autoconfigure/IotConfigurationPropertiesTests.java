@@ -58,6 +58,35 @@ public class IotConfigurationPropertiesTests {
 		assertThat(properties.getComponents().get("myShiftRegister").getShiftRegister().getGpio().getRclkPin(), is(18));
 		assertThat(properties.getComponents().get("myShiftRegister").getShiftRegister().getGpio().getSrclkPin(), is(27));
 
+		assertThat(properties.getComponents().get("myPotentiometer"), notNullValue());
+		assertThat(properties.getComponents().get("myPotentiometer").getPotentiometer(), notNullValue());
+		assertThat(properties.getComponents().get("myPotentiometer").getPotentiometer().isEnabled(), is(true));
+		assertThat(properties.getComponents().get("myPotentiometer").getPotentiometer().getMin(), is(0));
+		assertThat(properties.getComponents().get("myPotentiometer").getPotentiometer().getMax(), is(255));
+		assertThat(properties.getComponents().get("myPotentiometer").getPotentiometer().getI2c(), notNullValue());
+		assertThat(properties.getComponents().get("myPotentiometer").getPotentiometer().getI2c().getBus(), is(1));
+		assertThat(properties.getComponents().get("myPotentiometer").getPotentiometer().getI2c().getAddress(), is(72));
+
+		assertThat(properties.getComponents().get("myLcd"), notNullValue());
+		assertThat(properties.getComponents().get("myLcd").getLcd(), notNullValue());
+		assertThat(properties.getComponents().get("myLcd").getLcd().isEnabled(), is(true));
+		assertThat(properties.getComponents().get("myLcd").getLcd().getRows(), is(2));
+		assertThat(properties.getComponents().get("myLcd").getLcd().getColumns(), is(20));
+		assertThat(properties.getComponents().get("myLcd").getLcd().getI2c(), notNullValue());
+		assertThat(properties.getComponents().get("myLcd").getLcd().getI2c().getBus(), is(1));
+		assertThat(properties.getComponents().get("myLcd").getLcd().getI2c().getAddress(), is(72));
+
+		assertThat(properties.getComponents().get("myTermistor"), notNullValue());
+		assertThat(properties.getComponents().get("myTermistor").getTermistor(), notNullValue());
+		assertThat(properties.getComponents().get("myTermistor").getTermistor().isEnabled(), is(true));
+		assertThat(properties.getComponents().get("myTermistor").getTermistor().getResistance(), is(10000));
+		assertThat(properties.getComponents().get("myTermistor").getTermistor().getSupplyVoltage(), is(5.0));
+		assertThat(properties.getComponents().get("myTermistor").getTermistor().getReferenceTemp(), is(25.0));
+		assertThat(properties.getComponents().get("myTermistor").getTermistor().getDacBits(), is(8));
+		assertThat(properties.getComponents().get("myTermistor").getTermistor().getBeta(), is(3950.0));
+		assertThat(properties.getComponents().get("myTermistor").getTermistor().getI2c().getBus(), is(1));
+		assertThat(properties.getComponents().get("myTermistor").getTermistor().getI2c().getAddress(), is(72));
+
 		context.close();
 	}
 

@@ -35,12 +35,16 @@ import org.springframework.cloud.iot.pi4j.Pi4jButton;
 import org.springframework.cloud.iot.pi4j.Pi4jDimmedLed;
 import org.springframework.cloud.iot.pi4j.Pi4jGpioRelayComponent;
 import org.springframework.cloud.iot.pi4j.Pi4jIncrementalRotary;
+import org.springframework.cloud.iot.pi4j.Pi4jPCF8574Lcd;
 import org.springframework.cloud.iot.pi4j.Pi4jPCF8591Potentiometer;
+import org.springframework.cloud.iot.pi4j.Pi4jPCF8591TemperatureSensor;
 import org.springframework.cloud.iot.pi4j.Pi4jShiftRegister;
+import org.springframework.cloud.iot.pi4j.support.Termistor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 
+import com.pi4j.component.lcd.impl.I2CLcdDisplay;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
@@ -102,9 +106,32 @@ public class ComponentsConfiguration extends AbstractConfigurationSupport implem
 				bdb.addConstructorArgValue(type.getPotentiometer().getMin());
 				bdb.addConstructorArgValue(type.getPotentiometer().getMax());
 				registry.registerBeanDefinition(BEAN_PREFIX_I2C + name, bdb.getBeanDefinition());
+			} else if (type.getLcd() != null) {
+				I2CLcdDisplay lcd = getI2CLcdDisplay(type.getLcd().getI2c().getBus(), type.getLcd().getI2c().getAddress(),
+						type.getLcd().getRows(), type.getLcd().getColumns());
+				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jPCF8574Lcd.class);
+				bdb.addConstructorArgValue(lcd);
+				registry.registerBeanDefinition(BEAN_PREFIX_I2C + name, bdb.getBeanDefinition());
+			} else if (type.getTermistor() != null) {
+				Termistor termistor = getTermistor(type.getTermistor().getI2c().getBus(), type.getTermistor().getI2c().getAddress(),
+						type.getTermistor().getSupplyVoltage(), type.getTermistor().getDacBits(), type.getTermistor().getResistance(),
+						type.getTermistor().getBeta(), type.getTermistor().getReferenceTemp());
+				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jPCF8591TemperatureSensor.class);
+				bdb.addConstructorArgValue(null);
+				bdb.addConstructorArgValue(termistor);
+				registry.registerBeanDefinition(BEAN_PREFIX_I2C + name, bdb.getBeanDefinition());
 			}
 		}
 
+	}
+
+	protected Termistor getTermistor(int i2cBus, int i2cAddr, double voltageSupply, int dacBits, int resistance, double beta,
+			double referenceTemp) {
+		try {
+			return new Termistor(i2cBus, i2cAddr, voltageSupply, dacBits, resistance, beta, referenceTemp);
+		} catch (Exception e) {
+			throw new RuntimeException();
+		}
 	}
 
 	public static class Pi4jGpioShiftRegisterComponentGpioFactoryBean implements FactoryBean<Object>, InitializingBean {
