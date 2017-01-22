@@ -13,18 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.boot.autoconfigure;
+package org.springframework.cloud.iot.properties;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+public class LcdProperties extends ComponentProperties {
 
-@Configuration
-@EnableConfigurationProperties(IotConfigurationProperties.class)
-public class IotAutoConfiguration {
+	private Integer rows;
+	private Integer columns;
+	private I2CProperties i2c;
 
-	@Autowired
-	private IotConfigurationProperties iotConfigurationProperties;
+	public Integer getRows() {
+		return rows;
+	}
 
+	public void setRows(Integer rows) {
+		this.rows = rows;
+	}
+
+	public Integer getColumns() {
+		return columns;
+	}
+
+	public void setColumns(Integer columns) {
+		this.columns = columns;
+	}
+
+	public I2CProperties getI2c() {
+		return i2c;
+	}
+
+	public void setI2c(I2CProperties i2c) {
+		this.i2c = i2c;
+	}
 }

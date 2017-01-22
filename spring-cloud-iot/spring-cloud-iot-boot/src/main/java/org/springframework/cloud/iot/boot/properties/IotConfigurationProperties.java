@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.boot;
+package org.springframework.cloud.iot.boot.properties;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.cloud.iot.boot.properties.ButtonProperties;
-import org.springframework.cloud.iot.boot.properties.DimmedLedProperties;
-import org.springframework.cloud.iot.boot.properties.IncrementalRotaryProperties;
-import org.springframework.cloud.iot.boot.properties.LcdProperties;
-import org.springframework.cloud.iot.boot.properties.PotentiometerProperties;
-import org.springframework.cloud.iot.boot.properties.RelayProperties;
-import org.springframework.cloud.iot.boot.properties.ShiftRegisterProperties;
-import org.springframework.cloud.iot.boot.properties.TermistorProperties;
+import org.springframework.cloud.iot.properties.ButtonProperties;
+import org.springframework.cloud.iot.properties.DimmedLedProperties;
+import org.springframework.cloud.iot.properties.IncrementalRotaryProperties;
+import org.springframework.cloud.iot.properties.LcdProperties;
+import org.springframework.cloud.iot.properties.PotentiometerProperties;
+import org.springframework.cloud.iot.properties.RelayProperties;
+import org.springframework.cloud.iot.properties.ShiftRegisterProperties;
+import org.springframework.cloud.iot.properties.TermistorProperties;
 
 /**
  * Properties for "spring.cloud.iot".

@@ -17,9 +17,9 @@ package org.springframework.cloud.iot.boot.autoconfigure;
 
 import org.springframework.boot.bind.PropertiesConfigurationFactory;
 import org.springframework.cloud.iot.IotSystemException;
-import org.springframework.cloud.iot.boot.GpioConfigurationProperties;
-import org.springframework.cloud.iot.boot.IotConfigurationProperties;
-import org.springframework.cloud.iot.boot.RaspberryConfigurationProperties;
+import org.springframework.cloud.iot.boot.properties.GpioConfigurationProperties;
+import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties;
+import org.springframework.cloud.iot.boot.properties.RaspberryConfigurationProperties;
 import org.springframework.cloud.iot.pi4j.support.Termistor;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.ConfigurableEnvironment;

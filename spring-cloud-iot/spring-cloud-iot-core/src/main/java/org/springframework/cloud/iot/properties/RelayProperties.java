@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.boot.properties;
+package org.springframework.cloud.iot.properties;
 
-public class ButtonProperties extends ComponentProperties {
+public class RelayProperties extends ComponentProperties {
 
 	private GpioType gpio;
 

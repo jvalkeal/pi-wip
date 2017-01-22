@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.boot;
+package org.springframework.cloud.iot.boot.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.cloud.iot.boot.IotConfigurationProperties.NumberingScheme;
+import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties.NumberingScheme;
 
 @ConfigurationProperties(prefix = RaspberryConfigurationProperties.NAMESPACE)
 public class RaspberryConfigurationProperties {

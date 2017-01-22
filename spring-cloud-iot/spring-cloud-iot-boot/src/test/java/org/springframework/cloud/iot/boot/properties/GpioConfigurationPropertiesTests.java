@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.boot.autoconfigure;
+package org.springframework.cloud.iot.boot.properties;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.is;
@@ -22,7 +22,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.iot.boot.GpioConfigurationProperties;
+import org.springframework.cloud.iot.boot.properties.GpioConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
 

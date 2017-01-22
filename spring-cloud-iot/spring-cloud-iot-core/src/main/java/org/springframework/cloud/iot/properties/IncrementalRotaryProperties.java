@@ -13,11 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.boot.properties;
+package org.springframework.cloud.iot.properties;
 
-public class ShiftRegisterProperties extends ComponentProperties {
+public class IncrementalRotaryProperties extends ComponentProperties {
 
+	private Integer incrementSteps;
 	private GpioType gpio;
+
+	public Integer getIncrementSteps() {
+		return incrementSteps;
+	}
+
+	public void setIncrementSteps(Integer incrementSteps) {
+		this.incrementSteps = incrementSteps;
+	}
 
 	public GpioType getGpio() {
 		return gpio;
@@ -29,33 +38,32 @@ public class ShiftRegisterProperties extends ComponentProperties {
 
 	public static class GpioType {
 
-		private Integer sdiPin;
-		private Integer rclkPin;
-		private Integer srclkPin;
+		private Integer leftPin;
+		private Integer rightPin;
+		private Integer clickPin;
 
-		public Integer getSdiPin() {
-			return sdiPin;
+		public Integer getLeftPin() {
+			return leftPin;
 		}
 
-		public void setSdiPin(Integer sdiPin) {
-			this.sdiPin = sdiPin;
+		public void setLeftPin(Integer leftPin) {
+			this.leftPin = leftPin;
 		}
 
-		public Integer getRclkPin() {
-			return rclkPin;
+		public Integer getRightPin() {
+			return rightPin;
 		}
 
-		public void setRclkPin(Integer rclkPin) {
-			this.rclkPin = rclkPin;
+		public void setRightPin(Integer rightPin) {
+			this.rightPin = rightPin;
 		}
 
-		public Integer getSrclkPin() {
-			return srclkPin;
+		public Integer getClickPin() {
+			return clickPin;
 		}
 
-		public void setSrclkPin(Integer srclkPin) {
-			this.srclkPin = srclkPin;
+		public void setClickPin(Integer clickPin) {
+			this.clickPin = clickPin;
 		}
 	}
-
 }

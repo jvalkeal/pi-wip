@@ -17,9 +17,9 @@ package org.springframework.cloud.iot.boot.autoconfigure;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.iot.boot.IotConfigurationProperties.NumberingScheme;
-import org.springframework.cloud.iot.boot.RaspberryConfigurationProperties;
 import org.springframework.cloud.iot.boot.condition.ConditionalOnIot;
+import org.springframework.cloud.iot.boot.properties.RaspberryConfigurationProperties;
+import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties.NumberingScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

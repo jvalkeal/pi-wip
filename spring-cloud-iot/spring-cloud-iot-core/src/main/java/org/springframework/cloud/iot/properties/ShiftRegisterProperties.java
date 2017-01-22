@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.boot.properties;
+package org.springframework.cloud.iot.properties;
 
-public class DimmedLedProperties extends ComponentProperties {
+public class ShiftRegisterProperties extends ComponentProperties {
 
 	private GpioType gpio;
 
@@ -28,14 +28,33 @@ public class DimmedLedProperties extends ComponentProperties {
 	}
 
 	public static class GpioType {
-		private Integer pin;
 
-		public Integer getPin() {
-			return pin;
+		private Integer sdiPin;
+		private Integer rclkPin;
+		private Integer srclkPin;
+
+		public Integer getSdiPin() {
+			return sdiPin;
 		}
 
-		public void setPin(Integer pin) {
-			this.pin = pin;
+		public void setSdiPin(Integer sdiPin) {
+			this.sdiPin = sdiPin;
+		}
+
+		public Integer getRclkPin() {
+			return rclkPin;
+		}
+
+		public void setRclkPin(Integer rclkPin) {
+			this.rclkPin = rclkPin;
+		}
+
+		public Integer getSrclkPin() {
+			return srclkPin;
+		}
+
+		public void setSrclkPin(Integer srclkPin) {
+			this.srclkPin = srclkPin;
 		}
 	}
 

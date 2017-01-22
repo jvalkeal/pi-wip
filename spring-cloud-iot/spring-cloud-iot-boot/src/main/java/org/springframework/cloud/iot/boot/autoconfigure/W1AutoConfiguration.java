@@ -17,7 +17,7 @@ package org.springframework.cloud.iot.boot.autoconfigure;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.iot.boot.IotConfigurationProperties;
+import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import com.pi4j.platform.Platform;

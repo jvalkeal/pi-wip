@@ -13,17 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.boot.properties;
+package org.springframework.cloud.iot.properties;
 
-public class ComponentProperties {
+public class ButtonProperties extends ComponentProperties {
 
-	private boolean enabled = true;
+	private GpioType gpio;
 
-	public boolean isEnabled() {
-		return enabled;
+	public GpioType getGpio() {
+		return gpio;
 	}
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+	public void setGpio(GpioType gpio) {
+		this.gpio = gpio;
 	}
+
+	public static class GpioType {
+		private Integer pin;
+
+		public Integer getPin() {
+			return pin;
+		}
+
+		public void setPin(Integer pin) {
+			this.pin = pin;
+		}
+	}
+
 }
