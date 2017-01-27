@@ -1,0 +1,13 @@
+management:
+  security:
+    enabled: false
+spring:
+  cloud:
+    iot:
+      metrics:
+        mqtt:
+          export:
+            enabled: false
+        coap:
+          export:
+            enabled: true

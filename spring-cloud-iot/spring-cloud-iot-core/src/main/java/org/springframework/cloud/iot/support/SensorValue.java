@@ -69,6 +69,7 @@ public class SensorValue<T> implements InitializingBean {
 		Flux<Long> intervalFlux = Flux.interval(duration).doOnNext(i -> {
 			T value = getValueInternal();
 			if (!ObjectUtils.nullSafeEquals(value, last)) {
+				System.out.println("DDDD1 " + value);
 				processor.onNext(value);
 			}
 			last = value;

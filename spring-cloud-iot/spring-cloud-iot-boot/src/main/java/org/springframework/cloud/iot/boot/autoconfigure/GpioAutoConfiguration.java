@@ -16,10 +16,10 @@
 package org.springframework.cloud.iot.boot.autoconfigure;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.iot.boot.IotConfigurationProperties.NumberingScheme;
-import org.springframework.cloud.iot.boot.RaspberryConfigurationProperties;
+import org.springframework.cloud.iot.boot.condition.ConditionalOnIot;
+import org.springframework.cloud.iot.boot.properties.RaspberryConfigurationProperties;
+import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties.NumberingScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,7 +27,6 @@ import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.RaspiGpioProvider;
 import com.pi4j.io.gpio.RaspiPinNumberingScheme;
-import com.pi4j.platform.Platform;
 
 /**
  * Auto-configuration for GPIO pins and devices connected.
@@ -36,7 +35,7 @@ import com.pi4j.platform.Platform;
  *
  */
 @Configuration
-@ConditionalOnClass(Platform.class)
+@ConditionalOnIot
 @EnableConfigurationProperties(RaspberryConfigurationProperties.class)
 @EnableGpio
 public class GpioAutoConfiguration {

@@ -4,16 +4,26 @@ management:
 spring:
   cloud:
     iot:
-      device:
-        lcd:
-          rows: 2
-          colums: 16
-          clearTextOnExit: true
       platform: RASPBERRY
+      components:
+        myTermistor:
+          termistor:
+            enabled: true
+            resistance: 10000
+            supplyVoltage: 5.0
+            referenceTemp: 25.0
+            dacBits: 8
+            beta: 3950
+            i2c:
+              bus: 1
+              address: 0x48
+        myLcd:
+          lcd:
+          enabled: true
+          rows: 2
+          columns: 16
+          i2c:
+            bus: 1
+            address: 0x27      
       raspberry:
         numberingScheme: BROADCOM
-      i2c:
-        addresses:
-          0x27:
-            bus: 1
-            type: lcd

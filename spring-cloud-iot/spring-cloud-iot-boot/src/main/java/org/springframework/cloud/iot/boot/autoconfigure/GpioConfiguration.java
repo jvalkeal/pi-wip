@@ -22,17 +22,30 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.cloud.iot.boot.IotConfigurationProperties;
-import org.springframework.cloud.iot.boot.IotConfigurationProperties.Pins;
+import org.springframework.cloud.iot.boot.properties.GpioConfigurationProperties;
+import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties;
+import org.springframework.cloud.iot.boot.properties.RaspberryConfigurationProperties;
+import org.springframework.cloud.iot.boot.properties.GpioConfigurationProperties.PinType;
+import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties.NumberingScheme;
+import org.springframework.cloud.iot.component.Button;
 import org.springframework.cloud.iot.component.DimmedLed;
+import org.springframework.cloud.iot.component.Relay;
+import org.springframework.cloud.iot.pi4j.Pi4jButton;
 import org.springframework.cloud.iot.pi4j.Pi4jDimmedLed;
+import org.springframework.cloud.iot.pi4j.Pi4jGpioRelayComponent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 
+import com.pi4j.component.button.impl.GpioButtonComponent;
 import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioPinDigitalInput;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.PinMode;
+import com.pi4j.io.gpio.PinPullResistance;
+import com.pi4j.io.gpio.RaspiBcmPin;
 import com.pi4j.io.gpio.RaspiPin;
 
 /**
@@ -48,49 +61,8 @@ public class GpioConfiguration extends AbstractConfigurationSupport implements I
 
 	@Override
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-		IotConfigurationProperties iotConfigurationProperties = buildProperties();
-		if (iotConfigurationProperties.getPins() != null) {
-			for (Entry<String, Pins> entry : iotConfigurationProperties.getPins().entrySet()) {
-				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(GpioFactoryBean.class);
-				bdb.addConstructorArgValue(entry.getKey());
-				registry.registerBeanDefinition(BEAN_PREFIX + entry.getKey(), bdb.getBeanDefinition());
-			}
-		}
+		RaspberryConfigurationProperties raspberryProperties = buildRaspberryProperties();
+		GpioConfigurationProperties gpioProperties = buildGpioProperties();
 
 	}
-
-	public static class GpioFactoryBean implements FactoryBean<Object>, InitializingBean {
-
-		@Autowired
-		private GpioController gpioController;
-		private String pinName;
-		private Pi4jDimmedLed object;
-
-		public GpioFactoryBean(String pinName) {
-			this.pinName = pinName;
-		}
-
-		@Override
-		public void afterPropertiesSet() throws Exception {
-			Pin pin = RaspiPin.getPinByName("GPIO " + pinName);
-			GpioPinPwmOutput output = gpioController.provisionSoftPwmOutputPin(pin, 0);
-			object = new Pi4jDimmedLed(output);
-		}
-
-		@Override
-		public Object getObject() throws Exception {
-			return object;
-		}
-
-		@Override
-		public Class<?> getObjectType() {
-			return DimmedLed.class;
-		}
-
-		@Override
-		public boolean isSingleton() {
-			return true;
-		}
-	}
-
 }
