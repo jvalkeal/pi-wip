@@ -1,0 +1,15 @@
+spring:
+  cloud:
+    iot:
+      platform: RASPBERRY
+      components:
+        myLcd:
+          lcd:
+          enabled: true
+          rows: 2
+          columns: 16
+          i2c:
+            bus: 1
+            address: 0x27
+      raspberry:
+        numberingScheme: BROADCOM

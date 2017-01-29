@@ -1,0 +1,7 @@
+spring:
+  cloud:
+    iot:
+      mqtt:
+        addresses: localhost:1883
+        username: scdf
+        password: scdf

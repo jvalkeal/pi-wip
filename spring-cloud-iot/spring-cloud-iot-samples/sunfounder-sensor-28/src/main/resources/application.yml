@@ -1,0 +1,12 @@
+spring:
+  cloud:
+    iot:
+      platform: RASPBERRY
+      components:
+        myHumiditySensor:
+          humidity:
+            enabled: true
+            gpio:
+              pin: 17
+      raspberry:
+        numberingScheme: BROADCOM

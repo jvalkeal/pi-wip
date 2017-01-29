@@ -1,0 +1,14 @@
+spring:
+  cloud:
+    iot:
+      platform: RASPBERRY
+      components:
+        myShiftRegister:
+          shiftRegister:
+            enabled: true
+            gpio:
+              sdiPin: 17
+              rclkPin: 18
+              srclkPin: 27
+      raspberry:
+        numberingScheme: BROADCOM

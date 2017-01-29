@@ -1,0 +1,50 @@
+[[iot-examples]]
+= IoT Examples
+xxx.
+
+[[iot-examples-generic]]
+== Spring Clout Iot Generic Samples
+xxx.
+
+[[iot-examples-generic-fakesensor]]
+=== Spring Clout Iot Fake Sensors
+xxx.
+
+[[iot-examples-generic-gateway]]
+=== Spring Clout Iot Gateway
+xxx.
+
+[[iot-examples-generic-temperaturelcd]]
+=== Spring Clout Iot Temperature to LCD
+xxx.
+
+[[iot-examples-sunfoundersensorkitv2]]
+== Sunfounder Sensor Kit V2
+xxx.
+
+=== Sunfounder Sensor Kit V2 Example 01
+xxx.
+
+=== Sunfounder Sensor Kit V2 Example 04
+xxx.
+
+=== Sunfounder Sensor Kit V2 Example 06
+xxx.
+
+=== Sunfounder Sensor Kit V2 Example 16
+xxx.
+
+=== Sunfounder Sensor Kit V2 Example 18
+xxx.
+
+=== Sunfounder Sensor Kit V2 Example 26
+xxx.
+
+=== Sunfounder Sensor Kit V2 Example 27
+xxx.
+
+=== Sunfounder Sensor Kit V2 Example 30
+xxx.
+
+=== Sunfounder Super Kit V2 Example 11 Segment
+xxx.

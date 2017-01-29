@@ -1,0 +1,17 @@
+management:
+  security:
+    enabled: false
+spring:
+  cloud:
+    iot:
+      mqtt:
+        addresses: localhost:1883
+        username: scdf
+        password: scdf
+      metrics:
+        mqtt:
+          export:
+            enabled: true
+        coap:
+          export:
+            enabled: false

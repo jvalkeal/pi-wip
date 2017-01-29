@@ -68,7 +68,7 @@ public class SensorValue<T> implements InitializingBean {
 	public void afterPropertiesSet() throws Exception {
 		Flux<Long> intervalFlux = Flux.interval(duration).doOnNext(i -> {
 			T value = getValueInternal();
-			if (!ObjectUtils.nullSafeEquals(value, last)) {
+			if (value != null && !ObjectUtils.nullSafeEquals(value, last)) {
 				processor.onNext(value);
 			}
 			last = value;

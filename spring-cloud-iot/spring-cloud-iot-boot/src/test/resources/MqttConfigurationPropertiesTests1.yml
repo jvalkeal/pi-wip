@@ -1,0 +1,15 @@
+spring:
+  cloud:
+    iot:
+      mqtt:
+        addresses: 'host1,host2'
+        username: john
+        password: doe
+        connectionTimeout: 1000
+        ssl:
+          enabled: true
+          algorithm: alg
+          keyStore: kstore
+          keyStorePassword: kstorep
+          trustStore: tstore
+          trustStorePassword: tstorep
