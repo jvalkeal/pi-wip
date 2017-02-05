@@ -15,7 +15,23 @@
  */
 package org.springframework.cloud.iot.integration.coap.client;
 
+/**
+ * Callback interface for code that operates on a {@link ClientCoapRequest}. Allows
+ * to manipulate the request.
+ *
+ * <p>Used internally by the {@link CoapTemplate}, but also useful for application code.
+ *
+ * @author Janne Valkealahti
+ * @see CoapTemplate#execute
+ */
 public interface RequestCallback {
 
+	/**
+	 * Gets called by {@link CoapTemplate#execute} with an opened {@code ClientCoapRequest}.
+	 * Does not need to care about closing the request or about handling errors:
+	 * this will all be handled by the {@code CoapTemplate}.
+	 *
+	 * @param request the active COAP request
+	 */
 	void doWithRequest(ClientCoapRequest request);
 }

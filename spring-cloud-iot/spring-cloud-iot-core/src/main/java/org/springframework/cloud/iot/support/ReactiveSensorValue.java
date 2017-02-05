@@ -20,6 +20,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.cloud.iot.component.sensor.SensorValue;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
@@ -41,7 +42,7 @@ import reactor.core.publisher.Mono;
  *
  * @param <T> the type of a sensor value
  */
-public class SensorValue<T> implements InitializingBean {
+public class ReactiveSensorValue<T> implements SensorValue<T>, InitializingBean {
 
 	private DirectProcessor<T> processor = DirectProcessor.create();
 	private Flux<T> sensorFlux;
@@ -57,7 +58,7 @@ public class SensorValue<T> implements InitializingBean {
 	 * @param valueCallable the callable producing sensor value
 	 * @param duration the duration how often sensor value is requested
 	 */
-	public SensorValue(Callable<T> valueCallable, Duration duration) {
+	public ReactiveSensorValue(Callable<T> valueCallable, Duration duration) {
 		Assert.notNull(valueCallable, "valueCallable must be set");
 		Assert.notNull(duration, "duration must be set");
 		this.valueCallable = valueCallable;
@@ -91,6 +92,7 @@ public class SensorValue<T> implements InitializingBean {
 	 *
 	 * @return the sensor value
 	 */
+	@Override
 	public T getValue() {
 		T l = last;
 		if (subscriberCount.get() > 0 && l != null) {
@@ -105,6 +107,7 @@ public class SensorValue<T> implements InitializingBean {
 	 *
 	 * @return the sensor values flux.
 	 */
+	@Override
 	public Flux<T> asFlux() {
 		T l = last;
 		if (l != null) {
@@ -119,6 +122,7 @@ public class SensorValue<T> implements InitializingBean {
 	 *
 	 * @return the sensor value mono
 	 */
+	@Override
 	public Mono<T> asMono() {
 		T l = last;
 		if (subscriberCount.get() > 0 && l != null) {

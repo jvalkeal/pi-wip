@@ -18,9 +18,10 @@ package org.springframework.cloud.iot.pi4j;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import org.springframework.cloud.iot.component.TemperatureSensor;
+import org.springframework.cloud.iot.component.sensor.Temperature;
+import org.springframework.cloud.iot.component.sensor.TemperatureSensor;
 import org.springframework.cloud.iot.support.LifecycleObjectSupport;
-import org.springframework.cloud.iot.support.SensorValue;
+import org.springframework.cloud.iot.support.ReactiveSensorValue;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -36,8 +37,8 @@ public class Pi4jTemperatureSensor extends LifecycleObjectSupport implements Tem
 
 	private String name;
 	private com.pi4j.component.temperature.TemperatureSensor sensor;
-	private SensorValue<Double> sensorValue;
-	private final Duration duration;
+	private final ReactiveSensorValue<Double> sensorValue;
+	private final Temperature temperature;
 
 	/**
 	 * Instantiates a new pi4j temperature sensor.
@@ -59,18 +60,34 @@ public class Pi4jTemperatureSensor extends LifecycleObjectSupport implements Tem
 	public Pi4jTemperatureSensor(String name, com.pi4j.component.temperature.TemperatureSensor sensor, Duration duration) {
 		this.name = name;
 		this.sensor = sensor;
-		this.duration = duration;
-	}
-
-	@Override
-	protected void onInit() throws Exception {
-		this.sensorValue = new SensorValue<>(new Callable<Double>() {
+		this.sensorValue = new ReactiveSensorValue<>(new Callable<Double>() {
 
 			@Override
 			public Double call() throws Exception {
 				return sensor.getTemperature();
 			}
 		}, duration);
+		this.temperature = new Temperature() {
+
+			@Override
+			public Double getValue() {
+				return (double) sensorValue.getValue();
+			}
+
+			@Override
+			public Mono<Double> asMono() {
+				return sensorValue.asMono();
+			}
+
+			@Override
+			public Flux<Double> asFlux() {
+				return sensorValue.asFlux();
+			}
+		};
+	}
+
+	@Override
+	protected void onInit() throws Exception {
 		this.sensorValue.afterPropertiesSet();
 	}
 
@@ -80,17 +97,7 @@ public class Pi4jTemperatureSensor extends LifecycleObjectSupport implements Tem
 	}
 
 	@Override
-	public double getTemperature() {
-		return sensor.getTemperature();
-	}
-
-	@Override
-	public Flux<Double> temperatureAsFlux() {
-		return sensorValue.asFlux();
-	}
-
-	@Override
-	public Mono<Double> temperatureAsMono() {
-		return sensorValue.asMono();
+	public Temperature getTemperature() {
+		return temperature;
 	}
 }

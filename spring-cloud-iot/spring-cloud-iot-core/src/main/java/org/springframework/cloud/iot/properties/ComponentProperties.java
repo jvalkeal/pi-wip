@@ -15,14 +15,30 @@
  */
 package org.springframework.cloud.iot.properties;
 
+/**
+ * Generic component properties.
+ *
+ * @author Janne Valkealahti
+ */
 public class ComponentProperties {
 
+	/** Flag if component is enabled */
 	private boolean enabled = true;
 
+	/**
+	 * Checks if component is enabled.
+	 *
+	 * @return true, if is enabled
+	 */
 	public boolean isEnabled() {
 		return enabled;
 	}
 
+	/**
+	 * Sets the component enabled flag.
+	 *
+	 * @param enabled the new enabled
+	 */
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}

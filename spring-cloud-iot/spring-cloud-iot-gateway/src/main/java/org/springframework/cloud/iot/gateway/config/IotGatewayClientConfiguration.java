@@ -41,8 +41,7 @@ public class IotGatewayClientConfiguration {
 
 		@Bean
 		public CoapOperations coapOperations() throws URISyntaxException {
-			URI uri = new URI("coap", null, "localhost", 5683, "/spring-integration-coap", null, null);
-			return new CoapTemplate(uri);
+			return new CoapTemplate();
 		}
 
 		@Bean
@@ -55,7 +54,7 @@ public class IotGatewayClientConfiguration {
 			return IntegrationFlows
 				.from(iotSensorValueChannel())
 				.handle(Coap
-						.outboundGateway(coapOperations())
+						.outboundGateway(new URI("coap", null, "localhost", 5683, "/spring-integration-coap", null, null))
 						.requiresReply(true)
 						.expectedResponseType(String.class))
 				.handle(System.out::println)

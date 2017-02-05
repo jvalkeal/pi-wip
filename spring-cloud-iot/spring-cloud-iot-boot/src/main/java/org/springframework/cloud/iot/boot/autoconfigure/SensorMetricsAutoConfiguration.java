@@ -24,7 +24,7 @@ import javax.annotation.PreDestroy;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.metrics.GaugeService;
-import org.springframework.cloud.iot.component.TemperatureSensor;
+import org.springframework.cloud.iot.component.sensor.TemperatureSensor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -64,7 +64,7 @@ public class SensorMetricsAutoConfiguration {
 		public void setup() {
 			if (temperatureSensors != null && gaugeService != null) {
 				for (TemperatureSensor sensor : temperatureSensors) {
-					Disposable disposable = sensor.temperatureAsFlux().subscribe(t -> {
+					Disposable disposable = sensor.getTemperature().asFlux().subscribe(t -> {
 						this.gaugeService.submit("iot.temperature." + sensor.getName(), t);
 					});
 					disposables.add(disposable);

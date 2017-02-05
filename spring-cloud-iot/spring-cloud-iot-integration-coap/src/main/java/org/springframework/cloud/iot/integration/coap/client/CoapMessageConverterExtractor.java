@@ -25,19 +25,23 @@ public class CoapMessageConverterExtractor<T> implements ResponseExtractor<T> {
 	private final List<CoapMessageConverter<?>> messageConverters;
 	private final Class<T> responseClass;
 
+	@SuppressWarnings("unchecked")
 	public CoapMessageConverterExtractor(Type responseType, List<CoapMessageConverter<?>> messageConverters) {
 		this.messageConverters = messageConverters;
 		this.responseClass = (responseType instanceof Class) ? (Class<T>) responseType : null;
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public T extractData(ClientCoapResponse response) {
-
+		if (response.getBody() == null) {
+			return null;
+		}
 		for (CoapMessageConverter<?> converter : messageConverters) {
 
 			if (responseClass != null) {
 				if (converter.canRead(this.responseClass, null)) {
-					return (T) converter.read((Class)responseClass, response.getBody());
+					return (T) converter.read((Class)responseClass, response);
 				}
 			}
 

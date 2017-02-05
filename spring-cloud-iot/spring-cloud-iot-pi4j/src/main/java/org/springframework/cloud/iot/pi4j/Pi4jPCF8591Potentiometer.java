@@ -17,7 +17,7 @@ package org.springframework.cloud.iot.pi4j;
 
 import java.io.IOException;
 
-import org.springframework.cloud.iot.component.Potentiometer;
+import org.springframework.cloud.iot.component.sensor.Potentiometer;
 import org.springframework.cloud.iot.support.LifecycleObjectSupport;
 
 import com.pi4j.io.i2c.I2CDevice;

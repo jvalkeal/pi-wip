@@ -20,14 +20,20 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapObserveRelation;
 import org.eclipse.californium.core.CoapResponse;
 import org.springframework.cloud.iot.integration.coap.converter.ByteArrayCoapMessageConverter;
 import org.springframework.cloud.iot.integration.coap.converter.CoapMessageConverter;
+import org.springframework.cloud.iot.integration.coap.converter.GsonCoapMessageConverter;
 import org.springframework.cloud.iot.integration.coap.converter.StringCoapMessageConverter;
 import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
+import org.springframework.web.util.DefaultUriBuilderFactory;
+import org.springframework.web.util.UriBuilderFactory;
 
 import reactor.core.publisher.Flux;
 
@@ -39,60 +45,141 @@ import reactor.core.publisher.Flux;
  */
 public class CoapTemplate implements CoapOperations {
 
-	private final CoapClient client;
+	private final Log logger = LogFactory.getLog(CoapTemplate.class);
 	private final List<CoapMessageConverter<?>> messageConverters = new ArrayList<CoapMessageConverter<?>>();
+	private UriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory();
 
-	public CoapTemplate(URI uri) {
-		this.client = new CoapClient(uri);
-		this.messageConverters.add(new StringCoapMessageConverter());
+	private static final boolean gsonPresent =
+			ClassUtils.isPresent("com.google.gson.Gson", CoapTemplate.class.getClassLoader());
+	/**
+	 * Instantiates a new coap template.
+	 */
+	public CoapTemplate() {
 		this.messageConverters.add(new ByteArrayCoapMessageConverter());
+		this.messageConverters.add(new StringCoapMessageConverter());
+
+		if (gsonPresent) {
+			this.messageConverters.add(new GsonCoapMessageConverter());
+		}
 	}
 
 	@Override
-	public <T> T getForObject(Class<T> responseType, Object... uriVariables) {
+	public <T> T getForObject(String url, Class<T> responseType, Object... uriVariables) {
 		CoapMessageConverterExtractor<T> responseExtractor =
 				new CoapMessageConverterExtractor<>(responseType, getMessageConverters());
 		RequestCallback requestCallback = new AcceptHeaderRequestCallback(responseType);
-		return doExecute(CoapMethod.GET, requestCallback, responseExtractor);
+		return execute(url, CoapMethod.GET, requestCallback, responseExtractor);
 	}
 
 	@Override
-	public <T> T postForObject(Object request, Class<T> responseType, Object... uriVariables) {
+	public <T> T getForObject(URI url, Class<T> responseType) {
+		CoapMessageConverterExtractor<T> responseExtractor =
+				new CoapMessageConverterExtractor<>(responseType, getMessageConverters());
+		RequestCallback requestCallback = new AcceptHeaderRequestCallback(responseType);
+		return execute(url, CoapMethod.GET, requestCallback, responseExtractor);
+	}
+
+	@Override
+	public <T> T postForObject(String url, Object request, Class<T> responseType, Object... uriVariables) {
 		CoapMessageConverterExtractor<T> responseExtractor =
 				new CoapMessageConverterExtractor<>(responseType, getMessageConverters());
 		RequestCallback requestCallback = new RequestBodyRequestCallback(request, responseType);
-		return doExecute(CoapMethod.POST, requestCallback, responseExtractor);
+		return execute(url, CoapMethod.POST, requestCallback, responseExtractor);
 	}
 
 	@Override
-	public <T> Flux<T> observeForObject(Class<T> responseType, Object... uriVariables) {
+	public <T> T postForObject(URI url, Object request, Class<T> responseType) {
 		CoapMessageConverterExtractor<T> responseExtractor =
 				new CoapMessageConverterExtractor<>(responseType, getMessageConverters());
-		return doObserve(responseExtractor);
+		RequestCallback requestCallback = new RequestBodyRequestCallback(request, responseType);
+		return execute(url, CoapMethod.POST, requestCallback, responseExtractor);
 	}
 
+	@Override
+	public <T> Flux<T> observeForObject(String url, Class<T> responseType, Object... uriVariables) {
+		CoapMessageConverterExtractor<T> responseExtractor =
+				new CoapMessageConverterExtractor<>(responseType, getMessageConverters());
+		return observe(url, responseExtractor, uriVariables);
+	}
+
+	@Override
+	public <T> Flux<T> observeForObject(URI url, Class<T> responseType) {
+		CoapMessageConverterExtractor<T> responseExtractor =
+				new CoapMessageConverterExtractor<>(responseType, getMessageConverters());
+		return observe(url, responseExtractor);
+	}
+
+	/**
+	 * Gets the message converters.
+	 *
+	 * @return the message converters
+	 */
 	public List<CoapMessageConverter<?>> getMessageConverters() {
 		return messageConverters;
 	}
 
-	protected <T> Flux<T> doObserve(ResponseExtractor<T> responseExtractor) {
+	/**
+	 * Gets the uri builder factory.
+	 *
+	 * @return the uri builder factory
+	 */
+	public UriBuilderFactory getUriBuilderFactory() {
+		return uriBuilderFactory;
+	}
 
+	/**
+	 * Sets the uri builder factory.
+	 *
+	 * @param uriBuilderFactory the new uri builder factory
+	 */
+	public void setUriBuilderFactory(UriBuilderFactory uriBuilderFactory) {
+		Assert.notNull(uriBuilderFactory, "'uriBuilderFactory' must not be null");
+		this.uriBuilderFactory = uriBuilderFactory;
+	}
+
+	public <T> T exchange(String url, CoapMethod method, Class<T> responseType) {
+		return null;
+	}
+
+	public <T> T execute(String url, CoapMethod method, RequestCallback requestCallback, ResponseExtractor<T> responseExtractor,
+			Object... urlVariables) {
+		URI expanded = getUriBuilderFactory().expand(url, urlVariables);
+		return doExecute(expanded, method, requestCallback, responseExtractor);
+	}
+
+	public <T> T execute(URI url, CoapMethod method, RequestCallback requestCallback, ResponseExtractor<T> responseExtractor) {
+		return doExecute(url, method, requestCallback, responseExtractor);
+	}
+
+	public <T> Flux<T> observe(String url, ResponseExtractor<T> responseExtractor, Object... urlVariables) {
+		URI expanded = getUriBuilderFactory().expand(url, urlVariables);
+		return doObserve(expanded, responseExtractor);
+	}
+
+	public <T> Flux<T> observe(URI url, ResponseExtractor<T> responseExtractor) {
+		return doObserve(url, responseExtractor);
+	}
+
+	protected <T> Flux<T> doObserve(URI url, ResponseExtractor<T> responseExtractor) {
+		final CoapClient client = new CoapClient(url);
 		return Flux.<T>create(emitter -> {
 			CoapObserveRelation observe = client.observe(new CoapHandler() {
 				@Override
 				public void onLoad(CoapResponse response) {
 					final byte[] payload = response.getPayload();
-					System.out.println("WWW1 " + new String(payload));
 					ClientCoapResponse r = new DefaultClientCoapResponse(payload);
 					emitter.next(responseExtractor.extractData(r));
 				}
 
 				@Override
 				public void onError() {
+					// request either timeout'd or was rejected, complete stream
+					emitter.error(new CoapClientException("Request for url [" + url + "] either timeout'd or was rejected"));
 				}
 			});
 
 			emitter.setCancellation(() -> {
+				logger.debug("Emitter cancellation, proactive cancel for coap observer");
 				observe.proactiveCancel();
 			});
 
@@ -100,26 +187,25 @@ public class CoapTemplate implements CoapOperations {
 
 	}
 
-	protected <T> T doExecute(CoapMethod method, RequestCallback requestCallback, ResponseExtractor<T> responseExtractor) {
+	protected <T> T doExecute(URI url, CoapMethod method, RequestCallback requestCallback, ResponseExtractor<T> responseExtractor) {
 		Assert.notNull(method, "'method' must not be null");
 		ClientCoapResponse response = null;
 
-		ClientCoapRequest rr = createRequest(method);
+		ClientCoapRequest request = createRequest(url, method);
 		if (requestCallback != null) {
-			requestCallback.doWithRequest(rr);
+			requestCallback.doWithRequest(request);
 		}
 
-		response = rr.execute();
-
+		response = request.execute();
 		if (responseExtractor != null) {
 			return responseExtractor.extractData(response);
 		} else {
 			return null;
 		}
-
 	}
 
-	private ClientCoapRequest createRequest(CoapMethod method) {
+	private ClientCoapRequest createRequest(URI url, CoapMethod method) {
+		final CoapClient client = new CoapClient(url);
 		CaliforniumClientCoapRequest request = new CaliforniumClientCoapRequest(client, method);
 		return request;
 	}
@@ -143,7 +229,7 @@ public class CoapTemplate implements CoapOperations {
 					if (responseClass != null) {
 						if (converter.canRead(responseClass, null)) {
 							Integer supportedContentFormat = converter.getSupportedContentFormat();
-							request.setContentFormat(supportedContentFormat);
+							request.setAccept(supportedContentFormat);
 							return;
 						}
 					}
@@ -168,11 +254,15 @@ public class CoapTemplate implements CoapOperations {
 
 			for (CoapMessageConverter<?> converter : getMessageConverters()) {
 				if (converter.canWrite(requestBody.getClass(), null)) {
-					byte[] payload = ((CoapMessageConverter<Object>)converter).write(requestBody);
-					request.setRequestPayload(payload);
+					((CoapMessageConverter<Object>)converter).write(requestBody, request);
+					request.setContentFormat(converter.getSupportedContentFormat());
 					return;
 				}
 			}
+
+			String message = "Could not write request: no suitable CoapMessageConverter found for request type [" +
+					requestBody.getClass() + "]";
+			throw new CoapClientException(message);
 		}
 	}
 }

@@ -29,7 +29,7 @@ import com.pi4j.io.gpio.RaspiGpioProvider;
 import com.pi4j.io.gpio.RaspiPinNumberingScheme;
 
 /**
- * Auto-configuration for GPIO pins and devices connected.
+ * Auto-configuration for GPIO system.
  *
  * @author Janne Valkealahti
  *
@@ -39,6 +39,8 @@ import com.pi4j.io.gpio.RaspiPinNumberingScheme;
 @EnableConfigurationProperties(RaspberryConfigurationProperties.class)
 @EnableGpio
 public class GpioAutoConfiguration {
+
+	public static String BEAN_NAME_GPIOCONTROLLER = "gpioController";
 
 	@Autowired
 	private RaspberryConfigurationProperties raspberryProperties;

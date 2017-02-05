@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.component;
+package org.springframework.cloud.iot.boot.autoconfigure.component;
 
-/**
- * {@code Sensor} is an arbitrary sensor device.
- *
- * @author Janne Valkealahti
- *
- */
-public interface Sensor {
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.cloud.iot.boot.autoconfigure.EnableComponents;
+import org.springframework.cloud.iot.boot.autoconfigure.GpioAutoConfiguration;
+import org.springframework.cloud.iot.boot.condition.ConditionalOnIot;
+import org.springframework.context.annotation.Configuration;
 
-	/**
-	 * Gets the logical sensor name.
-	 *
-	 * @return the sensor name
-	 */
-	String getName();
+@Configuration
+@ConditionalOnIot
+@AutoConfigureAfter(GpioAutoConfiguration.class)
+@EnableComponents
+public class ComponentsAutoConfiguration {
 }

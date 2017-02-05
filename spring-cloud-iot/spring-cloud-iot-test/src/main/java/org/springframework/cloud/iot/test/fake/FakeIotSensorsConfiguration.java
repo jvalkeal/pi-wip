@@ -15,7 +15,7 @@
  */
 package org.springframework.cloud.iot.test.fake;
 
-import org.springframework.cloud.iot.component.TemperatureSensor;
+import org.springframework.cloud.iot.component.sensor.TemperatureSensor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

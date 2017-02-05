@@ -87,9 +87,9 @@ project('spring-cloud-iot-samples-sunfounder-super-11-segment') {
 	}
 }
 
-project('spring-cloud-iot-samples-temperaturelcd') {
+project('spring-cloud-iot-samples-environmentlcd') {
 	apply plugin: 'org.springframework.boot'
-	description = 'Spring Cloud IoT Temperature on LCD Sample'
+	description = 'Spring Cloud IoT Environment on LCD Sample'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
 		compile('org.springframework.integration:spring-integration-mqtt')

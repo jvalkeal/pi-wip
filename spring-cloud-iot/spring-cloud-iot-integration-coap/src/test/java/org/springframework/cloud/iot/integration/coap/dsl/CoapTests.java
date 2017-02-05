@@ -70,8 +70,7 @@ public class CoapTests {
 
 		@Bean
 		public CoapOperations coapOperations() throws URISyntaxException {
-			URI uri = new URI("coap", null, "localhost", 5683, "/spring-integration-coap", null, null);
-			return new CoapTemplate(uri);
+			return new CoapTemplate();
 		}
 
 		@Bean
@@ -91,7 +90,7 @@ public class CoapTests {
 		public IntegrationFlow coapOutboundFlow() throws URISyntaxException {
 			return IntegrationFlows
 				.from(requestChannel())
-				.handle(Coap.outboundGateway(coapOperations()))
+				.handle(Coap.outboundGateway(new URI("coap", null, "localhost", 5683, "/spring-integration-coap", null, null)))
 				.handle(p -> {System.out.println("XXXX " + p);})
 				.get();
 		}

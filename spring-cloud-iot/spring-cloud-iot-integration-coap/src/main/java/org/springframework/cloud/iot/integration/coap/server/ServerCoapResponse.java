@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.boot.autoconfigure;
+package org.springframework.cloud.iot.integration.coap.server;
 
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.cloud.iot.boot.condition.ConditionalOnIot;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.cloud.iot.integration.coap.CoapOutputMessage;
 
-@Configuration
-@ConditionalOnIot
-@AutoConfigureAfter(GpioAutoConfiguration.class)
-@EnableComponents
-public class ComponentsAutoConfiguration {
+public interface ServerCoapResponse extends CoapOutputMessage {
+
 }

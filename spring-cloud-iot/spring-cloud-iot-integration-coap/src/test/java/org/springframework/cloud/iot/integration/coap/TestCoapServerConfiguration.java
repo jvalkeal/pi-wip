@@ -41,6 +41,7 @@ public class TestCoapServerConfiguration {
 		coapResources.add(new TestResource2());
 		coapResources.add(new TestResource3());
 		coapResources.add(new TestResource4());
+		coapResources.add(new TestResourceEcho());
 		factory.setCoapResources(coapResources);
 		return factory;
 	}
@@ -94,15 +95,9 @@ public class TestCoapServerConfiguration {
 			exchange.respond(ResponseCode.VALID, "hello2".getBytes());
 		}
 
-		@Override
-		public void handlePOST(CoapExchange exchange) {
-			exchange.respond(ResponseCode.VALID, "hello2".getBytes());
-		}
-
 		private class UpdateTask extends TimerTask {
 			@Override
 			public void run() {
-				System.out.println("DDDD");
 				changed();
 			}
 		}
@@ -125,4 +120,32 @@ public class TestCoapServerConfiguration {
 			exchange.respond(ResponseCode.VALID, buf.toString());
 		}
 	}
+
+	private class TestResourceEcho extends AbstractCoapResource {
+
+		public TestResourceEcho() {
+			super("echo");
+		}
+
+		@Override
+		public void handleGET(CoapExchange exchange) {
+			exchange.respond(ResponseCode.VALID, exchange.getRequestPayload());
+		}
+
+		@Override
+		public void handlePOST(CoapExchange exchange) {
+			exchange.respond(ResponseCode.VALID, exchange.getRequestPayload());
+		}
+
+		@Override
+		public void handleDELETE(CoapExchange exchange) {
+			exchange.respond(ResponseCode.VALID, exchange.getRequestPayload());
+		}
+
+		@Override
+		public void handlePUT(CoapExchange exchange) {
+			exchange.respond(ResponseCode.VALID, exchange.getRequestPayload());
+		}
+	}
+
 }

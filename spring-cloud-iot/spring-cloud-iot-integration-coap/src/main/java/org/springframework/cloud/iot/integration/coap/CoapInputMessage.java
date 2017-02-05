@@ -13,38 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.component;
-
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+package org.springframework.cloud.iot.integration.coap;
 
 /**
- * {@code TemperatureSensor} is a {@link Sensor}
- * returning a temperature.
+ * Represents an CoAP input message, consisting of
+ * a readable {@linkplain #getBody() body}.
  *
  * @author Janne Valkealahti
  *
  */
-public interface TemperatureSensor extends Sensor {
+public interface CoapInputMessage {
 
 	/**
-	 * Gets the temperature.
+	 * Return the body of message as an byte array.
 	 *
-	 * @return the temperature
+	 * @return the body as a byte array
 	 */
-	double getTemperature();
-
-	/**
-	 * Get a {@link Flux} of temperatures.
-	 *
-	 * @return the flux of temperatures
-	 */
-	Flux<Double> temperatureAsFlux();
-
-	/**
-	 * Get a {@link Mono} of temperature.
-	 *
-	 * @return the mono of temperature
-	 */
-	Mono<Double> temperatureAsMono();
+	byte[] getBody();
 }

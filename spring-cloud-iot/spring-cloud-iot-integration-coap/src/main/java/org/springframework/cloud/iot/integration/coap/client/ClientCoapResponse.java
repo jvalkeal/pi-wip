@@ -15,8 +15,13 @@
  */
 package org.springframework.cloud.iot.integration.coap.client;
 
-public interface ClientCoapResponse {
+import org.springframework.cloud.iot.integration.coap.CoapInputMessage;
 
-	byte[] getBody();
-
+/**
+ * Represents a client-side COAP response.
+ *
+ * @author Janne Valkealahti
+ *
+ */
+public interface ClientCoapResponse extends CoapInputMessage {
 }

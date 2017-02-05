@@ -21,29 +21,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.iot.component.TemperatureSensor;
+import org.springframework.cloud.iot.component.sensor.TemperatureSensor;
 import org.springframework.cloud.iot.gateway.EnableIotGatewayClient;
 import org.springframework.cloud.iot.test.fake.EnableIotFakeSensors;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.MessageBuilder;
 
 @EnableIotFakeSensors
-@EnableIotGatewayClient
+//@EnableIotGatewayClient
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
 	private final static Logger log = LoggerFactory.getLogger(Application.class);
 
-	@Autowired
-	private TemperatureSensor fakeTemperatureSensor;
+//	@Autowired
+//	private TemperatureSensor fakeTemperatureSensor;
+//
+//	@Autowired
+//	private MessageChannel iotSensorValueChannel;
 
 	@Override
 	public void run(String... args) throws Exception {
 
 		// stream completes after 5 values has been taken
-		fakeTemperatureSensor.temperatureAsFlux()
-			.take(5)
-			.subscribe(t -> {
-				log.info("fakeTemperatureSensor {}", t);
-			});
+//		fakeTemperatureSensor.temperatureAsFlux()
+//			.subscribe(t -> {
+//				log.info("fakeTemperatureSensor {}", t);
+//				iotSensorValueChannel.send(MessageBuilder.withPayload(t).build());
+//			});
 	}
 
 	public static void main(String[] args) {

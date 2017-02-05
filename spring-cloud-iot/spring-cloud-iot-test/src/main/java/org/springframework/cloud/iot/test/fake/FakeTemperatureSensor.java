@@ -18,33 +18,55 @@ package org.springframework.cloud.iot.test.fake;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import org.springframework.cloud.iot.component.TemperatureSensor;
+import org.springframework.cloud.iot.component.sensor.Temperature;
+import org.springframework.cloud.iot.component.sensor.TemperatureSensor;
 import org.springframework.cloud.iot.support.LifecycleObjectSupport;
-import org.springframework.cloud.iot.support.SensorValue;
+import org.springframework.cloud.iot.support.ReactiveSensorValue;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
  * Fake {@link TemperatureSensor} which just emits
- * random values between 20 and 21.
+ * random values between 20 and 21 once in every second.
  *
  * @author Janne Valkealahti
  *
  */
 public class FakeTemperatureSensor extends LifecycleObjectSupport implements TemperatureSensor {
 
-	private SensorValue<Double> sensorValue;
+	private final ReactiveSensorValue<Double> sensorValue;
+	private final Temperature temperature;
 
-	@Override
-	protected void onInit() throws Exception {
-		this.sensorValue = new SensorValue<>(new Callable<Double>() {
+	public FakeTemperatureSensor() {
+		this.sensorValue = new ReactiveSensorValue<>(new Callable<Double>() {
 
 			@Override
 			public Double call() throws Exception {
-				return getTemperature();
+				return 20 + Math.random() * 1.0;
 			}
 		}, Duration.ofSeconds(1));
+		this.temperature = new Temperature() {
+
+			@Override
+			public Double getValue() {
+				return sensorValue.getValue();
+			}
+
+			@Override
+			public Mono<Double> asMono() {
+				return sensorValue.asMono();
+			}
+
+			@Override
+			public Flux<Double> asFlux() {
+				return sensorValue.asFlux();
+			}
+		};
+	}
+
+	@Override
+	protected void onInit() throws Exception {
 		this.sensorValue.afterPropertiesSet();
 	}
 
@@ -54,17 +76,47 @@ public class FakeTemperatureSensor extends LifecycleObjectSupport implements Tem
 	}
 
 	@Override
-	public double getTemperature() {
-		return 20 + Math.random() * 1.0;
+	public Temperature getTemperature() {
+		return temperature;
 	}
 
-	@Override
-	public Flux<Double> temperatureAsFlux() {
-		return sensorValue.asFlux();
-	}
+//	@Override
+//	public Temperature getTemperature() {
+//		return new Temperature() {
+//
+//			@Override
+//			public Double value() {
+//				return getSensorValue();
+//			}
+//
+//			@Override
+//			public Mono<Double> mono() {
+//				return sensorValue.asMono();
+//			}
+//
+//			@Override
+//			public Flux<Double> flux() {
+//				return sensorValue.asFlux();
+//			}
+//		};
+//	}
+//
+//	private double getSensorValue() {
+//		return 20 + Math.random() * 1.0;
+//	}
 
-	@Override
-	public Mono<Double> temperatureAsMono() {
-		return sensorValue.asMono();
-	}
+//	@Override
+//	public double getTemperature() {
+//		return 20 + Math.random() * 1.0;
+//	}
+//
+//	@Override
+//	public Flux<Double> temperatureAsFlux() {
+//		return sensorValue.asFlux();
+//	}
+//
+//	@Override
+//	public Mono<Double> temperatureAsMono() {
+//		return sensorValue.asMono();
+//	}
 }

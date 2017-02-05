@@ -13,39 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.component;
-
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+package org.springframework.cloud.iot.component.sensor;
 
 /**
- * {@code HumiditySensor} is a {@link Sensor}
- * returning a humidity.
+ * {@code Humidity} represents a humidity in a sensor.
  *
  * @author Janne Valkealahti
  *
  */
-public interface HumiditySensor {
-
-	/**
-	 * Gets the humidity value ranging from
-	 * 0 to 100 inclusive.
-	 *
-	 * @return the humidity
-	 */
-	double getHumidity();
-
-	/**
-	 * Get a {@link Flux} of humiditys.
-	 *
-	 * @return the flux of humiditys
-	 */
-	Flux<Double> humidityAsFlux();
-
-	/**
-	 * Get a {@link Mono} of humidity.
-	 *
-	 * @return the mono of humidity
-	 */
-	Mono<Double> humidityAsMono();
+public interface Humidity extends SensorValue<Double> {
 }

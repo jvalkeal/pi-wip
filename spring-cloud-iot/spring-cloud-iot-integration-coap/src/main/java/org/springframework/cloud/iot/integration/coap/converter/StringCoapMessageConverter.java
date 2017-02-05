@@ -17,6 +17,9 @@ package org.springframework.cloud.iot.integration.coap.converter;
 
 import java.nio.charset.Charset;
 
+import org.springframework.cloud.iot.integration.coap.CoapInputMessage;
+import org.springframework.cloud.iot.integration.coap.CoapOutputMessage;
+
 public class StringCoapMessageConverter extends AbstractCoapMessageConverter<String> {
 
 	public static final Charset DEFAULT_CHARSET = Charset.forName("ISO-8859-1");
@@ -32,16 +35,17 @@ public class StringCoapMessageConverter extends AbstractCoapMessageConverter<Str
 	}
 
 	@Override
-	public String read(Class<? extends String> clazz, byte[] message) {
-		if (message == null) {
-			message = new byte[0];
+	public String read(Class<? extends String> clazz, CoapInputMessage inputMessage) {
+		if (inputMessage.getBody() != null) {
+			return new String(inputMessage.getBody(), defaultCharset);
+		} else {
+			return null;
 		}
-		return new String(message, defaultCharset);
 	}
 
 	@Override
-	public byte[] write(String t) {
-		return t.getBytes(defaultCharset);
+	public void write(String t, CoapOutputMessage outputMessage) {
+		outputMessage.setRequestPayload(t.getBytes(defaultCharset));
 	}
 
 	@Override

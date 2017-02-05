@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.boot.autoconfigure;
+package org.springframework.cloud.iot.boot.autoconfigure.component;
 
 import java.util.Map.Entry;
 
@@ -22,16 +22,19 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.cloud.iot.boot.autoconfigure.AbstractConfigurationSupport;
+import org.springframework.cloud.iot.boot.autoconfigure.GpioAutoConfiguration;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.RaspberryConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties.ComponentType;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties.NumberingScheme;
 import org.springframework.cloud.iot.component.Button;
 import org.springframework.cloud.iot.component.DimmedLed;
-import org.springframework.cloud.iot.component.HumiditySensor;
 import org.springframework.cloud.iot.component.IncrementalRotary;
 import org.springframework.cloud.iot.component.Relay;
 import org.springframework.cloud.iot.component.ShiftRegister;
+import org.springframework.cloud.iot.component.sensor.HumiditySensor;
+import org.springframework.cloud.iot.component.sensor.TemperatureSensor;
 import org.springframework.cloud.iot.pi4j.Pi4jButton;
 import org.springframework.cloud.iot.pi4j.Pi4jDimmedLed;
 import org.springframework.cloud.iot.pi4j.Pi4jGpioRelayComponent;
@@ -114,6 +117,8 @@ public class ComponentsConfiguration extends AbstractConfigurationSupport implem
 						type.getLcd().getRows(), type.getLcd().getColumns());
 				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jPCF8574Lcd.class);
 				bdb.addConstructorArgValue(lcd);
+				bdb.addConstructorArgValue(type.getLcd().getLayout());
+				bdb.addPropertyValue("clearOnExit", type.getLcd().getClearOnExit());
 				registry.registerBeanDefinition(BEAN_PREFIX_I2C + name, bdb.getBeanDefinition());
 			} else if (type.getTermistor() != null) {
 				Termistor termistor = getTermistor(type.getTermistor().getI2c().getBus(), type.getTermistor().getI2c().getAddress(),
@@ -124,9 +129,10 @@ public class ComponentsConfiguration extends AbstractConfigurationSupport implem
 				bdb.addConstructorArgValue(termistor);
 				registry.registerBeanDefinition(BEAN_PREFIX_I2C + name, bdb.getBeanDefinition());
 			} else if (type.getHumidity() != null) {
-				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jDHT11HumiditySensorComponentGpioFactoryBean.class);
-				bdb.addConstructorArgValue(type.getHumidity().getGpio().getPin());
+				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jDHT11ComponentGpioFactoryBean.class);
+				bdb.addConstructorArgReference(GpioAutoConfiguration.BEAN_NAME_GPIOCONTROLLER);
 				bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
+				bdb.addConstructorArgValue(type.getHumidity().getGpio().getPin());
 				registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, bdb.getBeanDefinition());
 			}
 		}
@@ -139,42 +145,6 @@ public class ComponentsConfiguration extends AbstractConfigurationSupport implem
 			return new Termistor(i2cBus, i2cAddr, voltageSupply, dacBits, resistance, beta, referenceTemp);
 		} catch (Exception e) {
 			throw new RuntimeException();
-		}
-	}
-
-	public static class Pi4jDHT11HumiditySensorComponentGpioFactoryBean  implements FactoryBean<Object>, InitializingBean {
-
-		@Autowired
-		private GpioController gpioController;
-
-		private NumberingScheme numberingScheme;
-		private String pinName;
-		private Pi4jDHT11HumiditySensor object;
-
-		public Pi4jDHT11HumiditySensorComponentGpioFactoryBean(String pinName, NumberingScheme numberingScheme) {
-			this.pinName = pinName;
-			this.numberingScheme = numberingScheme;
-		}
-
-		@Override
-		public void afterPropertiesSet() throws Exception {
-			Pin pin = numberingScheme == NumberingScheme.BROADCOM ? RaspiBcmPin.getPinByName("GPIO " + pinName)
-					: RaspiPin.getPinByName("GPIO " + pinName);
-			GpioPinDigitalMultipurpose multi = gpioController.provisionDigitalMultipurposePin(pin, PinMode.DIGITAL_OUTPUT);
-			object = new Pi4jDHT11HumiditySensor(multi);
-			if (object instanceof InitializingBean) {
-				((InitializingBean)object).afterPropertiesSet();
-			}
-		}
-
-		@Override
-		public Object getObject() throws Exception {
-			return object;
-		}
-
-		@Override
-		public Class<?> getObjectType() {
-			return HumiditySensor.class;
 		}
 	}
 

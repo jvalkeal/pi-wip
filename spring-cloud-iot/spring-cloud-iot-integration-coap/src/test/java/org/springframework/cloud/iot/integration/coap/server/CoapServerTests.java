@@ -41,26 +41,26 @@ public class CoapServerTests extends AbstractCoapTests {
 		context.refresh();
 
 		URI uri = new URI("coap", null, "localhost", 5683, "/testresource2", null, null);
-		CoapTemplate template = new CoapTemplate(uri);
-		String object = template.getForObject(String.class);
+		CoapTemplate template = new CoapTemplate();
+		String object = template.getForObject(uri, String.class);
 		assertThat(object, notNullValue());
 		assertThat(object, is("hello2"));
 
 		uri = new URI("coap", null, "localhost", 5683, "/testresource2/wildcard", null, null);
-		template = new CoapTemplate(uri);
-		object = template.getForObject(String.class);
+		template = new CoapTemplate();
+		object = template.getForObject(uri, String.class);
 		assertThat(object, notNullValue());
 		assertThat(object, is("hello2"));
 
 		uri = new URI("coap", null, "localhost", 5683, "/testresource2/*", null, null);
-		template = new CoapTemplate(uri);
-		object = template.getForObject(String.class);
+		template = new CoapTemplate();
+		object = template.getForObject(uri, String.class);
 		assertThat(object, notNullValue());
 		assertThat(object, is("hello2"));
 
 		uri = new URI("coap", null, "localhost", 5683, "/testresource2/*/*/*/*/xxx", null, null);
-		template = new CoapTemplate(uri);
-		object = template.getForObject(String.class);
+		template = new CoapTemplate();
+		object = template.getForObject(uri, String.class);
 		assertThat(object, notNullValue());
 		assertThat(object, is("hello2"));
 	}

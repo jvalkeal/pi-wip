@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demo.temperaturelcd;
+package demo.environmentlcd;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.iot.component.Lcd;
-import org.springframework.cloud.iot.component.TemperatureSensor;
+import org.springframework.cloud.iot.component.sensor.HumiditySensor;
+import org.springframework.cloud.iot.component.sensor.TemperatureSensor;
+
+import reactor.core.publisher.Flux;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -33,14 +36,22 @@ public class Application implements CommandLineRunner {
 	private Lcd lcd;
 
 	@Autowired
-	private TemperatureSensor sensor;
+	private TemperatureSensor temperature;
+
+	@Autowired
+	private HumiditySensor humidity;
 
 	@Override
 	public void run(String... args) throws Exception {
-		sensor.temperatureAsFlux().subscribe(t -> {
-			log.info("New temperature {}", t);
-			lcd.setText(Double.toString(t));
-		});
+		Flux.combineLatest(temperature.getTemperature().asFlux(), humidity.getHumidity().asFlux(),
+				(t, h) -> {
+					log.info("New temperature {} humidity {}", t, h);
+					return new Double[] { t, h };
+				}).subscribe(a -> {
+//					lcd.setText(String.format("T: %.1f H: %.1f", a[0], a[1]));
+					lcd.setText("temperatureText", String.format("%.1f", a[0]));
+					lcd.setText("humidityText", String.format("%.1f", a[1]));
+				});
 	}
 
 	public static void main(String[] args) {

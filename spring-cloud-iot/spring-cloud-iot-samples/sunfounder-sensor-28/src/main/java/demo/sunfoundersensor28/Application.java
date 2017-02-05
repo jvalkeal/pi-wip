@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.iot.component.HumiditySensor;
+import org.springframework.cloud.iot.component.sensor.HumiditySensor;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -33,7 +33,7 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		humiditySensor.humidityAsFlux()
+		humiditySensor.getHumidity().asFlux()
 			.subscribe(h -> {
 				log.info("Humidity {}", h);
 			});

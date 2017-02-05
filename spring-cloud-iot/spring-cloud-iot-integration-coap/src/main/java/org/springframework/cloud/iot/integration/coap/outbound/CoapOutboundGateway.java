@@ -15,8 +15,11 @@
  */
 package org.springframework.cloud.iot.integration.coap.outbound;
 
+import java.net.URI;
+
 import org.springframework.cloud.iot.integration.coap.client.CoapMethod;
 import org.springframework.cloud.iot.integration.coap.client.CoapOperations;
+import org.springframework.cloud.iot.integration.coap.client.CoapTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
@@ -43,9 +46,11 @@ public class CoapOutboundGateway extends AbstractReplyProducingMessageHandler {
 	private volatile StandardEvaluationContext evaluationContext;
 	private volatile Expression expectedResponseTypeExpression;
 	private volatile Expression coapMethodExpression = new ValueExpression<>(CoapMethod.POST);
+	private URI url;
 
-	public CoapOutboundGateway(CoapOperations coapOperations) {
-		this.coapOperations = coapOperations;
+	public CoapOutboundGateway(URI url) {
+		this.url = url;
+		this.coapOperations = new CoapTemplate();
 	}
 
 	@Override
@@ -59,8 +64,7 @@ public class CoapOutboundGateway extends AbstractReplyProducingMessageHandler {
 		try {
 			CoapMethod coapMethod = determineCoapMethod(requestMessage);
 			Object expectedResponseType = determineExpectedResponseType(requestMessage);
-//			return coapOperations.getForObject((Class<?>) expectedResponseType);
-			return coapOperations.postForObject(requestMessage.getPayload(), (Class<?>) expectedResponseType);
+			return coapOperations.postForObject(url, requestMessage.getPayload(), (Class<?>) expectedResponseType);
 		} catch (MessagingException e) {
 			throw e;
 		} catch (Exception e) {
