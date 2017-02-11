@@ -29,4 +29,6 @@ public interface Lcd {
 	 * @param text the new text
 	 */
 	void setText(String text);
+
+	void setText(String segment, String text);
 }

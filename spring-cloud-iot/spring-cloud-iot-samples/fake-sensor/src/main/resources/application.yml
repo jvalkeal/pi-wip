@@ -11,7 +11,7 @@ spring:
       metrics:
         mqtt:
           export:
-            enabled: true
+            enabled: false
         coap:
           export:
-            enabled: false
+            enabled: true

@@ -20,10 +20,12 @@ import java.util.concurrent.Callable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.iot.component.HumiditySensor;
-import org.springframework.cloud.iot.component.TemperatureSensor;
+import org.springframework.cloud.iot.component.sensor.Humidity;
+import org.springframework.cloud.iot.component.sensor.HumiditySensor;
+import org.springframework.cloud.iot.component.sensor.Temperature;
+import org.springframework.cloud.iot.component.sensor.TemperatureSensor;
 import org.springframework.cloud.iot.support.LifecycleObjectSupport;
-import org.springframework.cloud.iot.support.SensorValue;
+import org.springframework.cloud.iot.support.ReactiveSensorValue;
 import org.springframework.util.Assert;
 
 import com.pi4j.io.gpio.GpioPinDigitalMultipurpose;
@@ -46,13 +48,56 @@ public class Pi4jDHT11HumiditySensor extends LifecycleObjectSupport implements H
 	private volatile long lastQueryTime;
 	private DataHolder lastData;
 	private int queryCycles = 85;
-	private SensorValue<DataHolder> sensorValue;
+	private final ReactiveSensorValue<DataHolder> sensorValue;
+	private final Temperature temperature;
+	private final Humidity humidity;
 	private final Duration duration;
 
 	public Pi4jDHT11HumiditySensor(GpioPinDigitalMultipurpose multi) {
 		Assert.notNull(multi, "GpioPinDigitalMultipurpose must be set");
 		this.multi = multi;
 		this.duration = Duration.ofSeconds(2);
+		this.sensorValue = new ReactiveSensorValue<>(new Callable<DataHolder>() {
+
+			@Override
+			public DataHolder call() throws Exception {
+				return queryData();
+			}
+		}, duration);
+		this.temperature = new Temperature() {
+
+			@Override
+			public Double getValue() {
+				return (double) sensorValue.getValue().getTemperature();
+			}
+
+			@Override
+			public Mono<Double> asMono() {
+				return sensorValue.asMono().map(m -> (double)m.getTemperature());
+			}
+
+			@Override
+			public Flux<Double> asFlux() {
+				return sensorValue.asFlux().map(m -> (double)m.getTemperature());
+			}
+		};
+		this.humidity = new Humidity() {
+
+			@Override
+			public Double getValue() {
+				return (double) sensorValue.getValue().getHumidity();
+			}
+
+			@Override
+			public Mono<Double> asMono() {
+				return sensorValue.asMono().map(m -> (double)m.getHumidity());
+			}
+
+			@Override
+			public Flux<Double> asFlux() {
+				return sensorValue.asFlux().map(m -> (double)m.getHumidity());
+			}
+		};
 	}
 
 	@Override
@@ -61,46 +106,17 @@ public class Pi4jDHT11HumiditySensor extends LifecycleObjectSupport implements H
 	}
 
 	@Override
-	public double getHumidity() {
-		DataHolder data = queryData();
-		return data.getHumidity();
+	public Temperature getTemperature() {
+		return temperature;
 	}
 
 	@Override
-	public Flux<Double> humidityAsFlux() {
-		return sensorValue.asFlux().map(m -> (double)m.getHumidity());
-	}
-
-	@Override
-	public Mono<Double> humidityAsMono() {
-		return sensorValue.asMono().map(m -> (double)m.getHumidity());
-	}
-
-	@Override
-	public double getTemperature() {
-		DataHolder data = queryData();
-		return data.getTemperature();
-	}
-
-	@Override
-	public Flux<Double> temperatureAsFlux() {
-		return sensorValue.asFlux().map(m -> (double)m.getTemperature());
-	}
-
-	@Override
-	public Mono<Double> temperatureAsMono() {
-		return sensorValue.asMono().map(m -> (double)m.getTemperature());
+	public Humidity getHumidity() {
+		return humidity;
 	}
 
 	@Override
 	protected void onInit() throws Exception {
-		this.sensorValue = new SensorValue<>(new Callable<DataHolder>() {
-
-			@Override
-			public DataHolder call() throws Exception {
-				return queryData();
-			}
-		}, duration);
 		this.sensorValue.afterPropertiesSet();
 	}
 

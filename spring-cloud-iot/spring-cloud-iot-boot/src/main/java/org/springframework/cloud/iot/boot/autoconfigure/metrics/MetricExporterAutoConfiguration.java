@@ -15,18 +15,25 @@
  */
 package org.springframework.cloud.iot.boot.autoconfigure.metrics;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.springframework.boot.actuate.autoconfigure.ExportMetricWriter;
 import org.springframework.boot.actuate.metrics.writer.MessageChannelMetricWriter;
 import org.springframework.boot.actuate.metrics.writer.MetricWriter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.iot.boot.properties.CoapConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.MqttConfigurationProperties;
+import org.springframework.cloud.iot.integration.coap.dsl.Coap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.annotation.Transformer;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.dsl.IntegrationFlow;
+import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.json.ObjectToJsonTransformer;
 import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
@@ -93,4 +100,40 @@ public class MetricExporterAutoConfiguration {
 		}
 	}
 
+	@Configuration
+	@ConditionalOnClass(Coap.class)
+	@ConditionalOnProperty(prefix = "spring.cloud.iot.metrics.coap.export", name = "enabled", havingValue = "true", matchIfMissing = false)
+	@EnableConfigurationProperties(CoapConfigurationProperties.class)
+	public static class IotMetricExporterCoapConfiguration {
+
+		private final CoapConfigurationProperties properties;
+
+		public IotMetricExporterCoapConfiguration(CoapConfigurationProperties properties) {
+			this.properties = properties;
+		}
+
+		@Bean
+		public IntegrationFlow coapOutboundFlow() throws URISyntaxException {
+			return IntegrationFlows
+				.from(iotMetricWriterCoapOutboundChannel())
+				.transform(new ObjectToJsonTransformer())
+				.handle(Coap
+						.outboundGateway(new URI("coap", null, "localhost", 5683, "/spring-integration-coap", null, null))
+						.requiresReply(true)
+						.expectedResponseType(String.class))
+				.handle(System.out::println)
+				.get();
+		}
+
+		@Bean
+		public MessageChannel iotMetricWriterCoapOutboundChannel() {
+			return new DirectChannel();
+		}
+
+		@Bean
+		@ExportMetricWriter
+		public MetricWriter metricWriter() {
+			return new MessageChannelMetricWriter(iotMetricWriterCoapOutboundChannel());
+		}
+	}
 }

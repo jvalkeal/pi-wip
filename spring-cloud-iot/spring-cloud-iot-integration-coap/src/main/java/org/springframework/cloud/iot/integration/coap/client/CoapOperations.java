@@ -15,14 +15,95 @@
  */
 package org.springframework.cloud.iot.integration.coap.client;
 
+import java.net.URI;
+
+import org.springframework.cloud.iot.integration.coap.CoapEntity;
+import org.springframework.cloud.iot.integration.coap.CoapResponseEntity;
+
 import reactor.core.publisher.Flux;
 
+/**
+ * Interface specifying a basic set of COAPful operations.
+ * Implemented by {@link CoapTemplate}.
+ *
+ * @author Janne Valkealahti
+ * @see CoapTemplate
+ */
 public interface CoapOperations {
 
-	<T> T getForObject(Class<T> responseType, Object... uriVariables);
+	/**
+	 * Retrieve a representation by doing a GET on the specified URL.
+	 * The response (if any) is converted and returned.
+	 * <p>URI Template variables are expanded using the given URI variables, if any.
+	 *
+	 * @param url the URL
+	 * @param responseType the type of the return value
+	 * @param uriVariables the variables to expand the template
+	 * @param <T> the type of returned object
+	 * @return the converted object
+	 */
+	<T> T getForObject(String url, Class<T> responseType, Object... uriVariables);
 
-	<T> T postForObject(Object request, Class<T> responseType, Object... uriVariables);
+	/**
+	 * Retrieve a representation by doing a GET on the URL .
+	 * The response (if any) is converted and returned.
+	 *
+	 * @param url the URL
+	 * @param responseType the type of the return value
+	 * @param <T> the type of returned object
+	 * @return the converted object
+	 */
+	<T> T getForObject(URI url, Class<T> responseType);
 
-	<T> Flux<T> observeForObject(Class<T> responseType, Object... uriVariables);
+	/**
+	 * Create a new resource by POSTing the given object to the URI template,
+	 * and returns the representation found in the response.
+	 * <p>URI Template variables are expanded using the given URI variables, if any.
+	 *
+	 * @param url the URL
+	 * @param request the Object to be POSTed, may be {@code null}
+	 * @param responseType the type of the return value
+	 * @param uriVariables the variables to expand the template
+	 * @param <T> the type of returned object
+	 * @return the converted object
+	 */
+	<T> T postForObject(String url, Object request, Class<T> responseType, Object... uriVariables);
 
+	/**
+	 * Create a new resource by POSTing the given object to the URL,
+	 * and returns the representation found in the response.
+	 *
+	 * @param url the URL
+	 * @param request the Object to be POSTed, may be {@code null}
+	 * @param responseType the type of the return value
+	 * @param <T> the type of returned object
+	 * @return the converted object
+	 */
+	<T> T postForObject(URI url, Object request, Class<T> responseType);
+
+	/**
+	 * Create a new subscription by sending observe request to the URL,
+	 * and returns a {@link Flux} of objects.
+	 * <p>URI Template variables are expanded using the given URI variables, if any.
+	 *
+	 * @param url the URL
+	 * @param responseType the type of the return value
+	 * @param uriVariables the variables to expand the template
+	 * @param <T> the type of returned object
+	 * @return the flux of converted objects
+	 */
+	<T> Flux<T> observeForObject(String url, Class<T> responseType, Object... uriVariables);
+
+	/**
+	 * Create a new subscription by sending observe request to the URL,
+	 * and returns a {@link Flux} of objects.
+	 *
+	 * @param url the URL
+	 * @param responseType the type of the return value
+	 * @param <T> the type of returned object
+	 * @return the flux of converted objects
+	 */
+	<T> Flux<T> observeForObject(URI url, Class<T> responseType);
+
+	<T> CoapResponseEntity<T> exchange(URI url, CoapMethod method, CoapEntity<?> requestEntity, Class<T> responseType);
 }

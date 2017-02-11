@@ -17,6 +17,8 @@ package org.springframework.cloud.iot.integration.coap.client;
 
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResponse;
+import org.eclipse.californium.core.coap.CoAP.ResponseCode;
+import org.springframework.cloud.iot.integration.coap.CoapStatus;
 import org.springframework.util.Assert;
 
 /**
@@ -33,6 +35,12 @@ public class CaliforniumClientCoapRequest implements ClientCoapRequest {
 	private Integer accept;
 	private byte[] requestPayload;
 
+	/**
+	 * Instantiates a new californium client coap request.
+	 *
+	 * @param coapClient the coap client
+	 * @param coapMethod the coap method
+	 */
 	public CaliforniumClientCoapRequest(CoapClient coapClient, CoapMethod coapMethod) {
 		Assert.notNull(coapClient, "CoapClient must be set");
 		Assert.notNull(coapMethod, "CoapMethod must be set");
@@ -71,11 +79,13 @@ public class CaliforniumClientCoapRequest implements ClientCoapRequest {
 				response = coapClient.post(requestPayload, contentFormat);
 			}
 		} else if (coapMethod == CoapMethod.DELETE) {
+			response = coapClient.delete();
 		} else if (coapMethod == CoapMethod.PUT) {
+			response = coapClient.put(requestPayload, contentFormat);
 		} else {
 			// well, should not actually happen
 			throw new IllegalArgumentException("Unsupported coap method, was [" + coapMethod + "]");
 		}
-		return new DefaultClientCoapResponse(response.getPayload());
+		return new DefaultClientCoapResponse(response.getPayload(), CoapStatus.valueOf(response.advanced().getRawCode()));
 	}
 }

@@ -35,7 +35,7 @@ public class SensorValueTests {
 
 	@Test
 	public void testSimpleValues() throws Exception {
-		SensorValue<String> sensorValue = new SensorValue<>(helloCallable1, Duration.ofSeconds(1));
+		ReactiveSensorValue<String> sensorValue = new ReactiveSensorValue<>(helloCallable1, Duration.ofSeconds(1));
 		sensorValue.afterPropertiesSet();
 		Flux<String> flux = sensorValue.asFlux();
 		StepVerifier.create(flux)
@@ -47,7 +47,7 @@ public class SensorValueTests {
 
 	@Test
 	public void testSimpleValuesTwice() throws Exception {
-		SensorValue<String> sensorValue = new SensorValue<>(helloCallable1, Duration.ofSeconds(1));
+		ReactiveSensorValue<String> sensorValue = new ReactiveSensorValue<>(helloCallable1, Duration.ofSeconds(1));
 		sensorValue.afterPropertiesSet();
 		Flux<String> flux = sensorValue.asFlux();
 		StepVerifier.create(flux)

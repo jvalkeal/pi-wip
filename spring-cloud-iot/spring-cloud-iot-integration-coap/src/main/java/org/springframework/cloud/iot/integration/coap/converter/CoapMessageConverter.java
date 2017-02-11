@@ -15,6 +15,9 @@
  */
 package org.springframework.cloud.iot.integration.coap.converter;
 
+import org.springframework.cloud.iot.integration.coap.CoapInputMessage;
+import org.springframework.cloud.iot.integration.coap.CoapOutputMessage;
+
 public interface CoapMessageConverter<T> {
 
 	boolean canRead(Class<?> clazz, Integer contentFormat);
@@ -23,8 +26,7 @@ public interface CoapMessageConverter<T> {
 
 	Integer getSupportedContentFormat();
 
-	T read(Class<? extends T> clazz, byte[] message);
+	T read(Class<? extends T> clazz, CoapInputMessage inputMessage);
 
-	byte[] write(T t);
-
+	void write(T t, CoapOutputMessage outputMessage);
 }

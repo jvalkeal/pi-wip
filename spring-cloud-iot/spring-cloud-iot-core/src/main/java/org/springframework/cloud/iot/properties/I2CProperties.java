@@ -15,23 +15,51 @@
  */
 package org.springframework.cloud.iot.properties;
 
+/**
+ * Properties for configuring I2C bus.
+ *
+ * @author Janne Valkealahti
+ */
 public class I2CProperties {
 
+	/** The I2C bus number */
 	private Integer bus;
+
+	/** The I2C bus address */
 	private Integer address;
 
+	/**
+	 * Gets the bus number.
+	 *
+	 * @return the bus
+	 */
 	public Integer getBus() {
 		return bus;
 	}
 
+	/**
+	 * Sets the bus number.
+	 *
+	 * @param bus the new bus
+	 */
 	public void setBus(Integer bus) {
 		this.bus = bus;
 	}
 
+	/**
+	 * Gets the bus address.
+	 *
+	 * @return the bus address
+	 */
 	public Integer getAddress() {
 		return address;
 	}
 
+	/**
+	 * Sets the bus address.
+	 *
+	 * @param address the bus address
+	 */
 	public void setAddress(Integer address) {
 		this.address = address;
 	}
