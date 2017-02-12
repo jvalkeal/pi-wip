@@ -15,36 +15,15 @@
  */
 package demo.fakesensor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.iot.component.TemperatureSensor;
 import org.springframework.cloud.iot.gateway.EnableIotGatewayClient;
 import org.springframework.cloud.iot.test.fake.EnableIotFakeSensors;
 
 @EnableIotFakeSensors
 @EnableIotGatewayClient
 @SpringBootApplication
-public class Application implements CommandLineRunner {
-
-	private final static Logger log = LoggerFactory.getLogger(Application.class);
-
-	@Autowired
-	private TemperatureSensor fakeTemperatureSensor;
-
-	@Override
-	public void run(String... args) throws Exception {
-
-		// stream completes after 5 values has been taken
-		fakeTemperatureSensor.temperatureAsFlux()
-			.take(5)
-			.subscribe(t -> {
-				log.info("fakeTemperatureSensor {}", t);
-			});
-	}
+public class Application {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);

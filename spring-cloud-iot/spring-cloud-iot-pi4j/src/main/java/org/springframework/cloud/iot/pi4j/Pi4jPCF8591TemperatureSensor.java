@@ -18,10 +18,11 @@ package org.springframework.cloud.iot.pi4j;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import org.springframework.cloud.iot.component.TemperatureSensor;
+import org.springframework.cloud.iot.component.sensor.Temperature;
+import org.springframework.cloud.iot.component.sensor.TemperatureSensor;
 import org.springframework.cloud.iot.pi4j.support.Termistor;
 import org.springframework.cloud.iot.support.LifecycleObjectSupport;
-import org.springframework.cloud.iot.support.SensorValue;
+import org.springframework.cloud.iot.support.ReactiveSensorValue;
 
 import com.pi4j.temperature.TemperatureScale;
 
@@ -37,10 +38,10 @@ import reactor.core.publisher.Mono;
  */
 public class Pi4jPCF8591TemperatureSensor extends LifecycleObjectSupport implements TemperatureSensor {
 
-	private String name;
-	private Termistor termistor;
-
-	private SensorValue<Double> sensorValue;
+	private final String name;
+	private final Termistor termistor;
+	private final ReactiveSensorValue<Double> sensorValue;
+	private final Temperature temperature;
 	private final Duration duration;
 
 	/**
@@ -53,6 +54,30 @@ public class Pi4jPCF8591TemperatureSensor extends LifecycleObjectSupport impleme
 		this.name = name;
 		this.termistor = termistor;
 		this.duration = Duration.ofSeconds(1);
+		this.sensorValue = new ReactiveSensorValue<>(new Callable<Double>() {
+
+			@Override
+			public Double call() throws Exception {
+				return termistor.getTemperature(TemperatureScale.CELSIUS);
+			}
+		}, duration);
+		this.temperature = new Temperature() {
+
+			@Override
+			public Double getValue() {
+				return (double) sensorValue.getValue();
+			}
+
+			@Override
+			public Mono<Double> asMono() {
+				return sensorValue.asMono();
+			}
+
+			@Override
+			public Flux<Double> asFlux() {
+				return sensorValue.asFlux();
+			}
+		};
 	}
 
 	@Override
@@ -60,30 +85,28 @@ public class Pi4jPCF8591TemperatureSensor extends LifecycleObjectSupport impleme
 		return name;
 	}
 
+//	@Override
+//	public double getTemperature() {
+//		return termistor.getTemperature(TemperatureScale.CELSIUS);
+//	}
+
 	@Override
-	public double getTemperature() {
-		return termistor.getTemperature(TemperatureScale.CELSIUS);
+	public Temperature getTemperature() {
+		return temperature;
 	}
 
 	@Override
 	protected void onInit() throws Exception {
-		this.sensorValue = new SensorValue<>(new Callable<Double>() {
-
-			@Override
-			public Double call() throws Exception {
-				return getTemperature();
-			}
-		}, duration);
 		this.sensorValue.afterPropertiesSet();
 	}
 
-	@Override
-	public Flux<Double> temperatureAsFlux() {
-		return sensorValue.asFlux();
-	}
-
-	@Override
-	public Mono<Double> temperatureAsMono() {
-		return sensorValue.asMono();
-	}
+//	@Override
+//	public Flux<Double> temperatureAsFlux() {
+//		return sensorValue.asFlux();
+//	}
+//
+//	@Override
+//	public Mono<Double> temperatureAsMono() {
+//		return sensorValue.asMono();
+//	}
 }

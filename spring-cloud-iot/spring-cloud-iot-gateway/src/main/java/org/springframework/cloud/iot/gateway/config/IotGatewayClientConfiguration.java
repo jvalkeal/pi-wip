@@ -15,18 +15,10 @@
  */
 package org.springframework.cloud.iot.gateway.config;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import org.springframework.cloud.iot.integration.coap.client.CoapOperations;
 import org.springframework.cloud.iot.integration.coap.client.CoapTemplate;
-import org.springframework.cloud.iot.integration.coap.dsl.Coap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.channel.DirectChannel;
-import org.springframework.integration.dsl.IntegrationFlow;
-import org.springframework.integration.dsl.IntegrationFlows;
-import org.springframework.integration.dsl.channel.MessageChannels;
 
 /**
  * Configuration for IoT gateway client.
@@ -36,32 +28,10 @@ import org.springframework.integration.dsl.channel.MessageChannels;
 @Configuration
 public class IotGatewayClientConfiguration {
 
-	@Configuration
-	public static class CoapClientConfiguration {
-
-		@Bean
-		public CoapOperations coapOperations() throws URISyntaxException {
-			URI uri = new URI("coap", null, "localhost", 5683, "/spring-integration-coap", null, null);
-			return new CoapTemplate(uri);
-		}
-
-		@Bean
-		public DirectChannel iotSensorValueChannel() {
-			return MessageChannels.direct().get();
-		}
-
-		@Bean
-		public IntegrationFlow coapOutboundFlow() throws URISyntaxException {
-			return IntegrationFlows
-				.from(iotSensorValueChannel())
-				.handle(Coap
-						.outboundGateway(coapOperations())
-						.requiresReply(true)
-						.expectedResponseType(String.class))
-				.handle(System.out::println)
-				.get();
-		}
-
+	@Bean
+	public CoapOperations iotCoapOperations() {
+		// for convenience create template for user disposal
+		return new CoapTemplate();
 	}
 
 }

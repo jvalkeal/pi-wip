@@ -17,20 +17,43 @@ package org.springframework.cloud.iot.pi4j;
 
 import java.io.IOException;
 
-import org.springframework.cloud.iot.component.Potentiometer;
+import org.springframework.cloud.iot.IotSystemException;
+import org.springframework.cloud.iot.component.sensor.PotentiometerSensor;
 import org.springframework.cloud.iot.support.LifecycleObjectSupport;
 
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
 
-public class Pi4jPCF8591Potentiometer extends LifecycleObjectSupport implements Potentiometer {
+/**
+ * {@code Pi4jPCF8591Potentiometer} is a {@link PotentiometerSensor} expecting
+ * to get connected through a {@code PCF8591}.
+ *
+ * @author Janne Valkealahti
+ *
+ */
+public class Pi4jPCF8591Potentiometer extends LifecycleObjectSupport implements PotentiometerSensor {
 
+	private final int i2cBus;
+	private final int i2cAddr;
+	private final int min;
+	private final int max;
 	private final I2CDevice dev;
-	private int min;
-	private int max;
 
-	public Pi4jPCF8591Potentiometer(int i2cBus, int i2cAddr, int min, int max) throws IOException, UnsupportedBusNumberException {
+	/**
+	 * Instantiates a new Pi4jPCF8591Potentiometer instance.
+	 *
+	 * @param i2cBus the i2c bus
+	 * @param i2cAddr the i2c addr
+	 * @param min the min
+	 * @param max the max
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws UnsupportedBusNumberException the unsupported bus number exception
+	 */
+	public Pi4jPCF8591Potentiometer(int i2cBus, int i2cAddr, int min, int max)
+			throws IOException, UnsupportedBusNumberException {
+		this.i2cBus = i2cBus;
+		this.i2cAddr = i2cAddr;
 		this.min = min;
 		this.max = max;
 		this.dev = I2CFactory.getInstance(i2cBus).getDevice(i2cAddr);
@@ -56,7 +79,7 @@ public class Pi4jPCF8591Potentiometer extends LifecycleObjectSupport implements 
 		try {
 			return dev.read();
 		} catch (IOException e) {
-			throw new RuntimeException();
+			throw new IotSystemException("Error reading from I2C bus=[" + i2cBus + "] addr=[" + i2cAddr + "]", e);
 		}
 	}
 }

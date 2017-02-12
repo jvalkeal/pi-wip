@@ -18,20 +18,25 @@ package org.springframework.cloud.iot.integration.coap.inbound;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
+import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapServer;
 import org.eclipse.californium.core.coap.CoAP.Code;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
 import org.eclipse.californium.core.coap.OptionSet;
+import org.eclipse.californium.core.network.Endpoint;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.core.server.resources.Resource;
+import org.springframework.cloud.iot.integration.coap.CoapInputMessage;
 import org.springframework.cloud.iot.integration.coap.client.CoapMethod;
+import org.springframework.cloud.iot.integration.coap.converter.ByteArrayCoapMessageConverter;
 import org.springframework.cloud.iot.integration.coap.converter.CoapMessageConverter;
 import org.springframework.cloud.iot.integration.coap.converter.StringCoapMessageConverter;
 import org.springframework.cloud.iot.integration.coap.server.AbstractCoapResource;
+import org.springframework.cloud.iot.integration.coap.server.CaliforniumServerCoapResponse;
 import org.springframework.cloud.iot.integration.coap.server.CoapServerFactoryBean;
+import org.springframework.cloud.iot.integration.coap.server.ServerCoapResponse;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
@@ -54,11 +59,12 @@ import org.springframework.util.MultiValueMap;
  */
 public class CoapInboundGateway extends MessagingGatewaySupport {
 
-	private static final List<CoapMethod> nonReadableBodyHttpMethods = Arrays.asList(CoapMethod.GET);
+	private static final List<CoapMethod> nonReadableBodyCoapMethods = Arrays.asList(CoapMethod.GET);
 
 	private CoapServerFactoryBean factory;
 	private String coapResourceName = "spring-integration-coap";
 	private String coapResourceTitle = "Spring Integration Inbound Gateway";
+	private int coapServerPort = 5683;
 	private final List<CoapMessageConverter<?>> defaultMessageConverters = new ArrayList<CoapMessageConverter<?>>();
 	private volatile List<CoapMessageConverter<?>> messageConverters = new ArrayList<CoapMessageConverter<?>>();
 	private final boolean expectReply;
@@ -69,6 +75,7 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 	private volatile Class<?> requestPayloadType = null;
 	private List<CoapMethod> allowedMethods = Arrays.asList(CoapMethod.POST);
 	private volatile EvaluationContext evaluationContext;
+	private CoapServer coapServer;
 
 	/**
 	 * Construct a gateway that will wait for the {@link #setReplyTimeout(long)
@@ -102,17 +109,19 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 		super(expectReply);
 		this.expectReply = expectReply;
 		this.defaultMessageConverters.add(new StringCoapMessageConverter());
+		this.defaultMessageConverters.add(new ByteArrayCoapMessageConverter());
 	}
 
 	@Override
 	protected void onInit() throws Exception {
 		super.onInit();
 		factory = new CoapServerFactoryBean();
+		factory.setPort(coapServerPort);
 		List<Resource> coapResources = new ArrayList<>();
 		coapResources.add(new InboundHandlingResource());
 		factory.setCoapResources(coapResources);
 		factory.afterPropertiesSet();
-		factory.getObject();
+		coapServer = factory.getObject();
 
 		if (this.messageConverters.size() == 0 || (this.mergeWithDefaultConverters && !this.convertersMerged)) {
 			this.messageConverters.addAll(this.defaultMessageConverters);
@@ -122,7 +131,25 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 		if (this.statusCodeExpression != null) {
 			this.evaluationContext = createEvaluationContext();
 		}
+	}
 
+	/**
+	 * Gets the listening coap server port. Returns a port coap
+	 * server binded to meaning if random port was requested, real
+	 * local port is returned. Returns -1 if port is unknown.
+	 *
+	 * @return the listening coap server port
+	 * @see #setCoapServerPort(int)
+	 */
+	public int getListeningCoapServerPort() {
+		if (coapServer == null) {
+			return -1;
+		}
+		List<Endpoint> endpoints = coapServer.getEndpoints();
+		for (Endpoint ep : endpoints) {
+			return ep.getAddress().getPort();
+		}
+		return -1;
 	}
 
 	@Override
@@ -145,6 +172,21 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 		return (this.expectReply) ? "coap:inbound-gateway" : "coap:inbound-channel-adapter";
 	}
 
+	/**
+	 * Sets the coap server port. To get random port use value 0.
+	 *
+	 * @param coapServerPort the new coap server port
+	 * @see #getListeningCoapServerPort()
+	 */
+	public void setCoapServerPort(int coapServerPort) {
+		this.coapServerPort = coapServerPort;
+	}
+
+	/**
+	 * Sets the coap resource name.
+	 *
+	 * @param coapResourceName the new coap resource name
+	 */
 	public void setCoapResourceName(String coapResourceName) {
 		Assert.hasText(coapResourceName, "'coapResourceName' cannot be empty");
 		this.coapResourceName = coapResourceName;
@@ -176,6 +218,11 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 		this.messageConverters = localConverters;
 	}
 
+	/**
+	 * Gets the message converters.
+	 *
+	 * @return the message converters
+	 */
 	protected List<CoapMessageConverter<?>> getMessageConverters() {
 		return messageConverters;
 	}
@@ -201,21 +248,16 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 		this.statusCodeExpression = statusCodeExpression;
 	}
 
-	private Message<?> doOnMessage(Message<?> message) {
-		Message<?> reply = this.sendAndReceiveMessage(message);
-		return reply;
-	}
-
-	private boolean isReadable(CoapExchange exchange) {
-		return exchange.getRequestCode() == Code.POST;
+	protected StandardEvaluationContext createEvaluationContext() {
+		return ExpressionUtils.createStandardEvaluationContext(this.getBeanFactory());
 	}
 
 	private void validateSupportedMethods() {
 		if (this.requestPayloadType != null
-				&& CollectionUtils.containsAny(nonReadableBodyHttpMethods, Arrays.asList(this.allowedMethods))) {
+				&& CollectionUtils.containsAny(nonReadableBodyCoapMethods, Arrays.asList(this.allowedMethods))) {
 			if (logger.isWarnEnabled()) {
 				logger.warn("The 'requestPayloadType' attribute will have no relevance for one " + "of the specified COAP methods '"
-						+ nonReadableBodyHttpMethods + "'");
+						+ nonReadableBodyCoapMethods + "'");
 			}
 		}
 	}
@@ -273,10 +315,6 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 		return reply;
 	}
 
-	protected StandardEvaluationContext createEvaluationContext() {
-		return ExpressionUtils.createStandardEvaluationContext(this.getBeanFactory());
-	}
-
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	private Object extractRequestBody(CoapExchange exchange) {
 		int contentFormat = exchange.getRequestOptions().getContentFormat();
@@ -287,7 +325,16 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 
 		for (CoapMessageConverter converter : getMessageConverters()) {
 			if (converter.canRead(expectedType, contentFormat)) {
-				return converter.read(expectedType, exchange.getRequestPayload());
+
+				CoapInputMessage xxx = new CoapInputMessage() {
+
+					@Override
+					public byte[] getBody() {
+						return exchange.getRequestPayload();
+					}
+				};
+
+				return converter.read(expectedType, xxx);
 			}
 		}
 
@@ -301,19 +348,8 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 		return convertedMap;
 	}
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
-	private byte[] getResponse(Object content, CoapExchange exchange) {
-		int acceptType = exchange.getRequestOptions().getAccept();
-
-		for (CoapMessageConverter converter : getMessageConverters()) {
-			if (converter.canWrite(content.getClass(), acceptType)) {
-				return converter.write(content);
-			}
-		}
-
-		throw new MessagingException("Could not convert reply: no suitable HttpMessageConverter found for type ["
-				+ content.getClass().getName() + "] and accept types [" + acceptType + "]");
-
+	private boolean isReadable(CoapExchange exchange) {
+		return exchange.getRequestCode() == Code.POST;
 	}
 
 	private class InboundHandlingResource extends AbstractCoapResource {
@@ -328,8 +364,7 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 		@Override
 		public void handleGET(CoapExchange exchange) {
 			if (isMethodAllowed(exchange)) {
-				Message<?> reply = doHandleRequest(exchange);
-				exchange.respond(ResponseCode.CREATED, reply.getPayload().toString());
+				handleRequest(this, exchange);
 			} else {
 				super.handleGET(exchange);
 			}
@@ -338,12 +373,7 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 		@Override
 		public void handlePOST(CoapExchange exchange) {
 			if (isMethodAllowed(exchange)) {
-				Message<?> reply = doHandleRequest(exchange);
-				if (reply != null) {
-					exchange.respond(ResponseCode.CREATED, reply.getPayload().toString());
-				} else {
-					exchange.respond(ResponseCode.CREATED, new byte[0]);
-				}
+				handleRequest(this, exchange);
 			} else {
 				super.handlePOST(exchange);
 			}
@@ -352,8 +382,7 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 		@Override
 		public void handlePUT(CoapExchange exchange) {
 			if (isMethodAllowed(exchange)) {
-				Message<?> reply = doOnMessage(getMessageBuilderFactory().withPayload("hello").build());
-				exchange.respond(ResponseCode.CREATED, reply.getPayload().toString());
+				handleRequest(this, exchange);
 			} else {
 				super.handlePUT(exchange);
 			}
@@ -362,10 +391,33 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 		@Override
 		public void handleDELETE(CoapExchange exchange) {
 			if (isMethodAllowed(exchange)) {
-				Message<?> reply = doOnMessage(getMessageBuilderFactory().withPayload("hello").build());
-				exchange.respond(ResponseCode.CREATED, reply.getPayload().toString());
+				handleRequest(this, exchange);
 			} else {
 				super.handleDELETE(exchange);
+			}
+		}
+
+		private void handleRequest(CoapResource resource, CoapExchange exchange) {
+			byte[] responseContent = null;
+			Message<?> responseMessage;
+			try {
+				responseMessage = doHandleRequest(exchange);
+				CaliforniumServerCoapResponse response = new CaliforniumServerCoapResponse();
+				if (responseMessage != null) {
+					convertMessage(responseMessage.getPayload(), response);
+				}
+				exchange.respond(ResponseCode.CREATED, response.getRequestPayload());
+			} catch (Exception e) {
+				exchange.respond(ResponseCode.INTERNAL_SERVER_ERROR);
+			}
+		}
+
+		private void convertMessage(Object requestBody, ServerCoapResponse response) {
+			for (CoapMessageConverter<?> converter : getMessageConverters()) {
+				if (converter.canWrite(requestBody.getClass(), null)) {
+					((CoapMessageConverter<Object>)converter).write(requestBody, response);
+					return;
+				}
 			}
 		}
 

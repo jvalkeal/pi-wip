@@ -21,6 +21,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.springframework.cloud.iot.boot.autoconfigure.component.ComponentsConfiguration;
 import org.springframework.context.annotation.Import;
 
 /**

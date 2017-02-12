@@ -15,33 +15,108 @@
  */
 package org.springframework.cloud.iot.properties;
 
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Properties for  {@code LCD} displays.
+ *
+ * @author Janne Valkealahti
+ */
 public class LcdProperties extends ComponentProperties {
 
+	/** Number of rows in this display */
 	private Integer rows;
+
+	/** Number of colums in this display */
 	private Integer columns;
+
+	/** Clear display when component is closed */
+	private Boolean clearOnExit = true;
+
+	/** I2C configuration */
 	private I2CProperties i2c;
 
+	private Map<String, LayoutProperties> layout = new HashMap<>();
+
+	/**
+	 * Gets the rows.
+	 *
+	 * @return the rows
+	 */
 	public Integer getRows() {
 		return rows;
 	}
 
+	/**
+	 * Sets the rows.
+	 *
+	 * @param rows the new rows
+	 */
 	public void setRows(Integer rows) {
 		this.rows = rows;
 	}
 
+	/**
+	 * Gets the columns.
+	 *
+	 * @return the columns
+	 */
 	public Integer getColumns() {
 		return columns;
 	}
 
+	/**
+	 * Sets the columns.
+	 *
+	 * @param columns the new columns
+	 */
 	public void setColumns(Integer columns) {
 		this.columns = columns;
 	}
 
+	/**
+	 * Gets the i2c.
+	 *
+	 * @return the i2c
+	 */
 	public I2CProperties getI2c() {
 		return i2c;
 	}
 
+	/**
+	 * Sets the i2c.
+	 *
+	 * @param i2c the new i2c
+	 */
 	public void setI2c(I2CProperties i2c) {
 		this.i2c = i2c;
 	}
+
+	/**
+	 * Gets the clear on exit.
+	 *
+	 * @return the clear on exit
+	 */
+	public Boolean getClearOnExit() {
+		return clearOnExit;
+	}
+
+	/**
+	 * Sets the clear on exit.
+	 *
+	 * @param clearOnExit the new clear on exit
+	 */
+	public void setClearOnExit(Boolean clearOnExit) {
+		this.clearOnExit = clearOnExit;
+	}
+
+	public Map<String, LayoutProperties> getLayout() {
+		return layout;
+	}
+
+	public void setLayout(Map<String, LayoutProperties> layout) {
+		this.layout = layout;
+	}
+
 }

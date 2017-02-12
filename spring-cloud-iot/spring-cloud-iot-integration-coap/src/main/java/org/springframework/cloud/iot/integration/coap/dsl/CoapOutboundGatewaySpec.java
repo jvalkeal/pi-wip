@@ -15,10 +15,10 @@
  */
 package org.springframework.cloud.iot.integration.coap.dsl;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.springframework.cloud.iot.integration.coap.client.CoapOperations;
 import org.springframework.cloud.iot.integration.coap.outbound.CoapOutboundGateway;
 import org.springframework.integration.dsl.ComponentsRegistration;
 import org.springframework.integration.dsl.MessageHandlerSpec;
@@ -32,8 +32,8 @@ import org.springframework.integration.dsl.MessageHandlerSpec;
 public class CoapOutboundGatewaySpec extends MessageHandlerSpec<CoapOutboundGatewaySpec, CoapOutboundGateway>
 		implements ComponentsRegistration {
 
-	CoapOutboundGatewaySpec(CoapOperations coapOperations) {
-		this.target = new CoapOutboundGateway(coapOperations);
+	CoapOutboundGatewaySpec(URI url) {
+		this.target = new CoapOutboundGateway(url);
 	}
 
 	public CoapOutboundGatewaySpec expectedResponseType(Class<?> expectedResponseType) {
@@ -43,6 +43,11 @@ public class CoapOutboundGatewaySpec extends MessageHandlerSpec<CoapOutboundGate
 
 	public CoapOutboundGatewaySpec requiresReply(boolean requiresReply) {
 		this.target.setRequiresReply(requiresReply);
+		return this;
+	}
+
+	public CoapOutboundGatewaySpec expectReply(boolean expectReply) {
+		this.target.setExpectReply(expectReply);
 		return this;
 	}
 

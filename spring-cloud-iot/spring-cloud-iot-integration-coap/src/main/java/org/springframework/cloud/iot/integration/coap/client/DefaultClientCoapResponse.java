@@ -15,16 +15,29 @@
  */
 package org.springframework.cloud.iot.integration.coap.client;
 
+import org.springframework.cloud.iot.integration.coap.CoapStatus;
+
 public class DefaultClientCoapResponse implements ClientCoapResponse {
 
 	private final byte[] payload;
+	private final CoapStatus status;
 
-	public DefaultClientCoapResponse(byte[] payload) {
+	public DefaultClientCoapResponse(byte[] payload, CoapStatus status) {
 		this.payload = payload;
+		this.status = status;
 	}
+
+//	public DefaultClientCoapResponse(byte[] payload) {
+//		this.payload = payload;
+//	}
 
 	@Override
 	public byte[] getBody() {
 		return payload;
+	}
+
+	@Override
+	public CoapStatus getStatusCode() {
+		return status;
 	}
 }

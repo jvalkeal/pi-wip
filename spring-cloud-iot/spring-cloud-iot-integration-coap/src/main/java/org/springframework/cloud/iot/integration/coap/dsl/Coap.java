@@ -15,7 +15,8 @@
  */
 package org.springframework.cloud.iot.integration.coap.dsl;
 
-import org.springframework.cloud.iot.integration.coap.client.CoapOperations;
+import java.net.URI;
+
 import org.springframework.cloud.iot.integration.coap.inbound.CoapInboundGateway;
 
 /**
@@ -26,8 +27,8 @@ import org.springframework.cloud.iot.integration.coap.inbound.CoapInboundGateway
  */
 public final class Coap {
 
-	public static CoapOutboundGatewaySpec outboundGateway(CoapOperations coapOperations) {
-		return new CoapOutboundGatewaySpec(coapOperations);
+	public static CoapOutboundGatewaySpec outboundGateway(URI url) {
+		return new CoapOutboundGatewaySpec(url);
 	}
 
 	public static CoapInboundGatewaySpec inboundGateway() {

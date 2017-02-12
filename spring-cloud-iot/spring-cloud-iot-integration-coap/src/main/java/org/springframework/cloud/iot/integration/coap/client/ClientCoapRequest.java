@@ -15,13 +15,20 @@
  */
 package org.springframework.cloud.iot.integration.coap.client;
 
-public interface ClientCoapRequest {
+import org.springframework.cloud.iot.integration.coap.CoapOutputMessage;
 
-	void setContentFormat(Integer contentFormat);
+/**
+ * Represents a client-side COAP request.
+ *
+ * @author Janne Valkealahti
+ *
+ */
+public interface ClientCoapRequest extends CoapOutputMessage {
 
-	void setAccept(Integer accept);
-
+	/**
+	 * Execute this request, resulting in a {@link ClientCoapResponse}.
+	 *
+	 * @return the response result of the execution
+	 */
 	ClientCoapResponse execute();
-
-	void setRequestPayload(byte[] requestPayload);
 }

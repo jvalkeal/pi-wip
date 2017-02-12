@@ -38,9 +38,9 @@ public class Pi4jPCF8591TemperatureSensorTests {
 		when(termistor.getTemperature(TemperatureScale.CELSIUS)).thenReturn(25.0);
 		Pi4jPCF8591TemperatureSensor sensor = new Pi4jPCF8591TemperatureSensor("foo", termistor);
 		sensor.afterPropertiesSet();
-		assertThat(sensor.getTemperature(), is(25.0));
-		assertThat(sensor.temperatureAsMono().block(), is(25.0));
-		assertThat(sensor.temperatureAsFlux().blockFirst(), is(25.0));
+		assertThat(sensor.getTemperature().getValue(), is(25.0));
+		assertThat(sensor.getTemperature().asMono().block(), is(25.0));
+		assertThat(sensor.getTemperature().asFlux().blockFirst(), is(25.0));
 	}
 
 }

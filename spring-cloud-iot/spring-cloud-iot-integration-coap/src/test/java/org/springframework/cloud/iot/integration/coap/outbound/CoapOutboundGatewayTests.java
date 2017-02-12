@@ -25,7 +25,6 @@ import java.net.URISyntaxException;
 import org.junit.Test;
 import org.springframework.cloud.iot.integration.coap.AbstractCoapTests;
 import org.springframework.cloud.iot.integration.coap.TestCoapServerConfiguration;
-import org.springframework.cloud.iot.integration.coap.client.CoapTemplate;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.support.MessageBuilder;
@@ -34,14 +33,13 @@ import org.springframework.messaging.Message;
 public class CoapOutboundGatewayTests extends AbstractCoapTests {
 
 	@Test
-	public void test() throws URISyntaxException {
+	public void testSimpleMessageHandle1() throws URISyntaxException {
 		context.register(TestCoapServerConfiguration.class);
 		context.refresh();
 
 		URI uri = new URI("coap", null, "localhost", 5683, "/testresource1", null, null);
-		CoapTemplate coapTemplate = new CoapTemplate(uri);
 
-		CoapOutboundGateway gateway = new CoapOutboundGateway(coapTemplate);
+		CoapOutboundGateway gateway = new CoapOutboundGateway(uri);
 		QueueChannel replyChannel = new QueueChannel();
 		gateway.setOutputChannel(replyChannel);
 		gateway.setExpectedResponseType(String.class);
@@ -54,14 +52,13 @@ public class CoapOutboundGatewayTests extends AbstractCoapTests {
 	}
 
 	@Test
-	public void test2() throws URISyntaxException {
+	public void testSimpleMessageHandle2() throws URISyntaxException {
 		context.register(TestCoapServerConfiguration.class);
 		context.refresh();
 
 		URI uri = new URI("coap", null, "localhost", 5683, "/testresource4", null, null);
-		CoapTemplate coapTemplate = new CoapTemplate(uri);
 
-		CoapOutboundGateway gateway = new CoapOutboundGateway(coapTemplate);
+		CoapOutboundGateway gateway = new CoapOutboundGateway(uri);
 		QueueChannel replyChannel = new QueueChannel();
 		gateway.setOutputChannel(replyChannel);
 		gateway.setExpectedResponseType(String.class);
@@ -71,6 +68,32 @@ public class CoapOutboundGatewayTests extends AbstractCoapTests {
 		Message<?> receive = replyChannel.receive();
 		assertThat(receive, notNullValue());
 		assertThat(receive.getPayload(), is("echo:dummy"));
+	}
+
+	@Test
+	public void testSimpleMessageHandleNoExpectedResponseType() throws URISyntaxException {
+		context.register(TestCoapServerConfiguration.class);
+		context.refresh();
+
+		URI uri = new URI("coap", null, "localhost", 5683, "/testresource1", null, null);
+
+		CoapOutboundGateway gateway = new CoapOutboundGateway(uri);
+		QueueChannel replyChannel = new QueueChannel();
+		gateway.setOutputChannel(replyChannel);
+
+		gateway.handleMessage(MessageBuilder.withPayload("dummy").build());
+	}
+
+	@Test
+	public void testNoReplyChannel() throws URISyntaxException {
+		context.register(TestCoapServerConfiguration.class);
+		context.refresh();
+
+		URI uri = new URI("coap", null, "localhost", 5683, "/testresource1", null, null);
+
+		CoapOutboundGateway gateway = new CoapOutboundGateway(uri);
+		gateway.setExpectReply(false);
+		gateway.handleMessage(MessageBuilder.withPayload("dummy").build());
 	}
 
 	@Override

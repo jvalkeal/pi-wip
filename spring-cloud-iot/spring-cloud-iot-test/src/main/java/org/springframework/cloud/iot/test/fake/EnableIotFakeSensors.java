@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Import;
 
 /**
- * Activates fake iot sensors.
+ * Activates fake iot sensors for testing and demo purposes.
  *
  * @author Janne Valkealahti
  */

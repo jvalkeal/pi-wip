@@ -15,6 +15,9 @@
  */
 package org.springframework.cloud.iot.integration.coap.converter;
 
+import org.springframework.cloud.iot.integration.coap.CoapInputMessage;
+import org.springframework.cloud.iot.integration.coap.CoapOutputMessage;
+
 public class ByteArrayCoapMessageConverter extends AbstractCoapMessageConverter<byte[]> {
 
 	public ByteArrayCoapMessageConverter() {
@@ -22,13 +25,13 @@ public class ByteArrayCoapMessageConverter extends AbstractCoapMessageConverter<
 	}
 
 	@Override
-	public byte[] read(Class<? extends byte[]> clazz, byte[] message) {
-		return message;
+	public byte[] read(Class<? extends byte[]> clazz, CoapInputMessage inputMessage) {
+		return inputMessage.getBody();
 	}
 
 	@Override
-	public byte[] write(byte[] t) {
-		return t;
+	public void write(byte[] t, CoapOutputMessage outputMessage) {
+		outputMessage.setRequestPayload(t);
 	}
 
 	@Override

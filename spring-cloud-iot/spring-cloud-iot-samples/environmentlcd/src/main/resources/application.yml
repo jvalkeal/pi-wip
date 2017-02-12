@@ -1,0 +1,51 @@
+management:
+  security:
+    enabled: false
+spring:
+  cloud:
+    iot:
+      platform: RASPBERRY
+      components:
+        myHumiditySensor:
+          humidity:
+            enabled: true
+            gpio:
+              pin: 17
+        myLcd:
+          lcd:
+            enabled: true
+            rows: 2
+            columns: 16
+            clearOnExit: true
+            layout:
+              temperatureLegend:
+                area:
+                  x: 0
+                  y: 0
+                  width: 5
+                  height: 1
+                initial: 'Tmp: '
+              temperatureText:
+                area:
+                  x: 5
+                  y: 0
+                  width: 5
+                  height: 1
+              humidityLegend:
+                area:
+                  x: 0
+                  y: 1
+                  width: 5
+                  height: 1
+                initial: 'Hum: '
+              humidityText:
+                area:
+                  x: 5
+                  y: 1
+                  width: 5
+                  height: 1
+            i2c:
+              bus: 1
+              address: 0x27      
+      raspberry:
+        numberingScheme: BROADCOM
