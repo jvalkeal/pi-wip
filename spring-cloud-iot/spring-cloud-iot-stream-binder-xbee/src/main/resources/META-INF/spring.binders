@@ -1,0 +1,2 @@
+xbee:\
+org.springframework.cloud.iot.stream.binder.xbee.config.XBeeBinderAutoConfiguration

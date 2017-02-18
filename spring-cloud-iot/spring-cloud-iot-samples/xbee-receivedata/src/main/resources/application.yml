@@ -1,0 +1,13 @@
+server:
+  port: 0
+logging:
+  level:
+    org.springframework.cloud.iot: DEBUG
+management:
+  security:
+    enabled: false
+spring:
+  cloud:
+    iot:
+      xbee:
+        serialPort: /dev/ttyUSB1

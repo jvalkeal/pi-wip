@@ -1,0 +1,7 @@
+server:
+  port: 0
+spring:
+  cloud:
+    iot:
+      xbee:
+        serialPort: /dev/ttyUSB0

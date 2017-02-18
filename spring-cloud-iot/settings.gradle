@@ -6,6 +6,10 @@ include 'spring-cloud-iot-test'
 include 'spring-cloud-iot-integration-coap'
 include 'spring-cloud-iot-pi4j'
 include 'spring-cloud-iot-gateway'
+include 'spring-cloud-iot-xbee'
+include 'spring-cloud-iot-integration-xbee'
+include 'spring-cloud-iot-stream-binder-xbee'
+include 'spring-cloud-iot-statemachine'
 
 include 'spring-cloud-iot-samples'
 include 'spring-cloud-iot-samples:sunfounder-sensor-01'
@@ -22,6 +26,8 @@ include 'spring-cloud-iot-samples:environmentlcd'
 include 'spring-cloud-iot-samples:gateway'
 include 'spring-cloud-iot-samples:dashboard'
 include 'spring-cloud-iot-samples:fake-sensor'
+include 'spring-cloud-iot-samples:xbee-senddata'
+include 'spring-cloud-iot-samples:xbee-receivedata'
 
 rootProject.children.find {
 	if (it.name == 'spring-cloud-iot-samples') {

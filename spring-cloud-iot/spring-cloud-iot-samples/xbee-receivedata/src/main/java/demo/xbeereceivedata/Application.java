@@ -13,48 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demo.environmentlcd;
+package demo.xbeereceivedata;
+
+import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.iot.component.Lcd;
-import org.springframework.cloud.iot.component.sensor.HumiditySensor;
-import org.springframework.cloud.iot.component.sensor.TemperatureSensor;
 
-import reactor.core.publisher.Flux;
+import com.digi.xbee.api.XBeeDevice;
+import com.digi.xbee.api.exceptions.XBeeException;
+import com.digi.xbee.api.listeners.IDataReceiveListener;
+import com.digi.xbee.api.models.XBeeMessage;
+import com.digi.xbee.api.utils.HexUtils;
 
 @SpringBootApplication
-public class Application implements CommandLineRunner {
+public class Application {
 
 	private final static Logger log = LoggerFactory.getLogger(Application.class);
-	private final static String LAYOUT_TEXT_TEMP = "temperatureText";
-	private final static String LAYOUT_TEXT_HUM = "humidityText";
 
 	@Autowired
-	private Lcd lcd;
+	private XBeeDevice xbeeDevice;
 
-	@Autowired
-	private TemperatureSensor temperature;
+	@PostConstruct
+	public void setup() throws XBeeException {
+		xbeeDevice.addDataListener(new MyDataReceiveListener());
+		log.info("Waiting data");
+	}
 
-	@Autowired
-	private HumiditySensor humidity;
+	private static class MyDataReceiveListener implements IDataReceiveListener {
 
-	@Override
-	public void run(String... args) throws Exception {
-		Flux.combineLatest(temperature.getTemperature().asFlux(), humidity.getHumidity().asFlux(),
-				(t, h) -> {
-					log.info("New temperature {} humidity {}", t, h);
-					return new Double[] { t, h };
-				})
-				.sampleMillis(1000)
-				.subscribe(a -> {
-					lcd.setText(LAYOUT_TEXT_TEMP, String.format("%.1f", a[0]));
-					lcd.setText(LAYOUT_TEXT_HUM, String.format("%.1f", a[1]));
-				});
+		@Override
+		public void dataReceived(XBeeMessage xbeeMessage) {
+			log.info("From {} >> {} | {}", xbeeMessage.getDevice().get64BitAddress(),
+					HexUtils.prettyHexString(HexUtils.byteArrayToHexString(xbeeMessage.getData())),
+					new String(xbeeMessage.getData()));
+		}
 	}
 
 	public static void main(String[] args) {
