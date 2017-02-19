@@ -15,7 +15,8 @@
  */
 package org.springframework.cloud.iot.integration.xbee.inbound;
 
-import org.springframework.integration.gateway.MessagingGatewaySupport;
+import org.springframework.integration.endpoint.MessageProducerSupport;
+import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
 
 import com.digi.xbee.api.XBeeDevice;
@@ -23,28 +24,28 @@ import com.digi.xbee.api.listeners.IDataReceiveListener;
 import com.digi.xbee.api.models.XBeeMessage;
 
 /**
- * Inbound gateway using XBee mesh network.
+ * Inbound channel adapter using XBee mesh network.
  *
  * @author Janne Valkealahti
  *
  */
-public class XBeeInboundGateway extends MessagingGatewaySupport {
+public class XBeeInboundChannelAdapter extends MessageProducerSupport {
 
 	private final XBeeDevice xbeeDevice;
 
 	/**
-	 * Instantiates a new xbee inbound gateway.
+	 * Instantiates a new xbee inbound channel adapter.
 	 *
 	 * @param xbeeDevice the xbee device
 	 */
-	public XBeeInboundGateway(XBeeDevice xbeeDevice) {
+	public XBeeInboundChannelAdapter(XBeeDevice xbeeDevice) {
 		super();
 		Assert.notNull(xbeeDevice, "'xbeeDevice' must be set");
 		this.xbeeDevice = xbeeDevice;
 	}
 
 	@Override
-	protected void onInit() throws Exception {
+	protected void onInit() {
 		super.onInit();
 		setupListener();
 	}
@@ -54,7 +55,8 @@ public class XBeeInboundGateway extends MessagingGatewaySupport {
 
 			@Override
 			public void dataReceived(XBeeMessage xbeeMessage) {
-				send(xbeeMessage.getData());
+				Message<byte[]> message = getMessageBuilderFactory().withPayload(xbeeMessage.getData()).build();
+				sendMessage(message);
 			}
 		});
 	}

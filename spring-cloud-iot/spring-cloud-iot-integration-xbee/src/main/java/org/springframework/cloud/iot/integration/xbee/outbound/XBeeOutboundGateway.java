@@ -17,35 +17,49 @@ package org.springframework.cloud.iot.integration.xbee.outbound;
 
 import org.springframework.integration.handler.AbstractReplyProducingMessageHandler;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHandlingException;
+import org.springframework.util.Assert;
 
 import com.digi.xbee.api.XBeeDevice;
-import com.digi.xbee.api.exceptions.TimeoutException;
-import com.digi.xbee.api.exceptions.XBeeException;
 
+/**
+ * Outbound gateway using XBee mesh network.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class XBeeOutboundGateway extends AbstractReplyProducingMessageHandler {
 
-	private XBeeDevice xbeeDevice;
+	private final XBeeDevice xbeeDevice;
 
+	/**
+	 * Instantiates a new xbee outbound gateway.
+	 *
+	 * @param xbeeDevice the xbee device
+	 */
 	public XBeeOutboundGateway(XBeeDevice xbeeDevice) {
 		super();
+		Assert.notNull(xbeeDevice, "'xbeeDevice' must be set");
 		this.xbeeDevice = xbeeDevice;
 	}
 
 	@Override
 	protected Object handleRequestMessage(Message<?> requestMessage) {
-		try {
-			Object payload = requestMessage.getPayload();
-			logger.info("Handling message " + requestMessage);
-			if (payload instanceof String) {
-				logger.info("Broadcast " + payload);
-				byte[] data = ((String)payload).getBytes();
+		byte[] data = null;
+
+		Object payload = requestMessage.getPayload();
+		if (payload instanceof String) {
+			data = ((String)payload).getBytes();
+		} else if (payload instanceof byte[]) {
+			data = (byte[])payload;
+		}
+
+		if (data != null && data.length > 0) {
+			try {
 				xbeeDevice.sendBroadcastData(data);
-			} else if (payload instanceof byte[]) {
-				logger.info("Broadcast " + payload);
-				xbeeDevice.sendBroadcastData((byte[])payload);
+			} catch (Exception e) {
+				throw new MessageHandlingException(requestMessage, "Unable to send message", e);
 			}
-		} catch (Exception e) {
-			logger.error(e);
 		}
 		return null;
 	}

@@ -18,6 +18,7 @@ package org.springframework.cloud.iot.stream.binder.xbee;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.cloud.iot.integration.xbee.inbound.XBeeInboundChannelAdapter;
 import org.springframework.cloud.iot.integration.xbee.outbound.XBeeOutboundGateway;
 import org.springframework.cloud.stream.binder.AbstractMessageChannelBinder;
 import org.springframework.cloud.stream.binder.ConsumerProperties;
@@ -27,6 +28,7 @@ import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.cloud.stream.provisioning.ProvisioningProvider;
 import org.springframework.integration.core.MessageProducer;
 import org.springframework.messaging.MessageHandler;
+import org.springframework.util.Assert;
 
 import com.digi.xbee.api.XBeeDevice;
 
@@ -38,13 +40,20 @@ import com.digi.xbee.api.XBeeDevice;
  */
 public class XBeeMessageChannelBinder extends
 		AbstractMessageChannelBinder<ConsumerProperties, ProducerProperties, ProvisioningProvider<ConsumerProperties, ProducerProperties>>
-implements BeanFactoryAware{
+		implements BeanFactoryAware {
 
-	private XBeeDevice xbeeDevice;
+	private final XBeeDevice xbeeDevice;
 	private BeanFactory beanFactory;
 
+	/**
+	 * Instantiates a new xbee message channel binder.
+	 *
+	 * @param provisioningProvider the provisioning provider
+	 * @param xbeeDevice the xbee device
+	 */
 	public XBeeMessageChannelBinder(ProvisioningProvider<ConsumerProperties, ProducerProperties> provisioningProvider, XBeeDevice xbeeDevice) {
 		super(false, new String[0], provisioningProvider);
+		Assert.notNull(xbeeDevice, "'xbeeDevice' must be set");
 		this.xbeeDevice = xbeeDevice;
 	}
 
@@ -59,7 +68,9 @@ implements BeanFactoryAware{
 	@Override
 	protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group,
 			ConsumerProperties properties) throws Exception {
-		return null;
+		XBeeInboundChannelAdapter adapter = new XBeeInboundChannelAdapter(xbeeDevice);
+		adapter.setBeanFactory(beanFactory);
+		return adapter;
 	}
 
 	@Override

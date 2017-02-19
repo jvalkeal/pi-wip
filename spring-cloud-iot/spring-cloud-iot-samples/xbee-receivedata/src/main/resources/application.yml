@@ -10,4 +10,4 @@ spring:
   cloud:
     iot:
       xbee:
-        serialPort: /dev/ttyUSB1
+        serialPort: /dev/ttyUSB0
