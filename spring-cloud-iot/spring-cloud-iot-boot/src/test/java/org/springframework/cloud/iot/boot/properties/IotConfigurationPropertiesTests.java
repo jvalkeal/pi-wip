@@ -75,6 +75,16 @@ public class IotConfigurationPropertiesTests {
 		assertThat(properties.getComponents().get("myLcd").getLcd().getI2c(), notNullValue());
 		assertThat(properties.getComponents().get("myLcd").getLcd().getI2c().getBus(), is(1));
 		assertThat(properties.getComponents().get("myLcd").getLcd().getI2c().getAddress(), is(72));
+		assertThat(properties.getComponents().get("myLcd").getLcd().getHd44780(), notNullValue());
+		assertThat(properties.getComponents().get("myLcd").getLcd().getHd44780().getRsPin(), is(17));
+		assertThat(properties.getComponents().get("myLcd").getLcd().getHd44780().getEPin(), is(27));
+		assertThat(properties.getComponents().get("myLcd").getLcd().getHd44780().getD4Pin(), is(25));
+		assertThat(properties.getComponents().get("myLcd").getLcd().getHd44780().getD5Pin(), is(24));
+		assertThat(properties.getComponents().get("myLcd").getLcd().getHd44780().getD6Pin(), is(23));
+		assertThat(properties.getComponents().get("myLcd").getLcd().getHd44780().getD7Pin(), is(18));
+		assertThat(properties.getComponents().get("myLcd").getLcd().getPcf8574(), notNullValue());
+		assertThat(properties.getComponents().get("myLcd").getLcd().getPcf8574().getBus(), is(1));
+		assertThat(properties.getComponents().get("myLcd").getLcd().getPcf8574().getAddress(), is(72));
 
 		assertThat(properties.getComponents().get("myTermistor"), notNullValue());
 		assertThat(properties.getComponents().get("myTermistor").getTermistor(), notNullValue());

@@ -37,6 +37,10 @@ public class LcdProperties extends ComponentProperties {
 	/** I2C configuration */
 	private I2CProperties i2c;
 
+	private HD44780Properties hd44780;
+
+	private PCF8574Properties pcf8574;
+
 	private Map<String, LayoutProperties> layout = new HashMap<>();
 
 	/**
@@ -91,6 +95,22 @@ public class LcdProperties extends ComponentProperties {
 	 */
 	public void setI2c(I2CProperties i2c) {
 		this.i2c = i2c;
+	}
+
+	public HD44780Properties getHd44780() {
+		return hd44780;
+	}
+
+	public void setHd44780(HD44780Properties hd44780) {
+		this.hd44780 = hd44780;
+	}
+
+	public PCF8574Properties getPcf8574() {
+		return pcf8574;
+	}
+
+	public void setPcf8574(PCF8574Properties pcf8574) {
+		this.pcf8574 = pcf8574;
 	}
 
 	/**

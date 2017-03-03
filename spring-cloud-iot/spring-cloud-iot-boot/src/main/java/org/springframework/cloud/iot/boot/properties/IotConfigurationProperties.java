@@ -23,6 +23,7 @@ import org.springframework.cloud.iot.properties.ButtonProperties;
 import org.springframework.cloud.iot.properties.DimmedLedProperties;
 import org.springframework.cloud.iot.properties.HumidityProperties;
 import org.springframework.cloud.iot.properties.IncrementalRotaryProperties;
+import org.springframework.cloud.iot.properties.JoystickProperties;
 import org.springframework.cloud.iot.properties.LcdProperties;
 import org.springframework.cloud.iot.properties.PotentiometerProperties;
 import org.springframework.cloud.iot.properties.RelayProperties;
@@ -61,6 +62,7 @@ public class IotConfigurationProperties {
 		private LcdProperties lcd;
 		private TermistorProperties termistor;
 		private HumidityProperties humidity;
+		private JoystickProperties joystick;
 
 		public IncrementalRotaryProperties getIncrementalRotary() {
 			return incrementalRotary;
@@ -132,6 +134,14 @@ public class IotConfigurationProperties {
 
 		public void setHumidity(HumidityProperties humidity) {
 			this.humidity = humidity;
+		}
+
+		public JoystickProperties getJoystick() {
+			return joystick;
+		}
+
+		public void setJoystick(JoystickProperties joystick) {
+			this.joystick = joystick;
 		}
 	}
 

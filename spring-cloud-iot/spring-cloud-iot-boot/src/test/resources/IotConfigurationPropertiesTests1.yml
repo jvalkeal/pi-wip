@@ -38,6 +38,16 @@ spring:
             i2c:
               bus: 1
               address: 0x48
+            pcf8574:
+              bus: 1
+              address: 0x48
+            hd44780:
+              rsPin: 17
+              ePin: 27
+              d4Pin: 25
+              d5Pin: 24
+              d6Pin: 23
+              d7Pin: 18
         myTermistor:
           termistor:
             enabled: true

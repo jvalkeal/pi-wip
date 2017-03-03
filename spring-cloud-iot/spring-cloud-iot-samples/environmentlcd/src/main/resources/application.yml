@@ -44,7 +44,7 @@ spring:
                   y: 1
                   width: 5
                   height: 1
-            i2c:
+            pcf8574:
               bus: 1
               address: 0x27      
       raspberry:

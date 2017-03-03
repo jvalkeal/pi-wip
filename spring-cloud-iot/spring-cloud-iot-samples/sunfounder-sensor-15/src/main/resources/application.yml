@@ -1,0 +1,13 @@
+spring:
+  cloud:
+    iot:
+      platform: RASPBERRY
+      components:
+        myJoystick:
+          joystick:
+            enabled: true
+            i2c:
+              bus: 1
+              address: 0x48
+      raspberry:
+        numberingScheme: BROADCOM 

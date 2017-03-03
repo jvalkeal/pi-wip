@@ -16,52 +16,31 @@
 package org.springframework.cloud.iot.properties;
 
 /**
- * Properties for configuring I2C bus.
+ * Properties for {@code Joystick} devices.
  *
  * @author Janne Valkealahti
- *
  */
-public class I2CProperties {
+public class JoystickProperties extends ComponentProperties {
 
-	/** The I2C bus number */
-	private Integer bus;
-
-	/** The I2C bus address */
-	private Integer address;
+	/** I2C configuration */
+	private I2CProperties i2c;
 
 	/**
-	 * Gets the bus number.
+	 * Gets the i2c.
 	 *
-	 * @return the bus
+	 * @return the i2c
 	 */
-	public Integer getBus() {
-		return bus;
+	public I2CProperties getI2c() {
+		return i2c;
 	}
 
 	/**
-	 * Sets the bus number.
+	 * Sets the i2c.
 	 *
-	 * @param bus the new bus
+	 * @param i2c the new i2c
 	 */
-	public void setBus(Integer bus) {
-		this.bus = bus;
+	public void setI2c(I2CProperties i2c) {
+		this.i2c = i2c;
 	}
 
-	/**
-	 * Gets the bus address.
-	 *
-	 * @return the bus address
-	 */
-	public Integer getAddress() {
-		return address;
-	}
-
-	/**
-	 * Sets the bus address.
-	 *
-	 * @param address the bus address
-	 */
-	public void setAddress(Integer address) {
-		this.address = address;
-	}
 }

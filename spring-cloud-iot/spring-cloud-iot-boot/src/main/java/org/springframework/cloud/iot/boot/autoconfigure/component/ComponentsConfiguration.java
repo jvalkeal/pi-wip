@@ -25,34 +25,32 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.cloud.iot.boot.autoconfigure.AbstractConfigurationSupport;
 import org.springframework.cloud.iot.boot.autoconfigure.GpioAutoConfiguration;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties;
-import org.springframework.cloud.iot.boot.properties.RaspberryConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties.ComponentType;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties.NumberingScheme;
+import org.springframework.cloud.iot.boot.properties.RaspberryConfigurationProperties;
 import org.springframework.cloud.iot.component.Button;
 import org.springframework.cloud.iot.component.DimmedLed;
 import org.springframework.cloud.iot.component.IncrementalRotary;
 import org.springframework.cloud.iot.component.Relay;
 import org.springframework.cloud.iot.component.ShiftRegister;
-import org.springframework.cloud.iot.component.sensor.HumiditySensor;
-import org.springframework.cloud.iot.component.sensor.TemperatureSensor;
 import org.springframework.cloud.iot.pi4j.Pi4jButton;
 import org.springframework.cloud.iot.pi4j.Pi4jDimmedLed;
 import org.springframework.cloud.iot.pi4j.Pi4jGpioRelayComponent;
 import org.springframework.cloud.iot.pi4j.Pi4jIncrementalRotary;
-import org.springframework.cloud.iot.pi4j.Pi4jPCF8574Lcd;
 import org.springframework.cloud.iot.pi4j.Pi4jPCF8591Potentiometer;
 import org.springframework.cloud.iot.pi4j.Pi4jPCF8591TemperatureSensor;
 import org.springframework.cloud.iot.pi4j.Pi4jShiftRegister;
-import org.springframework.cloud.iot.pi4j.component.Pi4jDHT11HumiditySensor;
+import org.springframework.cloud.iot.pi4j.component.Pi4jLcd;
+import org.springframework.cloud.iot.pi4j.component.Pi4jPCF8574;
+import org.springframework.cloud.iot.pi4j.component.Pi4jPCF8574HD44780;
+import org.springframework.cloud.iot.pi4j.component.Pi4jPCF8591JoyStick;
 import org.springframework.cloud.iot.pi4j.support.Termistor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 
-import com.pi4j.component.lcd.impl.I2CLcdDisplay;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
-import com.pi4j.io.gpio.GpioPinDigitalMultipurpose;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.gpio.Pin;
@@ -113,13 +111,39 @@ public class ComponentsConfiguration extends AbstractConfigurationSupport implem
 				bdb.addConstructorArgValue(type.getPotentiometer().getMax());
 				registry.registerBeanDefinition(BEAN_PREFIX_I2C + name, bdb.getBeanDefinition());
 			} else if (type.getLcd() != null) {
-				I2CLcdDisplay lcd = getI2CLcdDisplay(type.getLcd().getI2c().getBus(), type.getLcd().getI2c().getAddress(),
-						type.getLcd().getRows(), type.getLcd().getColumns());
-				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jPCF8574Lcd.class);
-				bdb.addConstructorArgValue(lcd);
-				bdb.addConstructorArgValue(type.getLcd().getLayout());
-				bdb.addPropertyValue("clearOnExit", type.getLcd().getClearOnExit());
-				registry.registerBeanDefinition(BEAN_PREFIX_I2C + name, bdb.getBeanDefinition());
+
+				if (type.getLcd().getHd44780() != null) {
+					BeanDefinitionBuilder bdb2 = BeanDefinitionBuilder.rootBeanDefinition(Pi4jHD44780ComponentFactoryBean.class);
+					bdb2.addConstructorArgReference(GpioAutoConfiguration.BEAN_NAME_GPIOCONTROLLER);
+					bdb2.addConstructorArgValue(raspberryProperties.getNumberingScheme());
+					bdb2.addConstructorArgValue(type.getLcd().getHd44780().getRsPin());
+					bdb2.addConstructorArgValue(type.getLcd().getHd44780().getEPin());
+					bdb2.addConstructorArgValue(type.getLcd().getHd44780().getD4Pin());
+					bdb2.addConstructorArgValue(type.getLcd().getHd44780().getD5Pin());
+					bdb2.addConstructorArgValue(type.getLcd().getHd44780().getD6Pin());
+					bdb2.addConstructorArgValue(type.getLcd().getHd44780().getD7Pin());
+					registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name + "_HD44780", bdb2.getBeanDefinition());
+
+					BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jLcd.class);
+					bdb.addConstructorArgReference(BEAN_PREFIX_GPIO + name + "_HD44780");
+					bdb.addPropertyValue("layout", type.getLcd().getLayout());
+					registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, bdb.getBeanDefinition());
+				} else if (type.getLcd().getPcf8574() != null) {
+					BeanDefinitionBuilder bdb3 = BeanDefinitionBuilder.rootBeanDefinition(Pi4jPCF8574.class);
+					bdb3.addConstructorArgValue(type.getLcd().getPcf8574().getBus());
+					bdb3.addConstructorArgValue(type.getLcd().getPcf8574().getAddress());
+					registry.registerBeanDefinition(BEAN_PREFIX_I2C + name + "_PCF8574", bdb3.getBeanDefinition());
+
+					BeanDefinitionBuilder bdb2 = BeanDefinitionBuilder.rootBeanDefinition(Pi4jPCF8574HD44780.class);
+					bdb2.addConstructorArgReference(BEAN_PREFIX_I2C + name + "_PCF8574");
+					registry.registerBeanDefinition(BEAN_PREFIX_I2C + name + "_PCF8574HD44780", bdb2.getBeanDefinition());
+
+					BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jLcd.class);
+					bdb.addConstructorArgReference(BEAN_PREFIX_I2C + name + "_PCF8574HD44780");
+					bdb.addPropertyValue("layout", type.getLcd().getLayout());
+					registry.registerBeanDefinition(BEAN_PREFIX_I2C + name, bdb.getBeanDefinition());
+				}
+
 			} else if (type.getTermistor() != null) {
 				Termistor termistor = getTermistor(type.getTermistor().getI2c().getBus(), type.getTermistor().getI2c().getAddress(),
 						type.getTermistor().getSupplyVoltage(), type.getTermistor().getDacBits(), type.getTermistor().getResistance(),
@@ -134,6 +158,11 @@ public class ComponentsConfiguration extends AbstractConfigurationSupport implem
 				bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
 				bdb.addConstructorArgValue(type.getHumidity().getGpio().getPin());
 				registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, bdb.getBeanDefinition());
+			} else if (type.getJoystick() != null) {
+				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jPCF8591JoyStick.class);
+				bdb.addConstructorArgValue(type.getJoystick().getI2c().getBus());
+				bdb.addConstructorArgValue(type.getJoystick().getI2c().getAddress());
+				registry.registerBeanDefinition(BEAN_PREFIX_I2C + name, bdb.getBeanDefinition());
 			}
 		}
 

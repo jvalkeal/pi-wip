@@ -1,0 +1,20 @@
+spring:
+  cloud:
+    iot:
+      platform: RASPBERRY
+      components:
+        myLcd:
+          lcd:
+            enabled: true
+            rows: 2
+            columns: 16
+            clearOnExit: true
+            hd44780:
+              rsPin: 27
+              ePin: 22
+              d4Pin: 25
+              d5Pin: 24
+              d6Pin: 23
+              d7Pin: 18
+      raspberry:
+        numberingScheme: BROADCOM

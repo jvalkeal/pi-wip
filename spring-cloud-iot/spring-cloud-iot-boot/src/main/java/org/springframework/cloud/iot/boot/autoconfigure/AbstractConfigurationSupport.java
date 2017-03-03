@@ -16,7 +16,6 @@
 package org.springframework.cloud.iot.boot.autoconfigure;
 
 import org.springframework.boot.bind.PropertiesConfigurationFactory;
-import org.springframework.cloud.iot.IotSystemException;
 import org.springframework.cloud.iot.boot.properties.GpioConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.RaspberryConfigurationProperties;
@@ -26,8 +25,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindException;
-
-import com.pi4j.component.lcd.impl.I2CLcdDisplay;
 
 /**
  * Support class for various configuration classes.
@@ -110,14 +107,6 @@ public class AbstractConfigurationSupport implements EnvironmentAware {
 			return new Termistor(i2cBus, i2cAddr, voltageSupply, dacBits, resistance, beta, referenceTemp);
 		} catch (Exception e) {
 			throw new RuntimeException();
-		}
-	}
-
-	protected I2CLcdDisplay getI2CLcdDisplay(int i2cBus, int i2cAddr, int rows, int columns) {
-		try {
-			return new I2CLcdDisplay(rows, columns, i2cBus, i2cAddr, 3, 0, 1, 2, 7, 6, 5, 4);
-		} catch (Exception e) {
-			throw new IotSystemException("Error constructing I2CLcdDisplay", e);
 		}
 	}
 }
