@@ -20,7 +20,16 @@ xxx.
 
 [[iot-examples-sunfoundersensorkitv2]]
 == Sunfounder Sensor Kit V2
-xxx.
+Examples in this section are equivalent of what _Sunfounder_ have done
+with their _C_ and _Python_ based sample code.
+
+[NOTE]
+====
+We don't go into details what these samples do as we simply consentrate how
+same functionality is accomplished with _Spring Cloud IoT_. For
+details about schematics and generic functionality, see their own
+documentation.
+====
 
 === Sunfounder Sensor Kit V2 Example 01
 xxx.
@@ -46,5 +55,12 @@ xxx.
 === Sunfounder Sensor Kit V2 Example 30
 xxx.
 
-=== Sunfounder Super Kit V2 Example 11 Segment
+[[iot-examples-sunfoundersuperkit]]
+== Sunfounder Super Kit
+xxx.
+
+=== Sunfounder Super Kit Example 11 Segment
+xxx.
+
+=== Sunfounder Super Kit Example 13
 xxx.

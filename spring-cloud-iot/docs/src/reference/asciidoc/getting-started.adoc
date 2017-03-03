@@ -199,7 +199,7 @@ You don't need repos `libs-milestone` and `libs-snapshot` for
 production development.
 ====
 
-==  Developing your first Spring Statemachine application
+==  Developing your first Spring Cloud IoT application
 Let's start by creating a simple Spring Boot `Application` class
 implementing `CommandLineRunner`.
 
