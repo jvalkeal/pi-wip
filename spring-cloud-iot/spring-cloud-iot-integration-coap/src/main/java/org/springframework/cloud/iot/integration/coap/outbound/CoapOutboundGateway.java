@@ -17,11 +17,11 @@ package org.springframework.cloud.iot.integration.coap.outbound;
 
 import java.net.URI;
 
-import org.springframework.cloud.iot.integration.coap.CoapEntity;
-import org.springframework.cloud.iot.integration.coap.CoapResponseEntity;
-import org.springframework.cloud.iot.integration.coap.client.CoapMethod;
-import org.springframework.cloud.iot.integration.coap.client.CoapOperations;
-import org.springframework.cloud.iot.integration.coap.client.CoapTemplate;
+import org.springframework.cloud.iot.coap.CoapEntity;
+import org.springframework.cloud.iot.coap.CoapMethod;
+import org.springframework.cloud.iot.coap.CoapResponseEntity;
+import org.springframework.cloud.iot.coap.client.CoapOperations;
+import org.springframework.cloud.iot.coap.client.CoapTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.support.StandardEvaluationContext;

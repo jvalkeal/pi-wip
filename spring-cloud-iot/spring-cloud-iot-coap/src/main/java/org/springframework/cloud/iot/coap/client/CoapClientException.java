@@ -13,25 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.gateway.config;
+package org.springframework.cloud.iot.coap.client;
 
-import org.springframework.cloud.iot.coap.client.CoapOperations;
-import org.springframework.cloud.iot.coap.client.CoapTemplate;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.core.NestedRuntimeException;
 
-/**
- * Configuration for IoT gateway client.
- *
- * @author Janne Valkealahti
- */
-@Configuration
-public class IotGatewayClientConfiguration {
+public class CoapClientException extends NestedRuntimeException {
 
-	@Bean
-	public CoapOperations iotCoapOperations() {
-		// for convenience create template for user disposal
-		return new CoapTemplate();
+	private static final long serialVersionUID = 7206610911300017408L;
+
+	public CoapClientException(String msg, Throwable cause) {
+		super(msg, cause);
 	}
 
+	public CoapClientException(String msg) {
+		super(msg);
+	}
 }

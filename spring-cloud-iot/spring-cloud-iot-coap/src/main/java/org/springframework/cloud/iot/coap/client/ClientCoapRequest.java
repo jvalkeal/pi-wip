@@ -13,25 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.gateway.config;
+package org.springframework.cloud.iot.coap.client;
 
-import org.springframework.cloud.iot.coap.client.CoapOperations;
-import org.springframework.cloud.iot.coap.client.CoapTemplate;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.cloud.iot.coap.CoapOutputMessage;
 
 /**
- * Configuration for IoT gateway client.
+ * Represents a client-side COAP request.
  *
  * @author Janne Valkealahti
+ *
  */
-@Configuration
-public class IotGatewayClientConfiguration {
+public interface ClientCoapRequest extends CoapOutputMessage {
 
-	@Bean
-	public CoapOperations iotCoapOperations() {
-		// for convenience create template for user disposal
-		return new CoapTemplate();
-	}
-
+	/**
+	 * Execute this request, resulting in a {@link ClientCoapResponse}.
+	 *
+	 * @return the response result of the execution
+	 */
+	ClientCoapResponse execute();
 }

@@ -13,25 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.gateway.config;
-
-import org.springframework.cloud.iot.coap.client.CoapOperations;
-import org.springframework.cloud.iot.coap.client.CoapTemplate;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+package org.springframework.cloud.iot.coap.client;
 
 /**
- * Configuration for IoT gateway client.
+ * Generic callback interface used by {@link CoapTemplate}'s retrieval methods
+ * Implementations of this interface perform the actual work of extracting data
+ * from a {@link ClientCoapResponse}, but don't need to worry about exception
+ * handling or closing resources.
  *
  * @author Janne Valkealahti
+ *
+ * @param <T> the response type
  */
-@Configuration
-public class IotGatewayClientConfiguration {
+@FunctionalInterface
+public interface ResponseExtractor<T> {
 
-	@Bean
-	public CoapOperations iotCoapOperations() {
-		// for convenience create template for user disposal
-		return new CoapTemplate();
-	}
-
+	/**
+	 * Extract data from the given {@code ClientCoapResponse} and return it.
+	 *
+	 * @param response the COAP response
+	 * @return the extracted data
+	 */
+	T extractData(ClientCoapResponse response);
 }

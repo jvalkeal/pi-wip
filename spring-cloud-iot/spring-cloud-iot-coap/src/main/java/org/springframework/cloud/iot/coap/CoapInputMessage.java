@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.gateway.config;
-
-import org.springframework.cloud.iot.coap.client.CoapOperations;
-import org.springframework.cloud.iot.coap.client.CoapTemplate;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+package org.springframework.cloud.iot.coap;
 
 /**
- * Configuration for IoT gateway client.
+ * Represents an CoAP input message, consisting of
+ * a readable {@linkplain #getBody() body}.
  *
  * @author Janne Valkealahti
+ *
  */
-@Configuration
-public class IotGatewayClientConfiguration {
+public interface CoapInputMessage {
 
-	@Bean
-	public CoapOperations iotCoapOperations() {
-		// for convenience create template for user disposal
-		return new CoapTemplate();
-	}
-
+	/**
+	 * Return the body of message as an byte array.
+	 *
+	 * @return the body as a byte array
+	 */
+	byte[] getBody();
 }

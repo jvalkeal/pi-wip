@@ -166,15 +166,26 @@ project('spring-cloud-iot-boot') {
 	compileJava.dependsOn(processResources)
 }
 
+project('spring-cloud-iot-coap') {
+	description = "Spring Cloud IoT CoAP"
+
+	dependencies {
+		compile('org.eclipse.californium:californium-core')
+		compile('org.springframework:spring-web')
+		compile('org.slf4j:slf4j-api')
+		compile('io.projectreactor:reactor-core')
+		optional('com.google.code.gson:gson')
+		testCompile('org.springframework.boot:spring-boot-starter-test')
+		testRuntime('org.springframework.boot:spring-boot-starter')
+	}
+}
+
 project('spring-cloud-iot-integration-coap') {
 	description = "Spring Cloud IoT Integration CoAP"
 
 	dependencies {
-		compile('org.springframework:spring-web')
+		compile project(":spring-cloud-iot-coap")
 		compile('org.springframework.integration:spring-integration-core')
-		compile('org.eclipse.californium:californium-core')
-		compile('org.slf4j:slf4j-api')
-		optional('com.google.code.gson:gson')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
 		testRuntime('org.springframework.boot:spring-boot-starter')
 	}

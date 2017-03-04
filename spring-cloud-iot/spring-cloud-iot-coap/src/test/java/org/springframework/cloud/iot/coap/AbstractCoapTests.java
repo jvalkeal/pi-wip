@@ -13,25 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.gateway.config;
+package org.springframework.cloud.iot.coap;
 
-import org.springframework.cloud.iot.coap.client.CoapOperations;
-import org.springframework.cloud.iot.coap.client.CoapTemplate;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.junit.After;
+import org.junit.Before;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-/**
- * Configuration for IoT gateway client.
- *
- * @author Janne Valkealahti
- */
-@Configuration
-public class IotGatewayClientConfiguration {
+public abstract class AbstractCoapTests {
 
-	@Bean
-	public CoapOperations iotCoapOperations() {
-		// for convenience create template for user disposal
-		return new CoapTemplate();
+	protected AnnotationConfigApplicationContext context;
+
+	@Before
+	public void setup() {
+		context = buildContext();
 	}
 
+	@After
+	public void clean() {
+		if (context != null) {
+			context.close();
+		}
+	}
+
+	protected AnnotationConfigApplicationContext buildContext() {
+		return null;
+	}
 }

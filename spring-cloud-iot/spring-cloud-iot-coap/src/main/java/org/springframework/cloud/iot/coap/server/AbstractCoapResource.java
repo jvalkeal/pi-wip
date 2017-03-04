@@ -13,25 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.gateway.config;
+package org.springframework.cloud.iot.coap.server;
 
-import org.springframework.cloud.iot.coap.client.CoapOperations;
-import org.springframework.cloud.iot.coap.client.CoapTemplate;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.eclipse.californium.core.CoapResource;
+import org.eclipse.californium.core.server.resources.Resource;
 
-/**
- * Configuration for IoT gateway client.
- *
- * @author Janne Valkealahti
- */
-@Configuration
-public class IotGatewayClientConfiguration {
+public abstract class AbstractCoapResource extends CoapResource {
 
-	@Bean
-	public CoapOperations iotCoapOperations() {
-		// for convenience create template for user disposal
-		return new CoapTemplate();
+	public AbstractCoapResource(String name) {
+		super(name);
+	}
+
+	@Override
+	public Resource getChild(String name) {
+		return this;
 	}
 
 }

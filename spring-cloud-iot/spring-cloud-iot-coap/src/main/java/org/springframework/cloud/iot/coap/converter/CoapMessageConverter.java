@@ -13,25 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.gateway.config;
+package org.springframework.cloud.iot.coap.converter;
 
-import org.springframework.cloud.iot.coap.client.CoapOperations;
-import org.springframework.cloud.iot.coap.client.CoapTemplate;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.cloud.iot.coap.CoapInputMessage;
+import org.springframework.cloud.iot.coap.CoapOutputMessage;
 
-/**
- * Configuration for IoT gateway client.
- *
- * @author Janne Valkealahti
- */
-@Configuration
-public class IotGatewayClientConfiguration {
+public interface CoapMessageConverter<T> {
 
-	@Bean
-	public CoapOperations iotCoapOperations() {
-		// for convenience create template for user disposal
-		return new CoapTemplate();
-	}
+	boolean canRead(Class<?> clazz, Integer contentFormat);
 
+	boolean canWrite(Class<?> clazz, Integer contentFormat);
+
+	Integer getSupportedContentFormat();
+
+	T read(Class<? extends T> clazz, CoapInputMessage inputMessage);
+
+	void write(T t, CoapOutputMessage outputMessage);
 }

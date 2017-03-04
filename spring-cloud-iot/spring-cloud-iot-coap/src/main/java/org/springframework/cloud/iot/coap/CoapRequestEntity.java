@@ -13,25 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.gateway.config;
+package org.springframework.cloud.iot.coap;
 
-import org.springframework.cloud.iot.coap.client.CoapOperations;
-import org.springframework.cloud.iot.coap.client.CoapTemplate;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import java.lang.reflect.Type;
+import java.net.URI;
 
 /**
- * Configuration for IoT gateway client.
+ * Extension of {@link CoapEntity}.
  *
  * @author Janne Valkealahti
+ *
+ * @param <T> the type of a entity body
  */
-@Configuration
-public class IotGatewayClientConfiguration {
+public class CoapRequestEntity<T> extends CoapEntity<T> {
 
-	@Bean
-	public CoapOperations iotCoapOperations() {
-		// for convenience create template for user disposal
-		return new CoapTemplate();
+	private final CoapMethod method;
+
+	private final URI url;
+
+	private final Type type;
+
+	public CoapRequestEntity(CoapMethod method, URI url, Type type) {
+		super();
+		this.method = method;
+		this.url = url;
+		this.type = type;
 	}
 
 }

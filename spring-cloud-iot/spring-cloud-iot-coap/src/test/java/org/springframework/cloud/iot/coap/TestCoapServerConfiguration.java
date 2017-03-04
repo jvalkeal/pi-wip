@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.integration.coap;
+package org.springframework.cloud.iot.coap;
 
 import java.util.ArrayList;
 import java.util.List;
