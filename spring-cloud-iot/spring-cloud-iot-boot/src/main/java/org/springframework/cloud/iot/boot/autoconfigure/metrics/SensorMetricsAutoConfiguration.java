@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.metrics.GaugeService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.iot.component.sensor.HumiditySensor;
 import org.springframework.cloud.iot.component.sensor.TemperatureSensor;
 import org.springframework.context.annotation.Bean;
@@ -46,6 +47,7 @@ import reactor.core.Disposable;
 public class SensorMetricsAutoConfiguration {
 
 	@Configuration
+	@ConditionalOnProperty(prefix = "spring.cloud.iot.metrics.boot", name = "enabled", havingValue = "true", matchIfMissing = false)
 	public static class MetricsConfiguration {
 		private final GaugeService gaugeService;
 

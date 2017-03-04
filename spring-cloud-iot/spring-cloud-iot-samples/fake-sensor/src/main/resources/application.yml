@@ -12,6 +12,8 @@ spring:
         username: scdf
         password: scdf
       metrics:
+        boot:
+          enabled: true
         mqtt:
           export:
             enabled: true
