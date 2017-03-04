@@ -15,21 +15,36 @@
  */
 package demo.fakecomponent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.iot.event.EnableIotContextEvents;
 import org.springframework.cloud.iot.event.LoggingListener;
 import org.springframework.cloud.iot.test.fake.EnableIotFakeComponents;
 import org.springframework.context.annotation.Bean;
+import org.springframework.statemachine.StateMachine;
 
 @EnableIotContextEvents
 @EnableIotFakeComponents
 @SpringBootApplication
-public class Application {
+public class Application implements CommandLineRunner {
+
+	private final static Logger log = LoggerFactory.getLogger(Application.class);
+
+	@Autowired
+	private StateMachine<String, String> stateMachine;
 
 	@Bean
 	public LoggingListener loggingListener() {
 		return new LoggingListener();
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		log.info("Iot Statemachine {}", stateMachine);
 	}
 
 	public static void main(String[] args) {

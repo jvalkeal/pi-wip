@@ -3,6 +3,7 @@ server:
 logging:
   level:
     org.springframework.cloud.iot: DEBUG
+    org.springframework.statemachine: DEBUG
 management:
   security:
     enabled: false

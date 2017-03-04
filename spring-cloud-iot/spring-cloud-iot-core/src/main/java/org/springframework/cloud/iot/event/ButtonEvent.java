@@ -22,4 +22,9 @@ public class ButtonEvent extends IotEvent {
 	public ButtonEvent(Object source) {
 		super(source);
 	}
+
+	@Override
+	public String getEventId() {
+		return "BUTTON";
+	}
 }

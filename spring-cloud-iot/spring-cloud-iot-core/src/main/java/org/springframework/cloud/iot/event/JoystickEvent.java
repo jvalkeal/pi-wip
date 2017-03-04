@@ -45,6 +45,11 @@ public class JoystickEvent extends IotEvent {
 		this.pressed = pressed;
 	}
 
+	@Override
+	public String getEventId() {
+		return "JOYSTICK";
+	}
+
 	/**
 	 * Gets the x axis position between -1.0..1.0.
 	 *

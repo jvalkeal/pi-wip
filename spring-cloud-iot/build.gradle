@@ -249,7 +249,7 @@ project('spring-cloud-iot-statemachine') {
 	dependencies {
 		compile project(":spring-cloud-iot-core")
 		compile('org.slf4j:slf4j-api')
-		compile('org.springframework.statemachine:spring-statemachine-core')
+		compile('org.springframework.statemachine:spring-statemachine-uml')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
 		testRuntime('org.springframework.boot:spring-boot-starter')
 	}

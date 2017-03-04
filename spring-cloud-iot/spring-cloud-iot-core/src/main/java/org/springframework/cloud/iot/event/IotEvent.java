@@ -37,6 +37,8 @@ public abstract class IotEvent extends ApplicationEvent {
 		super(source);
 	}
 
+	public abstract String getEventId();
+
 	@Override
 	public String toString() {
 		return "IotEvent [source=" + source + "]";

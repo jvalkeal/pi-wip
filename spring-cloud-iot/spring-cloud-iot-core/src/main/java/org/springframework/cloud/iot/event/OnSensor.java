@@ -37,4 +37,8 @@ public class OnSensor extends IotEvent {
 		super(source);
 	}
 
+	@Override
+	public String getEventId() {
+		return "SENSOR";
+	}
 }
