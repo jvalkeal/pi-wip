@@ -15,18 +15,11 @@
  */
 package org.springframework.cloud.iot.event;
 
-/**
- * Interface for publishing IoT application events.
- *
- * @author Janne Valkealahti
- *
- */
-public interface IotEventPublisher {
+public class ButtonEvent extends IotEvent {
 
-	/**
-	 * Publish iot event.
-	 *
-	 * @param iotEvent the iot event
-	 */
-	void publishIotEvent(IotEvent iotEvent);
+	private static final long serialVersionUID = 206042361622621872L;
+
+	public ButtonEvent(Object source) {
+		super(source);
+	}
 }

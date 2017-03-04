@@ -13,20 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.event;
+package org.springframework.cloud.iot.test.fake;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import org.springframework.context.annotation.Import;
 
 /**
- * Interface for publishing IoT application events.
+ * Activates fake iot components for testing and demo purposes.
  *
  * @author Janne Valkealahti
- *
  */
-public interface IotEventPublisher {
-
-	/**
-	 * Publish iot event.
-	 *
-	 * @param iotEvent the iot event
-	 */
-	void publishIotEvent(IotEvent iotEvent);
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@Import(FakeIotComponentsConfiguration.class)
+public @interface EnableIotFakeComponents {
 }

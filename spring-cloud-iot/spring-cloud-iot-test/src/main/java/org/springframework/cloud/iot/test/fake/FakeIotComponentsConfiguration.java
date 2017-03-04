@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.event;
+package org.springframework.cloud.iot.test.fake;
 
-/**
- * Interface for publishing IoT application events.
- *
- * @author Janne Valkealahti
- *
- */
-public interface IotEventPublisher {
+import org.springframework.cloud.iot.component.Button;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-	/**
-	 * Publish iot event.
-	 *
-	 * @param iotEvent the iot event
-	 */
-	void publishIotEvent(IotEvent iotEvent);
+@Configuration
+public class FakeIotComponentsConfiguration {
+
+	@Bean
+	public Button fakeButton() {
+		return new FakeButton();
+	}
+
 }

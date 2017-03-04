@@ -33,4 +33,10 @@ public class DefaultIotEventPublisher implements IotEventPublisher, ApplicationE
 		this.applicationEventPublisher = applicationEventPublisher;
 	}
 
+	@Override
+	public void publishIotEvent(IotEvent iotEvent) {
+		if (applicationEventPublisher != null) {
+			applicationEventPublisher.publishEvent(iotEvent);
+		}
+	}
 }

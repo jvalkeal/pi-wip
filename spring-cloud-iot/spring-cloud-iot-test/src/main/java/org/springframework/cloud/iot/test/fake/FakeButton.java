@@ -13,53 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.pi4j;
+package org.springframework.cloud.iot.test.fake;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.component.Button;
 import org.springframework.cloud.iot.event.ButtonEvent;
 import org.springframework.cloud.iot.event.IotEventPublisher;
 import org.springframework.cloud.iot.listener.ButtonListener;
 import org.springframework.cloud.iot.listener.CompositeButtonListener;
 import org.springframework.cloud.iot.support.IotObjectSupport;
+import org.springframework.scheduling.annotation.Scheduled;
 
-import com.pi4j.component.button.ButtonState;
-import com.pi4j.component.button.ButtonStateChangeEvent;
-import com.pi4j.component.button.ButtonStateChangeListener;
-import com.pi4j.component.button.impl.GpioButtonComponent;
-import com.pi4j.io.gpio.GpioPinDigitalInput;
+public class FakeButton extends IotObjectSupport implements Button {
 
-public class Pi4jButton extends IotObjectSupport implements Button {
-
-	private final static Logger log = LoggerFactory.getLogger(Pi4jButton.class);
-	private GpioButtonComponent button;
 	private CompositeButtonListener buttonListener;
-
-	public Pi4jButton(GpioPinDigitalInput input) {
-		this.button = new GpioButtonComponent(input);
-	}
-
-	@Override
-	protected void onInit() throws Exception {
-		log.info("Adding ButtonStateChangeListener");
-		button.addListener(new ButtonStateChangeListener() {
-
-			@Override
-			public void onStateChange(ButtonStateChangeEvent event) {
-				log.info("ButtonStateChangeEvent {}", event.getNewState());
-				if (buttonListener != null) {
-					if (event.getNewState() == ButtonState.PRESSED) {
-						buttonListener.onPressed();
-						notifyButtonPressed();
-					} else if (event.getNewState() == ButtonState.RELEASED) {
-						buttonListener.onReleased();
-						notifyButtonPressed();
-					}
-				}
-			}
-		});
-	}
+	private boolean pressed = false;
 
 	@Override
 	public void addButtonListener(ButtonListener listener) {
@@ -78,6 +45,19 @@ public class Pi4jButton extends IotObjectSupport implements Button {
 				buttonListener.unregister(listener);
 			}
 		}
+	}
+
+	@Scheduled(fixedRate = 2000)
+	public void sendNextToggle() {
+		boolean state = (pressed = !pressed);
+		if (buttonListener != null) {
+			if (state) {
+				buttonListener.onPressed();
+			} else {
+				buttonListener.onReleased();
+			}
+		}
+		notifyButtonPressed();
 	}
 
 	private void notifyButtonPressed() {

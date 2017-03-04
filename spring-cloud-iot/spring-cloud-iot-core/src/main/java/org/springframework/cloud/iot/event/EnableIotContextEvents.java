@@ -15,18 +15,24 @@
  */
 package org.springframework.cloud.iot.event;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import org.springframework.context.annotation.Import;
+
 /**
- * Interface for publishing IoT application events.
+ * Activates IoT context event integration.
  *
  * @author Janne Valkealahti
- *
  */
-public interface IotEventPublisher {
-
-	/**
-	 * Publish iot event.
-	 *
-	 * @param iotEvent the iot event
-	 */
-	void publishIotEvent(IotEvent iotEvent);
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@Import(IotEventPublisherConfiguration.class)
+public @interface EnableIotContextEvents {
 }

@@ -145,6 +145,17 @@ project('spring-cloud-iot-samples-fake-sensor') {
 	}
 }
 
+project('spring-cloud-iot-samples-fake-component') {
+	apply plugin: 'org.springframework.boot'
+	description = 'Spring Cloud IOT Fake Component Sample'
+	dependencies {
+		compile project(":spring-cloud-iot-test")
+		compile project(":spring-cloud-iot-boot")
+		compile project(":spring-cloud-iot-statemachine")
+		runtime('org.springframework.boot:spring-boot-starter-web')
+	}
+}
+
 project('spring-cloud-iot-samples-xbee-senddata') {
 	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Xbee Send Data Sample'
