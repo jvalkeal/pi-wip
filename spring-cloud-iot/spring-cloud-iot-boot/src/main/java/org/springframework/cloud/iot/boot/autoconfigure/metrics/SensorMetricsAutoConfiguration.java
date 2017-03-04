@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.metrics.GaugeService;
+import org.springframework.cloud.iot.component.sensor.HumiditySensor;
 import org.springframework.cloud.iot.component.sensor.TemperatureSensor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -64,6 +65,7 @@ public class SensorMetricsAutoConfiguration {
 		private final GaugeService gaugeService;
 		private final List<Disposable> disposables = new ArrayList<>();
 		private List<TemperatureSensor> temperatureSensors;
+		private List<HumiditySensor> humiditySensors;
 
 		public MetricDispatcher(GaugeService gaugeService) {
 			this.gaugeService = gaugeService;
@@ -74,13 +76,33 @@ public class SensorMetricsAutoConfiguration {
 			this.temperatureSensors = temperatureSensors;
 		}
 
+		@Autowired(required = false)
+		public void setHumiditySensors(List<HumiditySensor> humiditySensors) {
+			this.humiditySensors = humiditySensors;
+		}
+
 		@PostConstruct
 		public void setup() {
-			if (temperatureSensors != null && gaugeService != null) {
+			if (gaugeService == null) {
+				log.info("No 'gaugeService' available, skipping sensor registrations");
+				return;
+			}
+			if (temperatureSensors != null) {
 				for (TemperatureSensor sensor : temperatureSensors) {
 					String metricName = "iot.temperature." + sensor.getName();
 					log.info("Subscribe metric dispatcher for {} as {}", sensor.getName(), metricName);
 					Disposable disposable = sensor.getTemperature().asFlux().subscribe(t -> {
+						log.debug("Dispatch metric {} {}", metricName, t);
+						this.gaugeService.submit(metricName, t);
+					});
+					disposables.add(disposable);
+				}
+			}
+			if (humiditySensors != null) {
+				for (HumiditySensor sensor : humiditySensors) {
+					String metricName = "iot.humidity." + sensor.getName();
+					log.info("Subscribe metric dispatcher for {} as {}", sensor.getName(), metricName);
+					Disposable disposable = sensor.getHumidity().asFlux().subscribe(t -> {
 						log.debug("Dispatch metric {} {}", metricName, t);
 						this.gaugeService.submit(metricName, t);
 					});

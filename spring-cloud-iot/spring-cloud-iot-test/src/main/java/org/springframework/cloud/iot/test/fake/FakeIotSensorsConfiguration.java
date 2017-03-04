@@ -15,6 +15,7 @@
  */
 package org.springframework.cloud.iot.test.fake;
 
+import org.springframework.cloud.iot.component.sensor.HumiditySensor;
 import org.springframework.cloud.iot.component.sensor.TemperatureSensor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,5 +31,10 @@ public class FakeIotSensorsConfiguration {
 	@Bean
 	public TemperatureSensor fakeTemperatureSensor() {
 		return new FakeTemperatureSensor();
+	}
+
+	@Bean
+	public HumiditySensor fakeHumidityServer() {
+		return new FakeHumiditySensor();
 	}
 }

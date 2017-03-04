@@ -18,8 +18,8 @@ package org.springframework.cloud.iot.test.fake;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import org.springframework.cloud.iot.component.sensor.Temperature;
-import org.springframework.cloud.iot.component.sensor.TemperatureSensor;
+import org.springframework.cloud.iot.component.sensor.Humidity;
+import org.springframework.cloud.iot.component.sensor.HumiditySensor;
 import org.springframework.cloud.iot.support.LifecycleObjectSupport;
 import org.springframework.cloud.iot.support.ReactiveSensorValue;
 
@@ -27,26 +27,27 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * Fake {@link TemperatureSensor} which just emits
- * random values between 20 and 21 once in every second.
+ * Fake {@link HumiditySensor} which just emits
+ * random values between 25 and 50 once in every second.
  *
  * @author Janne Valkealahti
  *
  */
-public class FakeTemperatureSensor extends LifecycleObjectSupport implements TemperatureSensor {
+public class FakeHumiditySensor extends LifecycleObjectSupport implements HumiditySensor {
 
 	private final ReactiveSensorValue<Double> sensorValue;
-	private final Temperature temperature;
+	private final Humidity humidity;
 
-	public FakeTemperatureSensor() {
+	public FakeHumiditySensor() {
 		this.sensorValue = new ReactiveSensorValue<>(new Callable<Double>() {
 
 			@Override
 			public Double call() throws Exception {
-				return 20 + Math.random() * 1.0;
+				return 25 + Math.random() * 25.0;
 			}
 		}, Duration.ofSeconds(1));
-		this.temperature = new Temperature() {
+
+		this.humidity = new Humidity() {
 
 			@Override
 			public Double getValue() {
@@ -72,11 +73,11 @@ public class FakeTemperatureSensor extends LifecycleObjectSupport implements Tem
 
 	@Override
 	public String getName() {
-		return "fake-temperature-sensor";
+		return "fake-humidity-sensor";
 	}
 
 	@Override
-	public Temperature getTemperature() {
-		return temperature;
+	public Humidity getHumidity() {
+		return humidity;
 	}
 }
