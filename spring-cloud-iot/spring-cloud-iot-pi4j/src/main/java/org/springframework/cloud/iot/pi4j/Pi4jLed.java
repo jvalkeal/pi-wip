@@ -20,6 +20,12 @@ import org.springframework.cloud.iot.support.LifecycleObjectSupport;
 
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 
+/**
+ * {@code Pi4jLed} is a {@link Led} implementation.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class Pi4jLed extends LifecycleObjectSupport implements Led {
 
 	private final GpioPinDigitalOutput pin;
@@ -34,19 +40,20 @@ public class Pi4jLed extends LifecycleObjectSupport implements Led {
 		this.pin = pin;
 		this.illuminateOnStart = illuminateOnStart;
 		this.illuminateOnExit = illuminateOnExit;
+		setAutoStartup(true);
 	}
 
 	@Override
 	protected void doStart() {
 		if (illuminateOnStart != null) {
-			pin.setState(illuminateOnStart);
+			pin.setState(!illuminateOnStart);
 		}
 	}
 
 	@Override
 	protected void doStop() {
 		if (illuminateOnExit != null) {
-			pin.setState(illuminateOnExit);
+			pin.setState(!illuminateOnExit);
 		}
 	}
 
