@@ -11,6 +11,7 @@ include 'spring-cloud-iot-xbee'
 include 'spring-cloud-iot-integration-xbee'
 include 'spring-cloud-iot-stream-binder-xbee'
 include 'spring-cloud-iot-statemachine'
+include 'spring-cloud-iot-bom'
 
 include 'spring-cloud-iot-samples'
 include 'spring-cloud-iot-samples:sunfounder-sensor-01'
