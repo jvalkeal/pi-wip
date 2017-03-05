@@ -2,6 +2,13 @@ spring:
   cloud:
     iot:
       components:
+        myLed:
+          led:
+            enabled: true
+            illuminateOnStart: true
+            illuminateOnExit: false
+            gpio:
+              pin: 17
         myButton:
           button:
             enabled: true

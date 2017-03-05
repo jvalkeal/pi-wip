@@ -47,7 +47,7 @@ public class Pi4jHD44780ComponentFactoryBean extends AbstractComponentGpioFactor
 	}
 
 	@Override
-	protected Pi4jHD44780 createInstance() throws Exception {
+	protected Pi4jHD44780 createInstanceInternal() throws Exception {
 		GpioPinDigitalOutput rsPin = getGpioController().provisionDigitalOutputPin(resolvePin(rsPinName));
 		GpioPinDigitalOutput ePin = getGpioController().provisionDigitalOutputPin(resolvePin(ePinName));
 		GpioPinDigitalOutput d4Pin = getGpioController().provisionDigitalOutputPin(resolvePin(d4PinName));

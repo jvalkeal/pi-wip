@@ -38,7 +38,7 @@ public class Pi4jDHT11ComponentGpioFactoryBean extends AbstractComponentGpioFact
 	}
 
 	@Override
-	protected Pi4jDHT11HumiditySensor createInstance() throws Exception {
+	protected Pi4jDHT11HumiditySensor createInstanceInternal() throws Exception {
 		GpioPinDigitalMultipurpose pin = getGpioController().provisionDigitalMultipurposePin(resolvePin(pinName), PinMode.DIGITAL_OUTPUT);
 		Pi4jDHT11HumiditySensor sensor = new Pi4jDHT11HumiditySensor(pin);
 		sensor.afterPropertiesSet();

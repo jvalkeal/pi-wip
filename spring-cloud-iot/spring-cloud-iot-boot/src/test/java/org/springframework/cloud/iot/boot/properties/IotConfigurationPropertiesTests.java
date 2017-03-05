@@ -21,6 +21,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -31,12 +32,19 @@ public class IotConfigurationPropertiesTests {
 	@Test
 	public void testComponentsProperties() {
 		SpringApplication app = new SpringApplication(TestConfiguration.class);
-		app.setWebEnvironment(false);
+		app.setWebApplicationType(WebApplicationType.NONE);
 		ConfigurableApplicationContext context = app
 				.run(new String[] { "--spring.config.name=IotConfigurationPropertiesTests1" });
 		IotConfigurationProperties properties = context.getBean(IotConfigurationProperties.class);
 		assertThat(properties, notNullValue());
 		assertThat(properties.getComponents(), notNullValue());
+
+		assertThat(properties.getComponents().get("myLed"), notNullValue());
+		assertThat(properties.getComponents().get("myLed").getLed(), notNullValue());
+		assertThat(properties.getComponents().get("myLed").getLed().isEnabled(), is(true));
+		assertThat(properties.getComponents().get("myLed").getLed().getIlluminateOnStart(), is(true));
+		assertThat(properties.getComponents().get("myLed").getLed().getIlluminateOnExit(), is(false));
+		assertThat(properties.getComponents().get("myLed").getLed().getGpio().getPin(), is(17));
 
 		assertThat(properties.getComponents().get("myButton"), notNullValue());
 		assertThat(properties.getComponents().get("myButton").getButton(), notNullValue());
@@ -103,16 +111,12 @@ public class IotConfigurationPropertiesTests {
 	@Test
 	public void testDeviceProperties() {
 		SpringApplication app = new SpringApplication(TestConfiguration.class);
-		app.setWebEnvironment(false);
+		app.setWebApplicationType(WebApplicationType.NONE);
 		ConfigurableApplicationContext context = app
 				.run(new String[] { "--spring.config.name=IotConfigurationPropertiesTests2" });
 		IotConfigurationProperties properties = context.getBean(IotConfigurationProperties.class);
 		assertThat(properties, notNullValue());
-//		assertThat(properties.getDevice(), notNullValue());
-//		assertThat(properties.getDevice().getLcd(), notNullValue());
-//		assertThat(properties.getDevice().getLcd().getRows(), is(2));
-//		assertThat(properties.getDevice().getLcd().getColums(), is(16));
-//		assertThat(properties.getDevice().getLcd().isClearTextOnExit(), is(true));
+
 		context.close();
 	}
 

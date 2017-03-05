@@ -17,6 +17,7 @@ package org.springframework.cloud.iot.boot.autoconfigure.component;
 
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties.NumberingScheme;
+import org.springframework.context.SmartLifecycle;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.Pin;
@@ -30,13 +31,16 @@ import com.pi4j.io.gpio.RaspiPin;
  *
  * @param <T> the type of component
  */
-public abstract class AbstractComponentGpioFactoryBean<T> extends AbstractFactoryBean<T> {
+public abstract class AbstractComponentGpioFactoryBean<T extends SmartLifecycle> extends AbstractFactoryBean<T>
+		implements SmartLifecycle {
 
 	private final GpioController gpioController;
 	private final NumberingScheme numberingScheme;
 	private final Class<T> clazz;
+	private T lifecycle;
 
-	public AbstractComponentGpioFactoryBean(GpioController gpioController, NumberingScheme numberingScheme, Class<T> clazz) {
+	public AbstractComponentGpioFactoryBean(GpioController gpioController, NumberingScheme numberingScheme,
+			Class<T> clazz) {
 		this.gpioController = gpioController;
 		this.numberingScheme = numberingScheme;
 		this.clazz = clazz;
@@ -47,11 +51,68 @@ public abstract class AbstractComponentGpioFactoryBean<T> extends AbstractFactor
 		return clazz;
 	}
 
+	@Override
+	final protected T createInstance() throws Exception {
+		lifecycle = createInstanceInternal();
+		return lifecycle;
+	}
+
+	@Override
+	public void start() {
+		lifecycle.start();
+	}
+
+	@Override
+	public void stop() {
+		lifecycle.stop();
+	}
+
+	@Override
+	public boolean isRunning() {
+		return lifecycle.isRunning();
+	}
+
+	@Override
+	public int getPhase() {
+		return 0;
+	}
+
+	@Override
+	public boolean isAutoStartup() {
+		return lifecycle.isAutoStartup();
+	}
+
+	@Override
+	public void stop(Runnable callback) {
+		lifecycle.stop(callback);
+	}
+
+	/**
+	 * Creates the instance internal. Actual instance is created here
+	 * as {@link #createInstance()} is marked final to store instance
+	 * in this class order to handle its {@link SmartLifecycle}.
+	 *
+	 * @return the instance
+	 * @throws Exception the exception
+	 */
+	abstract protected T createInstanceInternal() throws Exception;
+
+	/**
+	 * Resolve {@link Pin} based on pin name.
+	 *
+	 * @param pinName the pin name
+	 * @return the pin
+	 */
 	protected Pin resolvePin(String pinName) {
 		return numberingScheme == NumberingScheme.BROADCOM ? RaspiBcmPin.getPinByName("GPIO " + pinName)
 				: RaspiPin.getPinByName("GPIO " + pinName);
 	}
 
+	/**
+	 * Gets the gpio controller.
+	 *
+	 * @return the gpio controller
+	 */
 	protected GpioController getGpioController() {
 		return gpioController;
 	}

@@ -96,6 +96,14 @@ public class ComponentsConfiguration extends AbstractConfigurationSupport implem
 				bdb.addConstructorArgValue(String.valueOf(type.getDimmedLed().getGpio().getPin()));
 				bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
 				registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, bdb.getBeanDefinition());
+			} else if (type.getLed() != null) {
+				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jLedGpioFactoryBean.class);
+				bdb.addConstructorArgReference(GpioAutoConfiguration.BEAN_NAME_GPIOCONTROLLER);
+				bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
+				bdb.addConstructorArgValue(String.valueOf(type.getLed().getGpio().getPin()));
+				bdb.addConstructorArgValue(type.getLed().getIlluminateOnStart());
+				bdb.addConstructorArgValue(type.getLed().getIlluminateOnExit());
+				registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, bdb.getBeanDefinition());
 			} else if (type.getShiftRegister() != null) {
 				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jGpioShiftRegisterComponentGpioFactoryBean.class);
 				bdb.addConstructorArgValue(String.valueOf(type.getShiftRegister().getGpio().getSdiPin()));

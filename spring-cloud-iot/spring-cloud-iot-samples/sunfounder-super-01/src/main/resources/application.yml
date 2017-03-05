@@ -1,0 +1,14 @@
+spring:
+  cloud:
+    iot:
+      platform: RASPBERRY
+      components:
+        myLed:
+          led:
+            enabled: true
+            illuminateOnStart: false
+            illuminateOnExit: false
+            gpio:
+              pin: 17
+      raspberry:
+        numberingScheme: BROADCOM
