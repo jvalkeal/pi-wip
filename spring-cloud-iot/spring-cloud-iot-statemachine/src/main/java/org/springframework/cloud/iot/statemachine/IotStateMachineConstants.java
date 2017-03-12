@@ -23,5 +23,9 @@ package org.springframework.cloud.iot.statemachine;
  */
 public class IotStateMachineConstants {
 
+	/** Header name for tags. */
 	public static final String IOT_TAGS = "iotTags";
+
+	/** Bean id for state machine. */
+	public static final String ID_STATEMACHINE = "iotStateMachine";
 }

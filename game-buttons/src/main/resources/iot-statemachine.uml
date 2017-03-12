@@ -3,14 +3,19 @@
   <packagedElement xmi:type="uml:StateMachine" xmi:id="_78eUoADjEeeK_Mx9dG65nQ" name="StateMachine">
     <region xmi:type="uml:Region" xmi:id="_78m3gADjEeeK_Mx9dG65nQ" name="Region1">
       <transition xmi:type="uml:Transition" xmi:id="_Ibs1cADkEeeK_Mx9dG65nQ" source="_GVCD4ADkEeeK_Mx9dG65nQ" target="_AVBpQADkEeeK_Mx9dG65nQ"/>
-      <transition xmi:type="uml:Transition" xmi:id="_JyFZkADkEeeK_Mx9dG65nQ" name="E1" source="_AVBpQADkEeeK_Mx9dG65nQ" target="_B6wQ8ADkEeeK_Mx9dG65nQ">
+      <transition xmi:type="uml:Transition" xmi:id="_JyFZkADkEeeK_Mx9dG65nQ" name="BUTTON_PRESSED" source="_AVBpQADkEeeK_Mx9dG65nQ" target="_B6wQ8ADkEeeK_Mx9dG65nQ">
         <trigger xmi:type="uml:Trigger" xmi:id="_SkfqYADkEeeK_Mx9dG65nQ" event="_O4bBQADkEeeK_Mx9dG65nQ"/>
+      </transition>
+      <transition xmi:type="uml:Transition" xmi:id="_GzU6YAcvEeeyFtJkSD2EKA" name="BUTTON_RELEASED" source="_B6wQ8ADkEeeK_Mx9dG65nQ" target="_AVBpQADkEeeK_Mx9dG65nQ">
+        <trigger xmi:type="uml:Trigger" xmi:id="_Qy1QcAcvEeeyFtJkSD2EKA" event="__2ww4AcuEeeyFtJkSD2EKA"/>
       </transition>
       <subvertex xmi:type="uml:State" xmi:id="_AVBpQADkEeeK_Mx9dG65nQ" name="S1"/>
       <subvertex xmi:type="uml:State" xmi:id="_B6wQ8ADkEeeK_Mx9dG65nQ" name="S2"/>
       <subvertex xmi:type="uml:Pseudostate" xmi:id="_GVCD4ADkEeeK_Mx9dG65nQ" name=""/>
     </region>
   </packagedElement>
-  <packagedElement xmi:type="uml:Signal" xmi:id="_ManiEADkEeeK_Mx9dG65nQ" name="E1"/>
-  <packagedElement xmi:type="uml:SignalEvent" xmi:id="_O4bBQADkEeeK_Mx9dG65nQ" name="SignalEventE1" signal="_ManiEADkEeeK_Mx9dG65nQ"/>
+  <packagedElement xmi:type="uml:Signal" xmi:id="_ManiEADkEeeK_Mx9dG65nQ" name="BUTTON_PRESSED"/>
+  <packagedElement xmi:type="uml:Signal" xmi:id="_6djQgAcuEeeyFtJkSD2EKA" name="BUTTON_RELEASED"/>
+  <packagedElement xmi:type="uml:SignalEvent" xmi:id="_O4bBQADkEeeK_Mx9dG65nQ" name="SignalEvent_BUTTON_PRESSED" signal="_ManiEADkEeeK_Mx9dG65nQ"/>
+  <packagedElement xmi:type="uml:SignalEvent" xmi:id="__2ww4AcuEeeyFtJkSD2EKA" name="SignalEvent_BUTTON_RELEASED" signal="_6djQgAcuEeeyFtJkSD2EKA"/>
 </uml:Model>

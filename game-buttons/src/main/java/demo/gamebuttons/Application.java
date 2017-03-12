@@ -31,11 +31,15 @@ import org.springframework.cloud.iot.event.ButtonEvent;
 import org.springframework.cloud.iot.event.EnableIotContextEvents;
 import org.springframework.cloud.iot.listener.ButtonListenerAdapter;
 import org.springframework.cloud.iot.pi4j.support.Pi4jUtils;
+import org.springframework.cloud.iot.statemachine.IotStateMachineConstants;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.statemachine.annotation.OnStateEntry;
+import org.springframework.statemachine.annotation.WithStateMachine;
 
 @SpringBootApplication
 @EnableIotContextEvents
+@WithStateMachine(id = IotStateMachineConstants.ID_STATEMACHINE)
 public class Application {
 
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
@@ -91,6 +95,16 @@ public class Application {
 	@EventListener
 	public void buttonEvent(ButtonEvent event) {
 		log.info("{}", event);
+	}
+
+	@OnStateEntry(target = "S1")
+	public void onStateS1() {
+		log.info("Enter S1");
+	}
+
+	@OnStateEntry(target = "S2")
+	public void onStateS2() {
+		log.info("Enter S2");
 	}
 
 	@PostConstruct

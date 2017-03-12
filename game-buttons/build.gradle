@@ -40,7 +40,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.cloud.iot:spring-cloud-iot-boot')
 	compile('org.springframework.cloud.iot:spring-cloud-iot-test')
-	runtime('org.springframework.cloud.iot:spring-cloud-iot-statemachine')
+	compile('org.springframework.cloud.iot:spring-cloud-iot-statemachine')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

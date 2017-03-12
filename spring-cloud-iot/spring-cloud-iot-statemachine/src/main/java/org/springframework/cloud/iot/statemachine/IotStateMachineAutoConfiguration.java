@@ -41,7 +41,7 @@ import org.springframework.statemachine.uml.UmlStateMachineModelFactory;
 public class IotStateMachineAutoConfiguration {
 
 	@Configuration
-	@EnableStateMachine(name = "iotStateMachine")
+	@EnableStateMachine(name = IotStateMachineConstants.ID_STATEMACHINE)
 	public static class IotStateMachineConfig extends StateMachineConfigurerAdapter<String, String> {
 
 		@Value("${spring.cloud.iot.statemachine.location:classpath:iot-statemachine.uml}")
@@ -72,7 +72,7 @@ public class IotStateMachineAutoConfiguration {
 
 		@Bean
 		public IotStateMachineEventDispatcher iotStateMachineEventDispatcher(
-				@Qualifier("iotStateMachine") StateMachine<String, String> stateMachine) {
+				@Qualifier(IotStateMachineConstants.ID_STATEMACHINE) StateMachine<String, String> stateMachine) {
 			return new IotStateMachineEventDispatcher(stateMachine);
 		}
 	}

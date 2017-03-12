@@ -29,7 +29,8 @@ public class ButtonEvent extends IotEvent {
 
 	private static final long serialVersionUID = 206042361622621872L;
 	private final boolean pressed;
-	public static final String EVENT_ID = "BUTTON";
+	public static final String EVENT_ID_PRESSED = "BUTTON_PRESSED";
+	public static final String EVENT_ID_RELEASED = "BUTTON_RELEASED";
 
 	/**
 	 * Instantiates a new button event.
@@ -52,7 +53,7 @@ public class ButtonEvent extends IotEvent {
 
 	@Override
 	public String getEventId() {
-		return EVENT_ID;
+		return pressed ? EVENT_ID_PRESSED : EVENT_ID_RELEASED;
 	}
 
 	/**

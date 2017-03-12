@@ -9,7 +9,7 @@ spring:
             enabled: true
             gpio:
               pin: 24
-              reference: VCC
+              reference: GND
         button2:
           button:
             enabled: true
