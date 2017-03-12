@@ -1,0 +1,46 @@
+buildscript {
+	ext {
+		springBootVersion = '2.0.0.BUILD-SNAPSHOT'
+	}
+	repositories {
+		mavenCentral()
+		maven { url "https://repo.spring.io/snapshot" }
+		maven { url "https://repo.spring.io/milestone" }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+jar {
+	baseName = 'game-buttons'
+	version = '0.0.1-SNAPSHOT'
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+	maven { url "https://repo.spring.io/snapshot" }
+	maven { url "https://repo.spring.io/milestone" }
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud.iot:spring-cloud-iot-bom:1.0.0.BUILD-SNAPSHOT"
+	}
+}
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.cloud.iot:spring-cloud-iot-boot')
+	compile('org.springframework.cloud.iot:spring-cloud-iot-test')
+	runtime('org.springframework.cloud.iot:spring-cloud-iot-statemachine')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+

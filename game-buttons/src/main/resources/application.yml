@@ -1,0 +1,52 @@
+spring:
+  cloud:
+    iot:
+      platform: RASPBERRY
+      components:
+        button1:
+          button:
+            tags: [foo,bar]
+            enabled: true
+            gpio:
+              pin: 24
+              reference: VCC
+        button2:
+          button:
+            enabled: true
+            gpio:
+              pin: 23
+              reference: GND
+        button3:
+          button:
+            enabled: true
+            gpio:
+              pin: 25
+              reference: GND
+        button4:
+          button:
+            enabled: true
+            gpio:
+              pin: 12
+              reference: GND
+        led1:
+          led:
+            enabled: true
+            gpio:
+              pin: 17
+        led2:
+          led:
+            enabled: true
+            gpio:
+              pin: 18
+        led3:
+          led:
+            enabled: true
+            gpio:
+              pin: 27
+        led4:
+          led:
+            enabled: true
+            gpio:
+              pin: 22
+      raspberry:
+        numberingScheme: BROADCOM

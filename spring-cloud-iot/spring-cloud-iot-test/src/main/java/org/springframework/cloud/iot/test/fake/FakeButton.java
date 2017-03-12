@@ -57,14 +57,14 @@ public class FakeButton extends IotObjectSupport implements Button {
 				buttonListener.onReleased();
 			}
 		}
-		notifyButtonPressed();
+		notifyButtonPressed(state);
 	}
 
-	private void notifyButtonPressed() {
+	private void notifyButtonPressed(boolean state) {
 		if (isContextEventsEnabled()) {
 			IotEventPublisher publisher = getIotEventPublisher();
 			if (publisher != null) {
-				publisher.publishIotEvent(new ButtonEvent(this));
+				publisher.publishIotEvent(new ButtonEvent(this, state));
 			}
 		}
 	}

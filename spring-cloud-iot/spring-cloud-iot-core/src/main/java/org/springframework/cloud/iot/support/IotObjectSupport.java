@@ -15,19 +15,31 @@
  */
 package org.springframework.cloud.iot.support;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.cloud.iot.component.Taggable;
 import org.springframework.cloud.iot.event.IotEventPublisher;
 
-public class IotObjectSupport extends LifecycleObjectSupport implements BeanFactoryAware {
+/**
+ * Support class for iot components being aware of higher level context
+ * components like {@code IotEventPublisher} and {@code BeanFactory}.
+ *
+ * @author Janne Valkealahti
+ *
+ */
+public class IotObjectSupport extends LifecycleObjectSupport implements BeanFactoryAware, Taggable {
 
 	private static final Logger log = LoggerFactory.getLogger(IotObjectSupport.class);
 
 	private volatile BeanFactory beanFactory;
 	private volatile IotEventPublisher iotEventPublisher;
+	private final Collection<String> tags = new ArrayList<>();
 
 	/** Flag for application context events */
 	private boolean contextEventsEnabled = true;
@@ -35,6 +47,19 @@ public class IotObjectSupport extends LifecycleObjectSupport implements BeanFact
 	@Override
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
 		this.beanFactory = beanFactory;
+	}
+
+	@Override
+	public void setTags(Collection<String> tags) {
+		this.tags.clear();
+		if (tags != null) {
+			this.tags.addAll(tags);
+		}
+	}
+
+	@Override
+	public Collection<String> getTags() {
+		return tags;
 	}
 
 	protected BeanFactory getBeanFactory() {
@@ -50,11 +75,17 @@ public class IotObjectSupport extends LifecycleObjectSupport implements BeanFact
 	}
 
 	protected IotEventPublisher getIotEventPublisher() {
+		if(log.isTraceEnabled()) {
+			log.trace("getIotEventPublisher {} {}", iotEventPublisher, getBeanFactory());
+		}
 		if(iotEventPublisher == null && getBeanFactory() != null) {
 			if(log.isTraceEnabled()) {
 				log.trace("getting iotEventPublisher service from bean factory " + getBeanFactory());
 			}
 			iotEventPublisher = IotContextUtils.getEventPublisher(getBeanFactory());
+			if(log.isTraceEnabled()) {
+				log.trace("iotEventPublisher from context is {}", iotEventPublisher);
+			}
 		}
 		return iotEventPublisher;
 	}

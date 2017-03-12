@@ -82,9 +82,12 @@ public class ComponentsConfiguration extends AbstractConfigurationSupport implem
 				bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
 				registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, bdb.getBeanDefinition());
 			} else if (type.getButton() != null) {
-				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jGpioButtonComponentGpioFactoryBean.class);
-				bdb.addConstructorArgValue(String.valueOf(type.getButton().getGpio().getPin()));
+				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jButtonGpioFactoryBean.class);
+				bdb.addConstructorArgReference(GpioAutoConfiguration.BEAN_NAME_GPIOCONTROLLER);
 				bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
+				bdb.addConstructorArgValue(type.getButton().getTags());
+				bdb.addConstructorArgValue(String.valueOf(type.getButton().getGpio().getPin()));
+				bdb.addConstructorArgValue(type.getButton().getGpio().getReference());
 				registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, bdb.getBeanDefinition());
 			} else if (type.getRelay() != null) {
 				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jGpioRelayComponentGpioFactoryBean.class);
@@ -280,47 +283,6 @@ public class ComponentsConfiguration extends AbstractConfigurationSupport implem
 		@Override
 		public Class<?> getObjectType() {
 			return IncrementalRotary.class;
-		}
-
-		@Override
-		public boolean isSingleton() {
-			return true;
-		}
-	}
-
-	public static class Pi4jGpioButtonComponentGpioFactoryBean implements FactoryBean<Object>, InitializingBean {
-
-		@Autowired
-		private GpioController gpioController;
-		private String pinName;
-		private NumberingScheme numberingScheme;
-		private Pi4jButton object;
-
-		public Pi4jGpioButtonComponentGpioFactoryBean(String pinName, NumberingScheme numberingScheme) {
-			this.pinName = pinName;
-			this.numberingScheme = numberingScheme;
-		}
-
-		@Override
-		public void afterPropertiesSet() throws Exception {
-			Pin pin = numberingScheme == NumberingScheme.BROADCOM ? RaspiBcmPin.getPinByName("GPIO " + pinName)
-					: RaspiPin.getPinByName("GPIO " + pinName);
-			GpioPinDigitalInput input = gpioController.provisionDigitalInputPin(pin, PinPullResistance.PULL_UP);
-			object = new Pi4jButton(input);
-			if (object instanceof InitializingBean) {
-				((InitializingBean)object).afterPropertiesSet();
-			}
-
-		}
-
-		@Override
-		public Object getObject() throws Exception {
-			return object;
-		}
-
-		@Override
-		public Class<?> getObjectType() {
-			return Button.class;
 		}
 
 		@Override

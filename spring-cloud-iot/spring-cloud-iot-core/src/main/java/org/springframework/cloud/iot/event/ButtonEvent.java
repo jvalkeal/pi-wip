@@ -15,16 +15,57 @@
  */
 package org.springframework.cloud.iot.event;
 
+import java.util.Collection;
+
+import org.springframework.cloud.iot.component.Button;
+
+/**
+ * {@link IotEvent} class for {@link Button} based events.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class ButtonEvent extends IotEvent {
 
 	private static final long serialVersionUID = 206042361622621872L;
+	private final boolean pressed;
+	public static final String EVENT_ID = "BUTTON";
 
-	public ButtonEvent(Object source) {
+	/**
+	 * Instantiates a new button event.
+	 *
+	 * @param source the source
+	 * @param pressed the pressed
+	 */
+	public ButtonEvent(Object source, boolean pressed) {
 		super(source);
+		this.pressed = pressed;
+	}
+
+	public ButtonEvent(Object source, boolean pressed, Collection<String> tags) {
+		super(source);
+		this.pressed = pressed;
+		if (tags != null) {
+			this.tags.addAll(tags);
+		}
 	}
 
 	@Override
 	public String getEventId() {
-		return "BUTTON";
+		return EVENT_ID;
+	}
+
+	/**
+	 * Checks if is pressed.
+	 *
+	 * @return true, if is pressed
+	 */
+	public boolean isPressed() {
+		return pressed;
+	}
+
+	@Override
+	public String toString() {
+		return "ButtonEvent [pressed=" + pressed + ", toString()=" + super.toString() + "]";
 	}
 }

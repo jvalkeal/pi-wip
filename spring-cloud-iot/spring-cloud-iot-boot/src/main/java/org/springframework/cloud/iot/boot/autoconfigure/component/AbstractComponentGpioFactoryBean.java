@@ -15,8 +15,13 @@
  */
 package org.springframework.cloud.iot.boot.autoconfigure.component;
 
+import java.util.Collection;
+
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties.NumberingScheme;
+import org.springframework.cloud.iot.component.Taggable;
 import org.springframework.context.SmartLifecycle;
 
 import com.pi4j.io.gpio.GpioController;
@@ -38,22 +43,38 @@ public abstract class AbstractComponentGpioFactoryBean<T extends SmartLifecycle>
 	private final NumberingScheme numberingScheme;
 	private final Class<T> clazz;
 	private T lifecycle;
+	private Collection<String> tags;
 
 	public AbstractComponentGpioFactoryBean(GpioController gpioController, NumberingScheme numberingScheme,
 			Class<T> clazz) {
+		this(gpioController, numberingScheme, null, clazz);
+	}
+
+	public AbstractComponentGpioFactoryBean(GpioController gpioController, NumberingScheme numberingScheme, Collection<String> tags,
+			Class<T> clazz) {
 		this.gpioController = gpioController;
 		this.numberingScheme = numberingScheme;
+		this.tags = tags;
 		this.clazz = clazz;
 	}
 
 	@Override
-	public Class<?> getObjectType() {
+	public Class<T> getObjectType() {
 		return clazz;
 	}
 
 	@Override
 	final protected T createInstance() throws Exception {
 		lifecycle = createInstanceInternal();
+		if (lifecycle instanceof BeanFactoryAware) {
+			((BeanFactoryAware)lifecycle).setBeanFactory(getBeanFactory());
+		}
+		if (lifecycle instanceof InitializingBean) {
+			((InitializingBean)lifecycle).afterPropertiesSet();
+		}
+		if (lifecycle instanceof Taggable) {
+			((Taggable)lifecycle).setTags(tags);
+		}
 		return lifecycle;
 	}
 

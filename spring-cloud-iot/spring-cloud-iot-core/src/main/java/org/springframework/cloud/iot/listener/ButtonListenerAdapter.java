@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.boot.autoconfigure.component;
+package org.springframework.cloud.iot.listener;
 
-import org.springframework.cloud.iot.boot.autoconfigure.EnableComponents;
-import org.springframework.cloud.iot.boot.condition.ConditionalOnIot;
-import org.springframework.context.annotation.Configuration;
+/**
+ * Adapter implementation of {@link ButtonListener} implementing all
+ * methods which extended implementation can override.
+ *
+ * @author Janne Valkealahti
+ *
+ */
+public class ButtonListenerAdapter implements ButtonListener {
 
-@Configuration
-@ConditionalOnIot
-@EnableComponents
-public class ComponentsAutoConfiguration {
+	@Override
+	public void onPressed() {
+	}
+
+	@Override
+	public void onReleased() {
+	}
 }

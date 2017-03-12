@@ -155,7 +155,7 @@ public class IotConfigurationProperties {
 		}
 	}
 
-	public enum NumberingScheme {
+	public static enum NumberingScheme {
 		BROADCOM, WIRINGPI;
 	}
 

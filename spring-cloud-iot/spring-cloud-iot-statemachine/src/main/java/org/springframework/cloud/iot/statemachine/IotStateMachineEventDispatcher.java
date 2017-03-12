@@ -15,8 +15,12 @@
  */
 package org.springframework.cloud.iot.statemachine;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.event.IotEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 
 /**
@@ -28,6 +32,7 @@ import org.springframework.statemachine.StateMachine;
  */
 public class IotStateMachineEventDispatcher implements ApplicationListener<IotEvent> {
 
+	private static final Logger log = LoggerFactory.getLogger(IotStateMachineEventDispatcher.class);
 	private final StateMachine<String, String> stateMachine;
 
 	/**
@@ -41,6 +46,10 @@ public class IotStateMachineEventDispatcher implements ApplicationListener<IotEv
 
 	@Override
 	public void onApplicationEvent(IotEvent event) {
-		stateMachine.sendEvent(event.getEventId());
+		MessageBuilder<String> builder = MessageBuilder.withPayload(event.getEventId());
+		builder.setHeader(IotStateMachineConstants.IOT_TAGS, event.getTags());
+		Message<String> message = builder.build();
+		log.debug("Dispatching message to 'iotStateMachine' {}", message);
+		stateMachine.sendEvent(message);
 	}
 }

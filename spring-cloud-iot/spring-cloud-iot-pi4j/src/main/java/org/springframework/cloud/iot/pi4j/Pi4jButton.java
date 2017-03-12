@@ -15,6 +15,8 @@
  */
 package org.springframework.cloud.iot.pi4j;
 
+import java.util.Collection;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.component.Button;
@@ -29,32 +31,65 @@ import com.pi4j.component.button.ButtonStateChangeEvent;
 import com.pi4j.component.button.ButtonStateChangeListener;
 import com.pi4j.component.button.impl.GpioButtonComponent;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
+import com.pi4j.io.gpio.PinPullResistance;
 
+/**
+ * {@link Button} implementation based on {@code Pi4J}.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class Pi4jButton extends IotObjectSupport implements Button {
 
 	private final static Logger log = LoggerFactory.getLogger(Pi4jButton.class);
 	private GpioButtonComponent button;
 	private CompositeButtonListener buttonListener;
+	private final GpioPinDigitalInput input;
 
+	/**
+	 * Instantiates a new Pi4jButton.
+	 *
+	 * @param input the input
+	 */
 	public Pi4jButton(GpioPinDigitalInput input) {
+		this(input, null);
+	}
+
+	public Pi4jButton(GpioPinDigitalInput input, Collection<String> tags) {
+		this.input = input;
 		this.button = new GpioButtonComponent(input);
+		setAutoStartup(true);
+		setTags(tags);
 	}
 
 	@Override
 	protected void onInit() throws Exception {
-		log.info("Adding ButtonStateChangeListener");
+		log.debug("Adding ButtonStateChangeListener {}", this);
 		button.addListener(new ButtonStateChangeListener() {
 
 			@Override
 			public void onStateChange(ButtonStateChangeEvent event) {
-				log.info("ButtonStateChangeEvent {}", event.getNewState());
+				log.debug("Pi4j ButtonStateChangeEvent {}", event.getNewState());
+				// pi4j expects pull resistance to be DOWN and connected to VCC,
+				// thus switch event other way around if user configured
+				// button to be connected to GND.
 				if (buttonListener != null) {
 					if (event.getNewState() == ButtonState.PRESSED) {
-						buttonListener.onPressed();
-						notifyButtonPressed();
+						if (input.getPullResistance() == PinPullResistance.PULL_DOWN) {
+							buttonListener.onPressed();
+							notifyButtonPressed(true);
+						} else {
+							buttonListener.onReleased();
+							notifyButtonPressed(false);
+						}
 					} else if (event.getNewState() == ButtonState.RELEASED) {
-						buttonListener.onReleased();
-						notifyButtonPressed();
+						if (input.getPullResistance() == PinPullResistance.PULL_DOWN) {
+							buttonListener.onReleased();
+							notifyButtonPressed(false);
+						} else {
+							buttonListener.onPressed();
+							notifyButtonPressed(true);
+						}
 					}
 				}
 			}
@@ -80,11 +115,11 @@ public class Pi4jButton extends IotObjectSupport implements Button {
 		}
 	}
 
-	private void notifyButtonPressed() {
+	private void notifyButtonPressed(boolean pressed) {
 		if (isContextEventsEnabled()) {
 			IotEventPublisher publisher = getIotEventPublisher();
 			if (publisher != null) {
-				publisher.publishIotEvent(new ButtonEvent(this));
+				publisher.publishIotEvent(new ButtonEvent(this, pressed, getTags()));
 			}
 		}
 	}

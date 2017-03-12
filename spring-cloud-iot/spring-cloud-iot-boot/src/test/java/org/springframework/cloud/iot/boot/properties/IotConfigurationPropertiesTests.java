@@ -16,6 +16,7 @@
 package org.springframework.cloud.iot.boot.properties;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -24,6 +25,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties;
+import org.springframework.cloud.iot.properties.ReferenceMode;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
@@ -49,7 +51,9 @@ public class IotConfigurationPropertiesTests {
 		assertThat(properties.getComponents().get("myButton"), notNullValue());
 		assertThat(properties.getComponents().get("myButton").getButton(), notNullValue());
 		assertThat(properties.getComponents().get("myButton").getButton().isEnabled(), is(true));
+		assertThat(properties.getComponents().get("myButton").getButton().getTags(), containsInAnyOrder("foo", "bar"));
 		assertThat(properties.getComponents().get("myButton").getButton().getGpio().getPin(), is(27));
+		assertThat(properties.getComponents().get("myButton").getButton().getGpio().getReference(), is(ReferenceMode.GND));
 
 		assertThat(properties.getComponents().get("myRotary"), notNullValue());
 		assertThat(properties.getComponents().get("myRotary").getIncrementalRotary(), notNullValue());

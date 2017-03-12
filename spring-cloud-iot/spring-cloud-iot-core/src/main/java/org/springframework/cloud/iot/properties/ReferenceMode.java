@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.boot.autoconfigure.component;
+package org.springframework.cloud.iot.properties;
 
-import org.springframework.cloud.iot.boot.autoconfigure.EnableComponents;
-import org.springframework.cloud.iot.boot.condition.ConditionalOnIot;
-import org.springframework.context.annotation.Configuration;
+public enum ReferenceMode {
 
-@Configuration
-@ConditionalOnIot
-@EnableComponents
-public class ComponentsAutoConfiguration {
+	GND,
+	VCC;
 }

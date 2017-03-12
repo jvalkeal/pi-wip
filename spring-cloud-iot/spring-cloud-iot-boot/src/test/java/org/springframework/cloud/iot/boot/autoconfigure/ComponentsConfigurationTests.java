@@ -30,6 +30,7 @@ import org.springframework.cloud.iot.boot.autoconfigure.component.ComponentsConf
 import org.springframework.cloud.iot.component.Button;
 import org.springframework.cloud.iot.component.DimmedLed;
 import org.springframework.cloud.iot.component.IncrementalRotary;
+import org.springframework.cloud.iot.component.Led;
 import org.springframework.cloud.iot.component.Relay;
 import org.springframework.cloud.iot.component.ShiftRegister;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -97,6 +98,19 @@ public class ComponentsConfigurationTests {
 				);
 		assertThat(context.containsBean("GPIO_myRelay"), is(true));
 		assertThat(context.getBeansOfType(Relay.class).size(), is(1));
+	}
+
+	@Test
+	public void testLed() {
+		load(TestConfig.class,
+				"spring.cloud.iot.components.myLed1.led.enabled=true",
+				"spring.cloud.iot.components.myLed1.led.gpio.pin=17",
+				"spring.cloud.iot.components.myLed2.led.enabled=true",
+				"spring.cloud.iot.components.myLed2.led.gpio.pin=27"
+				);
+		assertThat(context.containsBean("GPIO_myLed1"), is(true));
+		assertThat(context.containsBean("GPIO_myLed2"), is(true));
+		assertThat(context.getBeansOfType(Led.class).size(), is(2));
 	}
 
 	@Configuration

@@ -13,14 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.boot.autoconfigure.component;
+package org.springframework.cloud.iot.component;
 
-import org.springframework.cloud.iot.boot.autoconfigure.EnableComponents;
-import org.springframework.cloud.iot.boot.condition.ConditionalOnIot;
-import org.springframework.context.annotation.Configuration;
+import java.util.Collection;
 
-@Configuration
-@ConditionalOnIot
-@EnableComponents
-public class ComponentsAutoConfiguration {
+/**
+ * {@code Taggable} is an interface for a component aware of a collection of
+ * {@code tags}. Instead of a component having a single unique identifier it can
+ * be also identified by a collection of tag identifiers.
+ *
+ * @author Janne Valkealahti
+ *
+ */
+public interface Taggable {
+
+	/**
+	 * Gets the tags.
+	 *
+	 * @return the tags
+	 */
+	Collection<String> getTags();
+
+	/**
+	 * Sets the tags.
+	 *
+	 * @param tags the new tags
+	 */
+	void setTags(Collection<String> tags);
 }

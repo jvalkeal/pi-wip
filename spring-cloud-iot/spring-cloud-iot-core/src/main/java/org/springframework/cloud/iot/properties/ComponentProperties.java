@@ -15,15 +15,21 @@
  */
 package org.springframework.cloud.iot.properties;
 
+import java.util.List;
+
 /**
  * Generic component properties.
  *
  * @author Janne Valkealahti
+ *
  */
-public class ComponentProperties {
+public abstract class ComponentProperties {
 
 	/** Flag if component is enabled */
 	private boolean enabled = true;
+
+	/** Tags for the component */
+	private List<String> tags;
 
 	/**
 	 * Checks if component is enabled.
@@ -41,5 +47,23 @@ public class ComponentProperties {
 	 */
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	/**
+	 * Gets the component tags.
+	 *
+	 * @return the component tags
+	 */
+	public List<String> getTags() {
+		return tags;
+	}
+
+	/**
+	 * Sets the component tags.
+	 *
+	 * @param tags the new component tags
+	 */
+	public void setTags(List<String> tags) {
+		this.tags = tags;
 	}
 }

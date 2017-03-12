@@ -12,8 +12,10 @@ spring:
         myButton:
           button:
             enabled: true
+            tags: [foo,bar]
             gpio:
               pin: 27
+              reference: GND
         myRotary:
           incrementalRotary:
             enabled: true

@@ -15,20 +15,34 @@
  */
 package org.springframework.cloud.iot.properties;
 
+import org.springframework.cloud.iot.component.Button;
+
+/**
+ * Configuration properties for {@link Button}.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class ButtonProperties extends ComponentProperties {
 
-	private GpioType gpio;
+	/** GPIO configuration */
+	private GpioProperties gpio;
 
-	public GpioType getGpio() {
+	public GpioProperties getGpio() {
 		return gpio;
 	}
 
-	public void setGpio(GpioType gpio) {
+	public void setGpio(GpioProperties gpio) {
 		this.gpio = gpio;
 	}
 
-	public static class GpioType {
+	public static class GpioProperties {
+
+		/** GPIO pin number */
 		private Integer pin;
+
+		/** Reference voltage */
+		private ReferenceMode reference;
 
 		public Integer getPin() {
 			return pin;
@@ -37,6 +51,13 @@ public class ButtonProperties extends ComponentProperties {
 		public void setPin(Integer pin) {
 			this.pin = pin;
 		}
-	}
 
+		public ReferenceMode getReference() {
+			return reference;
+		}
+
+		public void setReference(ReferenceMode reference) {
+			this.reference = reference;
+		}
+	}
 }

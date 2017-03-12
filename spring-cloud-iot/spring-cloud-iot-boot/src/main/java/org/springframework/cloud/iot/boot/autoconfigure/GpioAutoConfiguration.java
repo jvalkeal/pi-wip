@@ -15,11 +15,10 @@
  */
 package org.springframework.cloud.iot.boot.autoconfigure;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.iot.boot.condition.ConditionalOnIot;
-import org.springframework.cloud.iot.boot.properties.RaspberryConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties.NumberingScheme;
+import org.springframework.cloud.iot.boot.properties.RaspberryConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,20 +35,26 @@ import com.pi4j.io.gpio.RaspiPinNumberingScheme;
  */
 @Configuration
 @ConditionalOnIot
-@EnableConfigurationProperties(RaspberryConfigurationProperties.class)
-@EnableGpio
+//@EnableConfigurationProperties(RaspberryConfigurationProperties.class)
+//@EnableGpio
 public class GpioAutoConfiguration {
 
 	public static String BEAN_NAME_GPIOCONTROLLER = "gpioController";
 
-	@Autowired
-	private RaspberryConfigurationProperties raspberryProperties;
+//	public GpioAutoConfiguration(RaspberryConfigurationProperties properties) {
+//	}
 
+//	@Bean(destroyMethod = "shutdown")
+//	public GpioController gpioController(RaspberryConfigurationProperties raspberryProperties) {
+//		if (raspberryProperties.getNumberingScheme() == NumberingScheme.BROADCOM) {
+//			GpioFactory.setDefaultProvider(new RaspiGpioProvider(RaspiPinNumberingScheme.BROADCOM_PIN_NUMBERING));
+//		}
+//		GpioController gpio = GpioFactory.getInstance();
+//		return gpio;
+//	}
 	@Bean(destroyMethod = "shutdown")
 	public GpioController gpioController() {
-		if (raspberryProperties.getNumberingScheme() == NumberingScheme.BROADCOM) {
-			GpioFactory.setDefaultProvider(new RaspiGpioProvider(RaspiPinNumberingScheme.BROADCOM_PIN_NUMBERING));
-		}
+		GpioFactory.setDefaultProvider(new RaspiGpioProvider(RaspiPinNumberingScheme.BROADCOM_PIN_NUMBERING));
 		GpioController gpio = GpioFactory.getInstance();
 		return gpio;
 	}

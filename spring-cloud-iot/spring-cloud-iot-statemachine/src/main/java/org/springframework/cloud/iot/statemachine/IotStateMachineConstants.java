@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.boot.autoconfigure.component;
+package org.springframework.cloud.iot.statemachine;
 
-import org.springframework.cloud.iot.boot.autoconfigure.EnableComponents;
-import org.springframework.cloud.iot.boot.condition.ConditionalOnIot;
-import org.springframework.context.annotation.Configuration;
+/**
+ * Constants used in iot statemachine.
+ *
+ * @author Janne Valkealahti
+ *
+ */
+public class IotStateMachineConstants {
 
-@Configuration
-@ConditionalOnIot
-@EnableComponents
-public class ComponentsAutoConfiguration {
+	public static final String IOT_TAGS = "iotTags";
 }
