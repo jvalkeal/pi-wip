@@ -355,6 +355,21 @@ configure(rootProject) {
 			revnumber : project.version
 	}
 
+	task copyDocsSamples(type: Copy) {
+		from 'spring-cloud-iot-core/src/test/java'
+		from 'spring-cloud-iot-core/src/test/resources'
+		from 'spring-cloud-iot-boot/src/test/java'
+		from 'spring-cloud-iot-boot/src/test/resources'
+		include '**/docs/*.java'
+		include '**/docs/*.uml'
+		include '**/docs/*.yml'
+		include '**/docs/*.properties'
+		include '**/docs/*.json'
+		into 'docs/src/reference/asciidoc/samples'
+	}
+
+	asciidoctor.dependsOn copyDocsSamples
+
 	task api(type: Javadoc) {
 		group = 'Documentation'
 		description = 'Generates aggregated Javadoc API documentation.'

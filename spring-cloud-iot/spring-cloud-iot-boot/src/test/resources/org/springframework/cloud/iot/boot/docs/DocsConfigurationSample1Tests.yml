@@ -1,0 +1,14 @@
+# tag::snippetA1[]
+spring:
+  cloud:
+    iot:
+      platform: RASPBERRY
+      components:
+        button1:
+          button:
+            tags: [foo,bar]
+            enabled: true
+            gpio:
+              pin: 24
+              reference: VCC
+# end::snippetA1[]
