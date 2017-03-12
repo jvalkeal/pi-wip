@@ -34,6 +34,16 @@ documentation.
 === Sunfounder Sensor Kit V2 Example 01
 xxx.
 
+[source,yaml,indent=0]
+----
+include::samples/sunfounder-sensor-01/src/main/resources/application.yml[tags=snippetA1]
+----
+
+[source,java,indent=0]
+----
+include::samples/sunfounder-sensor-01/src/main/java/demo/sunfoundersensor01/Application.java[tags=snippetA1]
+----
+
 === Sunfounder Sensor Kit V2 Example 04
 xxx.
 

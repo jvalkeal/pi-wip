@@ -9,6 +9,8 @@ This reference documentation contains the following parts.
 
 <<introduction>> introduction to this reference documentation
 
+<<iot-getting-started>> Getting started
+
 <<iot>> Spring Cloud Iot documentation
 
 <<iot-components>> Spring Cloud Iot built-in component support

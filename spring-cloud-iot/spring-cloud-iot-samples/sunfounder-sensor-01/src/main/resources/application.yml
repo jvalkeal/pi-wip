@@ -1,3 +1,4 @@
+# tag::snippetA1[]
 spring:
   cloud:
     iot:
@@ -13,3 +14,4 @@ spring:
               pin: 18
       raspberry:
         numberingScheme: BROADCOM
+# end::snippetA1[]

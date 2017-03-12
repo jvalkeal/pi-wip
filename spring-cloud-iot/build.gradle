@@ -15,7 +15,7 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
-		classpath('org.asciidoctor:asciidoctor-gradle-plugin:1.5.2')
+		classpath('org.asciidoctor:asciidoctor-gradle-plugin:1.5.3')
 		classpath("io.spring.gradle:docbook-reference-plugin:0.3.1")
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	}
@@ -365,6 +365,11 @@ configure(rootProject) {
 		include '**/docs/*.yml'
 		include '**/docs/*.properties'
 		include '**/docs/*.json'
+		into 'docs/src/reference/asciidoc/samples'
+
+		from 'spring-cloud-iot-samples'
+		include '**/src/main/**/*.java'
+		include '**/src/main/**/*.yml'
 		into 'docs/src/reference/asciidoc/samples'
 	}
 

@@ -1,7 +1,14 @@
 [[introduction]]
 = Introduction
-Xxx.
+Spring Cloud IoT(SCIOT) is a framework for application developers to use
+Spring concepts with IoT applications. SCIOT aims to provide the
+following features:
+
+* Component abstraction.
+* Easy configuration model.
 
 == Background
 Xxx.
 
+== Usage Scenarios
+Xxx.

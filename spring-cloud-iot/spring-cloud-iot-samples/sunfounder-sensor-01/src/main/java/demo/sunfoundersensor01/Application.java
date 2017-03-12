@@ -22,6 +22,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.iot.component.DimmedLed;
 
+//tag::snippetA1[]
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
@@ -56,3 +57,4 @@ public class Application implements CommandLineRunner {
 		SpringApplication.run(Application.class, args);
 	}
 }
+//end::snippetA1[]

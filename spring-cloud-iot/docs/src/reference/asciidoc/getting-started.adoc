@@ -24,6 +24,27 @@ The following modules are available for Spring Cloud Iot
 |spring-cloud-iot-boot
 |Core system of a Spring Cloud Iot Boot
 
+|spring-cloud-iot-coap
+|Core CoAP support
+
+|spring-cloud-iot-integration-coap
+|Spring Integration CoAP support
+
+|spring-cloud-iot-gateway
+|Core IoT Gateway support
+
+|spring-cloud-iot-integration-xbee
+|Spring Integration XBEE support
+
+|spring-cloud-iot-stream-binder-xbee
+|Spring Cloud Stream Binder for XBEE
+
+|spring-cloud-iot-statemachine
+|Core Spring StateMachine support
+
+|spring-cloud-iot-test
+|Utilities for testing
+
 |===
 
 == Using Gradle
@@ -152,6 +173,9 @@ Here is a typical `pom.xml` file:
 		</dependency>
 
 		<dependency>
+	</dependencies>
+
+</project>
 ----
 
 [NOTE]
