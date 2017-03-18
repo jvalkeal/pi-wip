@@ -73,23 +73,29 @@ public class Pi4jButton extends IotObjectSupport implements Button {
 				// pi4j expects pull resistance to be DOWN and connected to VCC,
 				// thus switch event other way around if user configured
 				// button to be connected to GND.
-				if (buttonListener != null) {
-					if (event.getNewState() == ButtonState.PRESSED) {
-						if (input.getPullResistance() == PinPullResistance.PULL_DOWN) {
+				if (event.getNewState() == ButtonState.PRESSED) {
+					if (input.getPullResistance() == PinPullResistance.PULL_DOWN) {
+						if (buttonListener != null) {
 							buttonListener.onPressed();
-							notifyButtonPressed(true);
-						} else {
-							buttonListener.onReleased();
-							notifyButtonPressed(false);
 						}
-					} else if (event.getNewState() == ButtonState.RELEASED) {
-						if (input.getPullResistance() == PinPullResistance.PULL_DOWN) {
+						notifyButtonPressed(true);
+					} else {
+						if (buttonListener != null) {
 							buttonListener.onReleased();
-							notifyButtonPressed(false);
-						} else {
+						}
+						notifyButtonPressed(false);
+					}
+				} else if (event.getNewState() == ButtonState.RELEASED) {
+					if (input.getPullResistance() == PinPullResistance.PULL_DOWN) {
+						if (buttonListener != null) {
+							buttonListener.onReleased();
+						}
+						notifyButtonPressed(false);
+					} else {
+						if (buttonListener != null) {
 							buttonListener.onPressed();
-							notifyButtonPressed(true);
 						}
+						notifyButtonPressed(true);
 					}
 				}
 			}

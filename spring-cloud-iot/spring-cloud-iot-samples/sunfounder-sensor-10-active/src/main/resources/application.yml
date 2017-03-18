@@ -1,0 +1,13 @@
+spring:
+  cloud:
+    iot:
+      platform: RASPBERRY
+      components:
+        myBuzzer:
+          buzzer:
+            enabled: true
+            type: ACTIVE
+            gpio:
+              pin: 26
+      raspberry:
+        numberingScheme: BROADCOM 

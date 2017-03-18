@@ -18,6 +18,7 @@ package org.springframework.cloud.iot.boot.autoconfigure.component;
 import java.util.Collection;
 
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties.NumberingScheme;
@@ -106,6 +107,13 @@ public abstract class AbstractComponentGpioFactoryBean<T extends SmartLifecycle>
 	@Override
 	public void stop(Runnable callback) {
 		lifecycle.stop(callback);
+	}
+
+	@Override
+	protected void destroyInstance(T instance) throws Exception {
+		if (instance instanceof DisposableBean) {
+			((DisposableBean)instance).destroy();
+		}
 	}
 
 	/**

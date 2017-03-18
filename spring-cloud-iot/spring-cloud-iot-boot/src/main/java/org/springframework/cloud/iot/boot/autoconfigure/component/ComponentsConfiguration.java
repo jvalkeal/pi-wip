@@ -20,15 +20,16 @@ import java.util.Map.Entry;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.cloud.iot.boot.autoconfigure.AbstractConfigurationSupport;
 import org.springframework.cloud.iot.boot.autoconfigure.GpioAutoConfiguration;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties.ComponentType;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties.NumberingScheme;
 import org.springframework.cloud.iot.boot.properties.RaspberryConfigurationProperties;
-import org.springframework.cloud.iot.component.Button;
 import org.springframework.cloud.iot.component.DimmedLed;
 import org.springframework.cloud.iot.component.IncrementalRotary;
 import org.springframework.cloud.iot.component.Relay;
@@ -37,6 +38,7 @@ import org.springframework.cloud.iot.pi4j.Pi4jButton;
 import org.springframework.cloud.iot.pi4j.Pi4jDimmedLed;
 import org.springframework.cloud.iot.pi4j.Pi4jGpioRelayComponent;
 import org.springframework.cloud.iot.pi4j.Pi4jIncrementalRotary;
+import org.springframework.cloud.iot.pi4j.Pi4jLed;
 import org.springframework.cloud.iot.pi4j.Pi4jPCF8591Potentiometer;
 import org.springframework.cloud.iot.pi4j.Pi4jPCF8591TemperatureSensor;
 import org.springframework.cloud.iot.pi4j.Pi4jShiftRegister;
@@ -44,7 +46,10 @@ import org.springframework.cloud.iot.pi4j.component.Pi4jLcd;
 import org.springframework.cloud.iot.pi4j.component.Pi4jPCF8574;
 import org.springframework.cloud.iot.pi4j.component.Pi4jPCF8574HD44780;
 import org.springframework.cloud.iot.pi4j.component.Pi4jPCF8591JoyStick;
+import org.springframework.cloud.iot.pi4j.component.sound.Pi4jActiveBuzzer;
+import org.springframework.cloud.iot.pi4j.component.sound.Pi4jPassiveBuzzer;
 import org.springframework.cloud.iot.pi4j.support.Termistor;
+import org.springframework.cloud.iot.properties.BuzzerProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
@@ -55,7 +60,6 @@ import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinMode;
-import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.RaspiBcmPin;
 import com.pi4j.io.gpio.RaspiPin;
 
@@ -88,7 +92,11 @@ public class ComponentsConfiguration extends AbstractConfigurationSupport implem
 				bdb.addConstructorArgValue(type.getButton().getTags());
 				bdb.addConstructorArgValue(String.valueOf(type.getButton().getGpio().getPin()));
 				bdb.addConstructorArgValue(type.getButton().getGpio().getReference());
-				registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, bdb.getBeanDefinition());
+				AbstractBeanDefinition beanDefinition = bdb.getBeanDefinition();
+				if (beanDefinition instanceof RootBeanDefinition) {
+					((RootBeanDefinition)beanDefinition).setTargetType(Pi4jButton.class);
+				}
+				registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, beanDefinition);
 			} else if (type.getRelay() != null) {
 				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jGpioRelayComponentGpioFactoryBean.class);
 				bdb.addConstructorArgValue(String.valueOf(type.getRelay().getGpio().getPin()));
@@ -106,7 +114,11 @@ public class ComponentsConfiguration extends AbstractConfigurationSupport implem
 				bdb.addConstructorArgValue(String.valueOf(type.getLed().getGpio().getPin()));
 				bdb.addConstructorArgValue(type.getLed().getIlluminateOnStart());
 				bdb.addConstructorArgValue(type.getLed().getIlluminateOnExit());
-				registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, bdb.getBeanDefinition());
+				AbstractBeanDefinition beanDefinition = bdb.getBeanDefinition();
+				if (beanDefinition instanceof RootBeanDefinition) {
+					((RootBeanDefinition)beanDefinition).setTargetType(Pi4jLed.class);
+				}
+				registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, beanDefinition);
 			} else if (type.getShiftRegister() != null) {
 				BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jGpioShiftRegisterComponentGpioFactoryBean.class);
 				bdb.addConstructorArgValue(String.valueOf(type.getShiftRegister().getGpio().getSdiPin()));
@@ -174,6 +186,28 @@ public class ComponentsConfiguration extends AbstractConfigurationSupport implem
 				bdb.addConstructorArgValue(type.getJoystick().getI2c().getBus());
 				bdb.addConstructorArgValue(type.getJoystick().getI2c().getAddress());
 				registry.registerBeanDefinition(BEAN_PREFIX_I2C + name, bdb.getBeanDefinition());
+			} else if (type.getBuzzer() != null) {
+				if (type.getBuzzer().getType() == BuzzerProperties.Type.ACTIVE) {
+					BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jActiveBuzzerGpioFactoryBean.class);
+					bdb.addConstructorArgReference(GpioAutoConfiguration.BEAN_NAME_GPIOCONTROLLER);
+					bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
+					bdb.addConstructorArgValue(String.valueOf(type.getBuzzer().getGpio().getPin()));
+					AbstractBeanDefinition beanDefinition = bdb.getBeanDefinition();
+					if (beanDefinition instanceof RootBeanDefinition) {
+						((RootBeanDefinition)beanDefinition).setTargetType(Pi4jActiveBuzzer.class);
+					}
+					registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, beanDefinition);
+				} else if (type.getBuzzer().getType() == BuzzerProperties.Type.PASSIVE) {
+					BeanDefinitionBuilder bdb = BeanDefinitionBuilder.rootBeanDefinition(Pi4jPassiveBuzzerGpioFactoryBean.class);
+					bdb.addConstructorArgReference(GpioAutoConfiguration.BEAN_NAME_GPIOCONTROLLER);
+					bdb.addConstructorArgValue(raspberryProperties.getNumberingScheme());
+					bdb.addConstructorArgValue(String.valueOf(type.getBuzzer().getGpio().getPin()));
+					AbstractBeanDefinition beanDefinition = bdb.getBeanDefinition();
+					if (beanDefinition instanceof RootBeanDefinition) {
+						((RootBeanDefinition)beanDefinition).setTargetType(Pi4jPassiveBuzzer.class);
+					}
+					registry.registerBeanDefinition(BEAN_PREFIX_GPIO + name, beanDefinition);
+				}
 			}
 		}
 

@@ -5,25 +5,28 @@ spring:
       components:
         button1:
           button:
-            tags: [foo,bar]
+            tags: [button1]
             enabled: true
             gpio:
               pin: 24
               reference: GND
         button2:
           button:
+            tags: [button2]
             enabled: true
             gpio:
               pin: 23
               reference: GND
         button3:
           button:
+            tags: [button3]
             enabled: true
             gpio:
               pin: 25
               reference: GND
         button4:
           button:
+            tags: [button4]
             enabled: true
             gpio:
               pin: 12

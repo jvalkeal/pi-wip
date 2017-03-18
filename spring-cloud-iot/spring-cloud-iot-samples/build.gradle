@@ -28,6 +28,24 @@ project('spring-cloud-iot-samples-sunfounder-sensor-06') {
 	}
 }
 
+project('spring-cloud-iot-samples-sunfounder-sensor-10-passive') {
+	apply plugin: 'org.springframework.boot'
+	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 10 Passive'
+	dependencies {
+		compile project(":spring-cloud-iot-samples-common")
+		runtime('org.springframework.boot:spring-boot-starter-web')
+	}
+}
+
+project('spring-cloud-iot-samples-sunfounder-sensor-10-active') {
+	apply plugin: 'org.springframework.boot'
+	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 10 Active'
+	dependencies {
+		compile project(":spring-cloud-iot-samples-common")
+		runtime('org.springframework.boot:spring-boot-starter-web')
+	}
+}
+
 project('spring-cloud-iot-samples-sunfounder-sensor-15') {
 	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 15'

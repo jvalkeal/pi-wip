@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.iot.properties.ButtonProperties;
+import org.springframework.cloud.iot.properties.BuzzerProperties;
 import org.springframework.cloud.iot.properties.DimmedLedProperties;
 import org.springframework.cloud.iot.properties.HumidityProperties;
 import org.springframework.cloud.iot.properties.IncrementalRotaryProperties;
@@ -65,6 +66,7 @@ public class IotConfigurationProperties {
 		private TermistorProperties termistor;
 		private HumidityProperties humidity;
 		private JoystickProperties joystick;
+		private BuzzerProperties buzzer;
 
 		public IncrementalRotaryProperties getIncrementalRotary() {
 			return incrementalRotary;
@@ -152,6 +154,14 @@ public class IotConfigurationProperties {
 
 		public void setJoystick(JoystickProperties joystick) {
 			this.joystick = joystick;
+		}
+
+		public BuzzerProperties getBuzzer() {
+			return buzzer;
+		}
+
+		public void setBuzzer(BuzzerProperties buzzer) {
+			this.buzzer = buzzer;
 		}
 	}
 

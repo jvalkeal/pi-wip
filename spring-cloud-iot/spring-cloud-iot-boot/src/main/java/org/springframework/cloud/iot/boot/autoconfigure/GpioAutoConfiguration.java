@@ -35,26 +35,17 @@ import com.pi4j.io.gpio.RaspiPinNumberingScheme;
  */
 @Configuration
 @ConditionalOnIot
-//@EnableConfigurationProperties(RaspberryConfigurationProperties.class)
+@EnableConfigurationProperties(RaspberryConfigurationProperties.class)
 //@EnableGpio
 public class GpioAutoConfiguration {
 
 	public static String BEAN_NAME_GPIOCONTROLLER = "gpioController";
 
-//	public GpioAutoConfiguration(RaspberryConfigurationProperties properties) {
-//	}
-
-//	@Bean(destroyMethod = "shutdown")
-//	public GpioController gpioController(RaspberryConfigurationProperties raspberryProperties) {
-//		if (raspberryProperties.getNumberingScheme() == NumberingScheme.BROADCOM) {
-//			GpioFactory.setDefaultProvider(new RaspiGpioProvider(RaspiPinNumberingScheme.BROADCOM_PIN_NUMBERING));
-//		}
-//		GpioController gpio = GpioFactory.getInstance();
-//		return gpio;
-//	}
 	@Bean(destroyMethod = "shutdown")
-	public GpioController gpioController() {
-		GpioFactory.setDefaultProvider(new RaspiGpioProvider(RaspiPinNumberingScheme.BROADCOM_PIN_NUMBERING));
+	public GpioController gpioController(RaspberryConfigurationProperties raspberryProperties) {
+		if (raspberryProperties.getNumberingScheme() == NumberingScheme.BROADCOM) {
+			GpioFactory.setDefaultProvider(new RaspiGpioProvider(RaspiPinNumberingScheme.BROADCOM_PIN_NUMBERING));
+		}
 		GpioController gpio = GpioFactory.getInstance();
 		return gpio;
 	}
