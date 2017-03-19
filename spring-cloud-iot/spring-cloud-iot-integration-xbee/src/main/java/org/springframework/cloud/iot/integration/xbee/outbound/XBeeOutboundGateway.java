@@ -56,8 +56,16 @@ public class XBeeOutboundGateway extends AbstractReplyProducingMessageHandler {
 
 		if (data != null && data.length > 0) {
 			try {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Broadcasting device='" + xbeeDevice + "' data='" + data + "' length='" + data.length
+							+ "'");
+				}
 				xbeeDevice.sendBroadcastData(data);
+				if (logger.isDebugEnabled()) {
+					logger.debug("Broadcasting device='" + xbeeDevice + "' done");
+				}
 			} catch (Exception e) {
+				logger.debug("Broadcasting device='" + xbeeDevice + "' failed", e);
 				throw new MessageHandlingException(requestMessage, "Unable to send message", e);
 			}
 		}

@@ -35,10 +35,10 @@ import org.springframework.context.annotation.Configuration;
 import reactor.core.Disposable;
 
 /**
- * Boot auto-config which adds configurations for subscriptions with
- * known sensors and passes sensor values into boot's {@link GaugeService}.
- * Effectively this makes existing sensor values to be available via
- * boot's metric system.
+ * Boot auto-config which adds configurations for subscriptions with known
+ * sensors and passes sensor values into boot's {@link GaugeService}.
+ * Effectively this makes existing sensor values available via boot's metric
+ * system.
  *
  * @author Janne Valkealahti
  *

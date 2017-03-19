@@ -157,6 +157,7 @@ project('spring-cloud-iot-boot') {
 		compile('org.springframework.boot:spring-boot-actuator')
 		compile('org.slf4j:slf4j-api')
 		optional project(":spring-cloud-iot-integration-coap")
+		optional project(":spring-cloud-iot-integration-xbee")
 		optional('org.springframework.boot:spring-boot-configuration-processor')
 		optional('org.springframework.integration:spring-integration-mqtt')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
@@ -196,6 +197,7 @@ project('spring-cloud-iot-gateway') {
 
 	dependencies {
 		compile project(":spring-cloud-iot-integration-coap")
+		compile project(":spring-cloud-iot-integration-xbee")
 		compile('org.springframework.integration:spring-integration-mqtt')
 		compile('org.slf4j:slf4j-api')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
@@ -210,6 +212,7 @@ project('spring-cloud-iot-xbee') {
 		compile('org.springframework:spring-beans')
 		compile('org.springframework:spring-context')
 		compile('org.springframework:spring-tx')
+		compile('org.springframework:spring-messaging')
 		compile('org.springframework.boot:spring-boot-autoconfigure')
 		compile('org.slf4j:slf4j-api')
 		compile('com.digi.xbee:xbee-java-library')

@@ -1,0 +1,34 @@
+[[iot-faq]]
+= FAQ
+This chapter tries to give solutions to question user is most likely
+to ask.
+
+== XBee
+
+.No such port: /dev/ttyUSB0
+
+{zwsp} +
+
+Application is throwing error like.
+
+[source,text,indent=0]
+----
+com.digi.xbee.api.exceptions.InvalidInterfaceException: No such port: /dev/ttyUSB0
+----
+
+Known issue in _Raspberry Pi V3_ where underlying exception probably
+looks like.
+
+[source,text,indent=0]
+----
+java.lang.UnsatisfiedLinkError:
+/tmp/libNRJavaSerial_HF_root_0/libNRJavaSerial_HF.so: liblockdev.so.1:
+cannot open shared object file: No such file or directory
+----
+
+Solution is to install _liblockdev1_ package.
+[source,text,indent=0]
+----
+$ sudo apt-get install liblockdev1
+----
+

@@ -33,6 +33,9 @@ The following modules are available for Spring Cloud Iot
 |spring-cloud-iot-gateway
 |Core IoT Gateway support
 
+|spring-cloud-iot-xbee
+|Spring Cloud IoT XBEE support
+
 |spring-cloud-iot-integration-xbee
 |Spring Integration XBEE support
 

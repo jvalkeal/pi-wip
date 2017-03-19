@@ -21,12 +21,14 @@ import java.net.URISyntaxException;
 import org.springframework.boot.actuate.autoconfigure.ExportMetricWriter;
 import org.springframework.boot.actuate.metrics.writer.MessageChannelMetricWriter;
 import org.springframework.boot.actuate.metrics.writer.MetricWriter;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.CoapConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.MqttConfigurationProperties;
 import org.springframework.cloud.iot.integration.coap.dsl.Coap;
+import org.springframework.cloud.iot.integration.xbee.dsl.XBee;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -41,9 +43,12 @@ import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 
+import com.digi.xbee.api.XBeeDevice;
+
 /**
- * Boot auto-config for {@link ExportMetricWriter} enabling export
- * into Spring Integration channels based on MQTT and CoAP.
+ * {@link EnableAutoConfiguration Auto-configuration} for
+ * {@link ExportMetricWriter} enabling export into Spring Integration channels
+ * based on MQTT, CoAP and XBee.
  *
  * @author Janne Valkealahti
  *
@@ -133,6 +138,41 @@ public class MetricExporterAutoConfiguration {
 		@ExportMetricWriter
 		public MetricWriter iotCoapMetricWriter() {
 			return new MessageChannelMetricWriter(iotMetricWriterCoapOutboundChannel());
+		}
+	}
+
+	@Configuration
+	@ConditionalOnClass(XBee.class)
+	@ConditionalOnProperty(prefix = "spring.cloud.iot.metrics.xbee.export", name = "enabled", havingValue = "true", matchIfMissing = false)
+	@EnableConfigurationProperties(CoapConfigurationProperties.class)
+	public static class IotMetricExporterXBeeConfiguration {
+
+		private final XBeeDevice xbeeDevice;
+
+		public IotMetricExporterXBeeConfiguration(XBeeDevice xbeeDevice) {
+			this.xbeeDevice = xbeeDevice;
+		}
+
+		@Bean
+		public MessageChannel iotMetricWriterXBeeOutboundChannel() {
+			// TODO: should do backoff buffering in case endpoint is not available
+			return new DirectChannel();
+		}
+
+		@Bean
+		public IntegrationFlow iotMetricWriterXBeeOutboundFlow() throws URISyntaxException {
+			return IntegrationFlows
+				.from(iotMetricWriterXBeeOutboundChannel())
+				.transform(new ObjectToJsonTransformer())
+				.handle(XBee
+						.outboundGateway(xbeeDevice))
+				.get();
+		}
+
+		@Bean
+		@ExportMetricWriter
+		public MetricWriter iotXBeeMetricWriter() {
+			return new MessageChannelMetricWriter(iotMetricWriterXBeeOutboundChannel());
 		}
 	}
 }

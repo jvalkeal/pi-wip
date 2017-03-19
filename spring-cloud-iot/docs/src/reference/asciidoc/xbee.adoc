@@ -1,0 +1,5 @@
+[[iot-xbee]]
+= XBee
+*Digi XBee* is the brand name of a family of form factor compatible
+radio modules from Digi International.
+

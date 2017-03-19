@@ -15,29 +15,17 @@
  */
 package org.springframework.cloud.iot.xbee;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.messaging.Message;
 
-@ConfigurationProperties(prefix = XBeeConfigurationProperties.NAMESPACE)
-public class XBeeConfigurationProperties {
+/**
+ * Higher level abstraction over raw {@code XBee} devices allowing to easier
+ * communication over radio network. This interface provides receivieng features
+ * using Spring messaging system where base message is {@link Message}.
+ *
+ * @author Janne Valkealahti
+ * @see XBeeSender
+ *
+ */
+public interface XBeeReceiver {
 
-	public static final String NAMESPACE = "spring.cloud.iot.xbee";
-
-	private String serialPort;
-	private Integer baudRate;
-
-	public String getSerialPort() {
-		return serialPort;
-	}
-
-	public void setSerialPort(String serialPort) {
-		this.serialPort = serialPort;
-	}
-
-	public Integer getBaudRate() {
-		return baudRate;
-	}
-
-	public void setBaudRate(Integer baudRate) {
-		this.baudRate = baudRate;
-	}
 }

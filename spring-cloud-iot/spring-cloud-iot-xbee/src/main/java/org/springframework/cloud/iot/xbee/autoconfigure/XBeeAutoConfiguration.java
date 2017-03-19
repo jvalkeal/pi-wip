@@ -13,16 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.xbee;
+package org.springframework.cloud.iot.xbee.autoconfigure;
 
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.iot.xbee.support.SerialPortRxTx;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.digi.xbee.api.XBeeDevice;
 import com.digi.xbee.api.exceptions.XBeeException;
 
+/**
+ * {@link EnableAutoConfiguration Auto-configuration} for XBee devices.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 @Configuration
 @EnableConfigurationProperties(XBeeConfigurationProperties.class)
 public class XBeeAutoConfiguration {
@@ -30,9 +38,16 @@ public class XBeeAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty("spring.cloud.iot.xbee.serialPort")
 	public XBeeDevice xbeeDevice(XBeeConfigurationProperties properties) throws XBeeException {
-		SerialPortRxTx serialPortRxTx = new SerialPortRxTx(properties.getSerialPort(), 9600);
-		XBeeDevice myDevice = new XBeeDevice(serialPortRxTx);
-		myDevice.open();
-		return myDevice;
+		int baudRate = 9600;
+		if (properties.getBaudRate() != null) {
+			baudRate = properties.getBaudRate();
+		}
+		SerialPortRxTx serialPortRxTx = new SerialPortRxTx(properties.getSerialPort(), baudRate);
+		XBeeDevice device = new XBeeDevice(serialPortRxTx);
+		if (properties.getReceiveTimeout() != null) {
+			device.setReceiveTimeout(properties.getReceiveTimeout());
+		}
+		device.open();
+		return device;
 	}
 }

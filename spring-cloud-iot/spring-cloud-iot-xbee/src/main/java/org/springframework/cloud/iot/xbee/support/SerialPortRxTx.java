@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.xbee;
+package org.springframework.cloud.iot.xbee.support;
 
 import gnu.io.CommPortIdentifier;
 import gnu.io.CommPortOwnershipListener;
@@ -46,9 +46,16 @@ import com.digi.xbee.api.exceptions.PermissionDeniedException;
 /**
  * This class represents a serial port using the RxTx library to communicate
  * with it.
+ * <p>
+ * This file is copied from Digi's XBee java library as is order to compile
+ * against newer fork of rxtx(github.com/NeuronRobotics/nrjavaserial) which have
+ * a better handling of native libraries. It looks like just by switching
+ * original rxtx lib with nrjavaserial is not enough as you get runtime errors
+ * which is something to do with bytecode level even if method signatures are
+ * exactly same.
  *
- * This file is copied from Digi's XBee java library as is order to
- * compile against newer fork of rxtx.
+ * @author Janne Valkealahti
+ *
  */
 public class SerialPortRxTx extends AbstractSerialPort implements SerialPortEventListener, CommPortOwnershipListener {
 

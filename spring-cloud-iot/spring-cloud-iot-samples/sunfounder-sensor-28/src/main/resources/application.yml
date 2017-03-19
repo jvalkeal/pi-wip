@@ -1,15 +1,15 @@
-logging:
-  level:
-    org.springframework.cloud.iot: DEBUG
 spring:
   cloud:
     iot:
-      platform: RASPBERRY
       components:
         myHumiditySensor:
           humidity:
             enabled: true
             gpio:
               pin: 17
+      metrics:
+        boot:
+          enabled: true
+      platform: RASPBERRY
       raspberry:
         numberingScheme: BROADCOM

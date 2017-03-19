@@ -15,11 +15,15 @@
  */
 package org.springframework.cloud.iot.gateway.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.iot.integration.coap.dsl.Coap;
+import org.springframework.cloud.iot.integration.xbee.dsl.XBee;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
+
+import com.digi.xbee.api.XBeeDevice;
 
 /**
  * Configuration for IoT gateway server.
@@ -30,6 +34,7 @@ import org.springframework.integration.dsl.IntegrationFlows;
 public class IotGatewayServerConfiguration {
 
 	@Configuration
+	@ConditionalOnProperty(prefix = "spring.cloud.iot.coap", name = "enabled", havingValue = "true", matchIfMissing = false)
 	public static class CoapServerConfiguration {
 
 		@Bean
@@ -39,5 +44,19 @@ public class IotGatewayServerConfiguration {
 					.log()
 					.get();
 		}
+	}
+
+	@Configuration
+	@ConditionalOnProperty(prefix = "spring.cloud.iot.xbee", name = "enabled", havingValue = "true", matchIfMissing = false)
+	public static class XBeeServerConfiguration {
+
+		@Bean
+		public IntegrationFlow iotGatewayServerXBeeInboundFlow(XBeeDevice xbeeDevice) {
+			return IntegrationFlows
+					.from(XBee.inboundGateway(xbeeDevice))
+					.log()
+					.get();
+		}
+
 	}
 }
