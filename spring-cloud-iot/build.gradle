@@ -209,6 +209,7 @@ project('spring-cloud-iot-xbee') {
 	description = "Spring Cloud IoT Xbee"
 
 	dependencies {
+		compile project(":spring-cloud-iot-core")
 		compile('org.springframework:spring-beans')
 		compile('org.springframework:spring-context')
 		compile('org.springframework:spring-tx')

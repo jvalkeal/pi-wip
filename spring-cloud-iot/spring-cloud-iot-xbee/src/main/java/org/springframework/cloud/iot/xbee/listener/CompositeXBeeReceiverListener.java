@@ -13,25 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.xbee;
+package org.springframework.cloud.iot.xbee.listener;
 
+import java.util.Iterator;
+
+import org.springframework.cloud.iot.support.AbstractCompositeItems;
 import org.springframework.messaging.Message;
 
-/**
- * Higher level abstraction over raw {@code XBee} devices allowing to easier
- * communication over radio network. This interface provides sending features
- * using Spring messaging system where base message is {@link Message}.
- *
- * @author Janne Valkealahti
- * @see XBeeReceiver
- *
- */
-public interface XBeeSender {
+public class CompositeXBeeReceiverListener extends AbstractCompositeItems<XBeeReceiverListener> implements XBeeReceiverListener {
 
-	/**
-	 * Send a {@link Message} over the {@code XBee} radio network.
-	 *
-	 * @param message the message to send
-	 */
-	void sendMessage(Message<byte[]> message);
+	@Override
+	public void onMessage(Message<byte[]> message) {
+		for (Iterator<XBeeReceiverListener> iterator = getItems().reverse(); iterator.hasNext();) {
+			XBeeReceiverListener listener = iterator.next();
+			listener.onMessage(message);
+		}
+	}
 }

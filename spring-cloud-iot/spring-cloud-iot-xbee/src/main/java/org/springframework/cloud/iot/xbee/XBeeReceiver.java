@@ -15,6 +15,7 @@
  */
 package org.springframework.cloud.iot.xbee;
 
+import org.springframework.cloud.iot.xbee.listener.XBeeReceiverListener;
 import org.springframework.messaging.Message;
 
 /**
@@ -28,4 +29,7 @@ import org.springframework.messaging.Message;
  */
 public interface XBeeReceiver {
 
+	void addXBeeReceiverListener(XBeeReceiverListener listener);
+
+	void removeXBeeReceiverListener(XBeeReceiverListener listener);
 }

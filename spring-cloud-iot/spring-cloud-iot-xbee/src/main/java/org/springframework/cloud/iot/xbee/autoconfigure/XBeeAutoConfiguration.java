@@ -18,6 +18,7 @@ package org.springframework.cloud.iot.xbee.autoconfigure;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.iot.xbee.support.DefaultXBeeComponent;
 import org.springframework.cloud.iot.xbee.support.SerialPortRxTx;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,5 +50,11 @@ public class XBeeAutoConfiguration {
 		}
 		device.open();
 		return device;
+	}
+
+	@Bean
+	@ConditionalOnProperty("spring.cloud.iot.xbee.serialPort")
+	public DefaultXBeeComponent defaultXBeeComponent(XBeeDevice xbeeDevice) {
+		return new DefaultXBeeComponent(xbeeDevice);
 	}
 }

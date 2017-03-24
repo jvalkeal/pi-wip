@@ -15,22 +15,25 @@
  */
 package org.springframework.cloud.iot.xbee.support;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.xbee.XBeeReceiver;
 import org.springframework.cloud.iot.xbee.XBeeSender;
+import org.springframework.cloud.iot.xbee.listener.CompositeXBeeReceiverListener;
+import org.springframework.cloud.iot.xbee.listener.XBeeReceiverListener;
+import org.springframework.cloud.iot.xbee.protocol.RxMessageProtocol;
+import org.springframework.cloud.iot.xbee.protocol.TxMessageProtocol;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 
-import com.digi.xbee.api.RemoteXBeeDevice;
 import com.digi.xbee.api.XBeeDevice;
-import com.digi.xbee.api.io.IOSample;
+import com.digi.xbee.api.exceptions.TimeoutException;
+import com.digi.xbee.api.exceptions.XBeeException;
 import com.digi.xbee.api.listeners.IDataReceiveListener;
-import com.digi.xbee.api.listeners.IIOSampleReceiveListener;
-import com.digi.xbee.api.listeners.IModemStatusReceiveListener;
-import com.digi.xbee.api.listeners.IPacketReceiveListener;
-import com.digi.xbee.api.models.ModemStatusEvent;
 import com.digi.xbee.api.models.XBeeMessage;
-import com.digi.xbee.api.packet.XBeePacket;
 
 /**
  * Default implementation of a {@link XBeeSender} and {@link XBeeReceiver}. This
@@ -46,46 +49,65 @@ public class DefaultXBeeComponent implements XBeeSender, XBeeReceiver {
 	private static final Logger log = LoggerFactory.getLogger(DefaultXBeeComponent.class);
 
 	private final XBeeDevice xbeeDevice;
+	private final CompositeXBeeReceiverListener receiverListener = new CompositeXBeeReceiverListener();
+	private final Map<String, RxMessageProtocol> rxSessions = new HashMap<>();
+	private final Map<String, TxMessageProtocol> txSessions = new HashMap<>();
+	private final XBeeIDataReceiveListener xbeeDataListener = new XBeeIDataReceiveListener();
 
 	public DefaultXBeeComponent(XBeeDevice xbeeDevice) {
 		this.xbeeDevice = xbeeDevice;
+		this.xbeeDevice.addDataListener(xbeeDataListener);
 	}
 
 	@Override
-	public void send(Message<?> message) {
+	public void sendMessage(Message<byte[]> message) {
+		// create session which handles sending this message
+		TxMessageProtocol tx = new TxMessageProtocol(message.getPayload(), (short) 0);
+		for (byte[] frame : tx.getFrames()) {
+			try {
+				log.debug("Broadcasting device='{}' frame='{}'", xbeeDevice, frame);
+				xbeeDevice.sendBroadcastData(frame);
+				log.debug("Broadcasting device='{}' done", xbeeDevice);
+			} catch (TimeoutException e) {
+				e.printStackTrace();
+			} catch (XBeeException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
-	private void xxx() {
-		xbeeDevice.addDataListener(new IDataReceiveListener() {
+	@Override
+	public void addXBeeReceiverListener(XBeeReceiverListener listener) {
+		receiverListener.register(listener);
+	}
 
-			@Override
-			public void dataReceived(XBeeMessage xbeeMessage) {
-				log.debug("dataReceived {}", xbeeMessage);
+	@Override
+	public void removeXBeeReceiverListener(XBeeReceiverListener listener) {
+		receiverListener.unregister(listener);
+	}
+
+	private class XBeeIDataReceiveListener implements IDataReceiveListener {
+
+		@Override
+		public void dataReceived(XBeeMessage xbeeMessage) {
+			byte[] data = xbeeMessage.getData();
+			String deviceID = xbeeMessage.getDevice().get64BitAddress().generateDeviceID();
+			int id = data[1] & 0xFF;
+			String key = deviceID + id;
+			RxMessageProtocol rxMessageSession = rxSessions.get(key);
+			if (rxMessageSession == null) {
+				rxMessageSession = new RxMessageProtocol();
+				rxSessions.put(key, rxMessageSession);
 			}
-		});
 
-		xbeeDevice.addIOSampleListener(new IIOSampleReceiveListener() {
-
-			@Override
-			public void ioSampleReceived(RemoteXBeeDevice remoteDevice, IOSample ioSample) {
-				log.debug("ioSampleReceived {} {}", remoteDevice, ioSample);
+			log.debug("Adding data {}", data);
+			boolean completed = rxMessageSession.add(data);
+			log.debug("Protocol completed={}", completed);
+			if (completed) {
+				byte[] full = rxMessageSession.getData();
+				log.debug("Full frame {}", full);
+				receiverListener.onMessage(MessageBuilder.withPayload(full).build());
 			}
-		});
-
-		xbeeDevice.addModemStatusListener(new IModemStatusReceiveListener() {
-
-			@Override
-			public void modemStatusEventReceived(ModemStatusEvent modemStatusEvent) {
-				log.debug("modemStatusEventReceived {}", modemStatusEvent);
-			}
-		});
-
-		xbeeDevice.addPacketListener(new IPacketReceiveListener() {
-
-			@Override
-			public void packetReceived(XBeePacket receivedPacket) {
-				log.debug("packetReceived {}", receivedPacket);
-			}
-		});
+		}
 	}
 }

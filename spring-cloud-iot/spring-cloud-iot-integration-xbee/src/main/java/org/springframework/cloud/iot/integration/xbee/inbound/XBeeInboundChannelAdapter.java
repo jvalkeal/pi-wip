@@ -15,13 +15,13 @@
  */
 package org.springframework.cloud.iot.integration.xbee.inbound;
 
+import org.springframework.cloud.iot.xbee.listener.XBeeReceiverListener;
+import org.springframework.cloud.iot.xbee.support.DefaultXBeeComponent;
 import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
 
 import com.digi.xbee.api.XBeeDevice;
-import com.digi.xbee.api.listeners.IDataReceiveListener;
-import com.digi.xbee.api.models.XBeeMessage;
 
 /**
  * Inbound channel adapter using XBee mesh network.
@@ -31,7 +31,7 @@ import com.digi.xbee.api.models.XBeeMessage;
  */
 public class XBeeInboundChannelAdapter extends MessageProducerSupport {
 
-	private final XBeeDevice xbeeDevice;
+	private final DefaultXBeeComponent xBeeComponent;
 
 	/**
 	 * Instantiates a new xbee inbound channel adapter.
@@ -41,7 +41,7 @@ public class XBeeInboundChannelAdapter extends MessageProducerSupport {
 	public XBeeInboundChannelAdapter(XBeeDevice xbeeDevice) {
 		super();
 		Assert.notNull(xbeeDevice, "'xbeeDevice' must be set");
-		this.xbeeDevice = xbeeDevice;
+		this.xBeeComponent = new DefaultXBeeComponent(xbeeDevice);
 	}
 
 	@Override
@@ -51,11 +51,11 @@ public class XBeeInboundChannelAdapter extends MessageProducerSupport {
 	}
 
 	private void setupListener() {
-		xbeeDevice.addDataListener(new IDataReceiveListener() {
+		xBeeComponent.addXBeeReceiverListener(new XBeeReceiverListener() {
 
 			@Override
-			public void dataReceived(XBeeMessage xbeeMessage) {
-				Message<byte[]> message = getMessageBuilderFactory().withPayload(xbeeMessage.getData()).build();
+			public void onMessage(Message<byte[]> message) {
+				logger.info("DATA: " + new String(message.getPayload()));
 				sendMessage(message);
 			}
 		});

@@ -13,25 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.xbee;
-
-import org.springframework.messaging.Message;
+package org.springframework.cloud.iot.xbee.protocol;
 
 /**
- * Higher level abstraction over raw {@code XBee} devices allowing to easier
- * communication over radio network. This interface provides sending features
- * using Spring messaging system where base message is {@link Message}.
+ * Base class for message protocol which works on top of XBee's raw packet level
+ * transport.
  *
  * @author Janne Valkealahti
- * @see XBeeReceiver
  *
  */
-public interface XBeeSender {
+public abstract class MessageProtocol {
 
-	/**
-	 * Send a {@link Message} over the {@code XBee} radio network.
-	 *
-	 * @param message the message to send
-	 */
-	void sendMessage(Message<byte[]> message);
+	public final static int MESSAGE_TYPE_START = 0x01;
+	public final static int MESSAGE_TYPE_END = 0x02;
+	// 0    message type
+	// 1    message session id
+	// 2-3  message order
+
+	private int frameSize = 60;
+
+	public int getFrameSize() {
+		return frameSize;
+	}
+
 }

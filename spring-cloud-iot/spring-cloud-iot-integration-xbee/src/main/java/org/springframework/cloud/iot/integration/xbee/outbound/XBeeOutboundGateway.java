@@ -15,9 +15,10 @@
  */
 package org.springframework.cloud.iot.integration.xbee.outbound;
 
+import org.springframework.cloud.iot.xbee.support.DefaultXBeeComponent;
 import org.springframework.integration.handler.AbstractReplyProducingMessageHandler;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHandlingException;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.Assert;
 
 import com.digi.xbee.api.XBeeDevice;
@@ -30,7 +31,7 @@ import com.digi.xbee.api.XBeeDevice;
  */
 public class XBeeOutboundGateway extends AbstractReplyProducingMessageHandler {
 
-	private final XBeeDevice xbeeDevice;
+	private final DefaultXBeeComponent xBeeComponent;
 
 	/**
 	 * Instantiates a new xbee outbound gateway.
@@ -40,7 +41,7 @@ public class XBeeOutboundGateway extends AbstractReplyProducingMessageHandler {
 	public XBeeOutboundGateway(XBeeDevice xbeeDevice) {
 		super();
 		Assert.notNull(xbeeDevice, "'xbeeDevice' must be set");
-		this.xbeeDevice = xbeeDevice;
+		this.xBeeComponent = new DefaultXBeeComponent(xbeeDevice);
 	}
 
 	@Override
@@ -55,19 +56,7 @@ public class XBeeOutboundGateway extends AbstractReplyProducingMessageHandler {
 		}
 
 		if (data != null && data.length > 0) {
-			try {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Broadcasting device='" + xbeeDevice + "' data='" + data + "' length='" + data.length
-							+ "'");
-				}
-				xbeeDevice.sendBroadcastData(data);
-				if (logger.isDebugEnabled()) {
-					logger.debug("Broadcasting device='" + xbeeDevice + "' done");
-				}
-			} catch (Exception e) {
-				logger.debug("Broadcasting device='" + xbeeDevice + "' failed", e);
-				throw new MessageHandlingException(requestMessage, "Unable to send message", e);
-			}
+			xBeeComponent.sendMessage(MessageBuilder.withPayload(data).build());
 		}
 		return null;
 	}
