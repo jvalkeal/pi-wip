@@ -20,6 +20,8 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.cloud.iot.integration.xbee.inbound.XBeeInboundChannelAdapter;
 import org.springframework.cloud.iot.integration.xbee.outbound.XBeeOutboundGateway;
+import org.springframework.cloud.iot.xbee.XBeeReceiver;
+import org.springframework.cloud.iot.xbee.XBeeSender;
 import org.springframework.cloud.stream.binder.AbstractMessageChannelBinder;
 import org.springframework.cloud.stream.binder.ConsumerProperties;
 import org.springframework.cloud.stream.binder.ProducerProperties;
@@ -29,8 +31,6 @@ import org.springframework.cloud.stream.provisioning.ProvisioningProvider;
 import org.springframework.integration.core.MessageProducer;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.util.Assert;
-
-import com.digi.xbee.api.XBeeDevice;
 
 /**
  * Binder implementation for XBee.
@@ -42,25 +42,30 @@ public class XBeeMessageChannelBinder extends
 		AbstractMessageChannelBinder<ConsumerProperties, ProducerProperties, ProvisioningProvider<ConsumerProperties, ProducerProperties>>
 		implements BeanFactoryAware {
 
-	private final XBeeDevice xbeeDevice;
+	private final XBeeSender xbeeSender;
+	private final XBeeReceiver xbeeReceiver;
 	private BeanFactory beanFactory;
 
 	/**
 	 * Instantiates a new xbee message channel binder.
 	 *
 	 * @param provisioningProvider the provisioning provider
-	 * @param xbeeDevice the xbee device
+	 * @param xbeeSender the xbee sender
+	 * @param xbeeReceiver the xbee receiver
 	 */
-	public XBeeMessageChannelBinder(ProvisioningProvider<ConsumerProperties, ProducerProperties> provisioningProvider, XBeeDevice xbeeDevice) {
+	public XBeeMessageChannelBinder(ProvisioningProvider<ConsumerProperties, ProducerProperties> provisioningProvider,
+			XBeeSender xbeeSender, XBeeReceiver xbeeReceiver) {
 		super(false, new String[0], provisioningProvider);
-		Assert.notNull(xbeeDevice, "'xbeeDevice' must be set");
-		this.xbeeDevice = xbeeDevice;
+		Assert.notNull(xbeeSender, "'xbeeSender' must be set");
+		Assert.notNull(xbeeReceiver, "'xbeeReceiver' must be set");
+		this.xbeeSender = xbeeSender;
+		this.xbeeReceiver = xbeeReceiver;
 	}
 
 	@Override
 	protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
 			ProducerProperties producerProperties) throws Exception {
-		XBeeOutboundGateway gateway = new XBeeOutboundGateway(xbeeDevice);
+		XBeeOutboundGateway gateway = new XBeeOutboundGateway(xbeeSender);
 		gateway.setBeanFactory(beanFactory);
 		return gateway;
 	}
@@ -68,7 +73,7 @@ public class XBeeMessageChannelBinder extends
 	@Override
 	protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group,
 			ConsumerProperties properties) throws Exception {
-		XBeeInboundChannelAdapter adapter = new XBeeInboundChannelAdapter(xbeeDevice);
+		XBeeInboundChannelAdapter adapter = new XBeeInboundChannelAdapter(xbeeReceiver);
 		adapter.setBeanFactory(beanFactory);
 		return adapter;
 	}
@@ -77,5 +82,4 @@ public class XBeeMessageChannelBinder extends
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
 		this.beanFactory = beanFactory;
 	}
-
 }

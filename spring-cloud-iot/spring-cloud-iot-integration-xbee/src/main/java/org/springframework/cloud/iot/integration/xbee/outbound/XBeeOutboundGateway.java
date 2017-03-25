@@ -15,13 +15,11 @@
  */
 package org.springframework.cloud.iot.integration.xbee.outbound;
 
-import org.springframework.cloud.iot.xbee.support.DefaultXBeeComponent;
+import org.springframework.cloud.iot.xbee.XBeeSender;
 import org.springframework.integration.handler.AbstractReplyProducingMessageHandler;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.Assert;
-
-import com.digi.xbee.api.XBeeDevice;
 
 /**
  * Outbound gateway using XBee mesh network.
@@ -31,17 +29,17 @@ import com.digi.xbee.api.XBeeDevice;
  */
 public class XBeeOutboundGateway extends AbstractReplyProducingMessageHandler {
 
-	private final DefaultXBeeComponent xBeeComponent;
+	private final XBeeSender xbeeSender;
 
 	/**
 	 * Instantiates a new xbee outbound gateway.
 	 *
-	 * @param xbeeDevice the xbee device
+	 * @param xbeeSender the xbee senser
 	 */
-	public XBeeOutboundGateway(XBeeDevice xbeeDevice) {
+	public XBeeOutboundGateway(XBeeSender xbeeSender) {
 		super();
-		Assert.notNull(xbeeDevice, "'xbeeDevice' must be set");
-		this.xBeeComponent = new DefaultXBeeComponent(xbeeDevice);
+		Assert.notNull(xbeeSender, "'xbeeSender' must be set");
+		this.xbeeSender = xbeeSender;
 	}
 
 	@Override
@@ -56,7 +54,7 @@ public class XBeeOutboundGateway extends AbstractReplyProducingMessageHandler {
 		}
 
 		if (data != null && data.length > 0) {
-			xBeeComponent.sendMessage(MessageBuilder.withPayload(data).build());
+			xbeeSender.sendMessage(MessageBuilder.withPayload(data).build());
 		}
 		return null;
 	}

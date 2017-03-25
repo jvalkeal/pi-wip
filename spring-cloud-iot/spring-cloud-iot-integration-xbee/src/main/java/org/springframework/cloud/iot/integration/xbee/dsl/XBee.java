@@ -16,6 +16,8 @@
 package org.springframework.cloud.iot.integration.xbee.dsl;
 
 import org.springframework.cloud.iot.integration.xbee.inbound.XBeeInboundGateway;
+import org.springframework.cloud.iot.xbee.XBeeReceiver;
+import org.springframework.cloud.iot.xbee.XBeeSender;
 
 import com.digi.xbee.api.XBeeDevice;
 
@@ -31,31 +33,32 @@ public class XBee {
 	 * Create an {@link XBeeInboundGatewaySpec}  builder for request-reply gateway
 	 * based on provided {@link XBeeDevice}.
 	 *
-	 * @param xbeeDevice the XBeeDevice instance
+	 * @param xbeeReceiver the xbee receiver
 	 * @return the XBeeInboundChannelAdapterSpec instance
 	 */
-	public static XBeeInboundGatewaySpec inboundGateway(XBeeDevice xbeeDevice) {
-		return new XBeeInboundGatewaySpec(new XBeeInboundGateway(xbeeDevice));
+	public static XBeeInboundGatewaySpec inboundGateway(XBeeReceiver xbeeReceiver) {
+		return new XBeeInboundGatewaySpec(new XBeeInboundGateway(xbeeReceiver));
 	}
 
 	/**
 	 * Create an {@link XBeeInboundChannelAdapterSpec} builder for one-way adapter.
 	 *
+	 * @param xbeeReceiver the xbee receiver
 	 * @return the XBeeInboundChannelAdapterSpec instance
 	 */
-	public static XBeeInboundChannelAdapterSpec inboundChannelAdapter() {
-		return new XBeeInboundChannelAdapterSpec();
+	public static XBeeInboundChannelAdapterSpec inboundChannelAdapter(XBeeReceiver xbeeReceiver) {
+		return new XBeeInboundChannelAdapterSpec(xbeeReceiver);
 	}
 
 	/**
 	 * Create an {@link XBeeOutboundGatewaySpec} builder for request-reply gateway
 	 * based on provided {@link XBeeDevice}.
 	 *
-	 * @param xbeeDevice the XBeeDevice instance
+	 * @param xbeeSender the xbee sender
 	 * @return the XBeeInboundChannelAdapterSpec instance
 	 */
-	public static XBeeOutboundGatewaySpec outboundGateway(XBeeDevice xbeeDevice) {
-		return new XBeeOutboundGatewaySpec(xbeeDevice);
+	public static XBeeOutboundGatewaySpec outboundGateway(XBeeSender xbeeSender) {
+		return new XBeeOutboundGatewaySpec(xbeeSender);
 	}
 
 	private XBee() {

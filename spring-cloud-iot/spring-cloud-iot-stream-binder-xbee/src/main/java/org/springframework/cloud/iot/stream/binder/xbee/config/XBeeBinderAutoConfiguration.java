@@ -17,14 +17,14 @@ package org.springframework.cloud.iot.stream.binder.xbee.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.iot.stream.binder.xbee.XBeeMessageChannelBinder;
+import org.springframework.cloud.iot.xbee.XBeeReceiver;
+import org.springframework.cloud.iot.xbee.XBeeSender;
 import org.springframework.cloud.stream.binder.Binder;
 import org.springframework.cloud.stream.binder.ConsumerProperties;
 import org.springframework.cloud.stream.binder.ProducerProperties;
 import org.springframework.cloud.stream.provisioning.ProvisioningProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.digi.xbee.api.XBeeDevice;
 
 @Configuration
 @ConditionalOnMissingBean(Binder.class)
@@ -37,8 +37,8 @@ public class XBeeBinderAutoConfiguration {
 
 	@Bean
 	public XBeeMessageChannelBinder xbeeMessageChannelBinder(
-			ProvisioningProvider<ConsumerProperties, ProducerProperties> provisioningProvider, XBeeDevice xbeeDevice) {
-		return new XBeeMessageChannelBinder(provisioningProvider, xbeeDevice);
+			ProvisioningProvider<ConsumerProperties, ProducerProperties> provisioningProvider, XBeeSender xbeeSender,
+			XBeeReceiver xbeeReceiver) {
+		return new XBeeMessageChannelBinder(provisioningProvider, xbeeSender, xbeeReceiver);
 	}
-
 }

@@ -29,6 +29,7 @@ import org.springframework.cloud.iot.boot.properties.CoapConfigurationProperties
 import org.springframework.cloud.iot.boot.properties.MqttConfigurationProperties;
 import org.springframework.cloud.iot.integration.coap.dsl.Coap;
 import org.springframework.cloud.iot.integration.xbee.dsl.XBee;
+import org.springframework.cloud.iot.xbee.XBeeSender;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -147,10 +148,10 @@ public class MetricExporterAutoConfiguration {
 	@EnableConfigurationProperties(CoapConfigurationProperties.class)
 	public static class IotMetricExporterXBeeConfiguration {
 
-		private final XBeeDevice xbeeDevice;
+		private final XBeeSender xbeeSender;
 
-		public IotMetricExporterXBeeConfiguration(XBeeDevice xbeeDevice) {
-			this.xbeeDevice = xbeeDevice;
+		public IotMetricExporterXBeeConfiguration(XBeeSender xbeeSender) {
+			this.xbeeSender = xbeeSender;
 		}
 
 		@Bean
@@ -165,7 +166,7 @@ public class MetricExporterAutoConfiguration {
 				.from(iotMetricWriterXBeeOutboundChannel())
 				.transform(new ObjectToJsonTransformer())
 				.handle(XBee
-						.outboundGateway(xbeeDevice))
+						.outboundGateway(xbeeSender))
 				.get();
 		}
 

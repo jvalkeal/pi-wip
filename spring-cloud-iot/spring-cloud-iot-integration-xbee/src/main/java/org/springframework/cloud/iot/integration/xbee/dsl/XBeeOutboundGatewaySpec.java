@@ -16,21 +16,20 @@
 package org.springframework.cloud.iot.integration.xbee.dsl;
 
 import org.springframework.cloud.iot.integration.xbee.outbound.XBeeOutboundGateway;
+import org.springframework.cloud.iot.xbee.XBeeSender;
 import org.springframework.integration.dsl.MessageHandlerSpec;
-
-import com.digi.xbee.api.XBeeDevice;
 
 public class XBeeOutboundGatewaySpec extends MessageHandlerSpec<XBeeOutboundGatewaySpec, XBeeOutboundGateway> {
 
-	private final XBeeDevice xbeeDevice;
+	private final XBeeSender xbeeSender;
 
-	public XBeeOutboundGatewaySpec(XBeeDevice xbeeDevice) {
+	public XBeeOutboundGatewaySpec(XBeeSender xbeeSender) {
 		super();
-		this.xbeeDevice = xbeeDevice;
+		this.xbeeSender = xbeeSender;
 	}
 
 	@Override
 	protected XBeeOutboundGateway doGet() {
-		return new XBeeOutboundGateway(xbeeDevice);
+		return new XBeeOutboundGateway(xbeeSender);
 	}
 }

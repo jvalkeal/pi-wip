@@ -15,6 +15,21 @@
  */
 package org.springframework.cloud.iot.integration.xbee.dsl;
 
-public class XBeeInboundChannelAdapterSpec {
+import org.springframework.cloud.iot.integration.xbee.inbound.XBeeInboundChannelAdapter;
+import org.springframework.cloud.iot.xbee.XBeeReceiver;
+import org.springframework.integration.dsl.MessageProducerSpec;
 
+public class XBeeInboundChannelAdapterSpec extends MessageProducerSpec<XBeeInboundChannelAdapterSpec, XBeeInboundChannelAdapter> {
+
+	private final XBeeReceiver xbeeReceiver;
+
+	public XBeeInboundChannelAdapterSpec(XBeeReceiver xbeeReceiver) {
+		super(null);
+		this.xbeeReceiver = xbeeReceiver;
+	}
+
+	@Override
+	protected XBeeInboundChannelAdapter doGet() {
+		return new XBeeInboundChannelAdapter(xbeeReceiver);
+	}
 }

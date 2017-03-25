@@ -15,13 +15,11 @@
  */
 package org.springframework.cloud.iot.integration.xbee.inbound;
 
+import org.springframework.cloud.iot.xbee.XBeeReceiver;
 import org.springframework.cloud.iot.xbee.listener.XBeeReceiverListener;
-import org.springframework.cloud.iot.xbee.support.DefaultXBeeComponent;
 import org.springframework.integration.gateway.MessagingGatewaySupport;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
-
-import com.digi.xbee.api.XBeeDevice;
 
 /**
  * Inbound gateway using XBee mesh network.
@@ -31,17 +29,17 @@ import com.digi.xbee.api.XBeeDevice;
  */
 public class XBeeInboundGateway extends MessagingGatewaySupport {
 
-	private final DefaultXBeeComponent xBeeComponent;
+	private final XBeeReceiver xbeeReceiver;
 
 	/**
 	 * Instantiates a new xbee inbound gateway.
 	 *
-	 * @param xbeeDevice the xbee device
+	 * @param xbeeReceiver the xbee receiver
 	 */
-	public XBeeInboundGateway(XBeeDevice xbeeDevice) {
+	public XBeeInboundGateway(XBeeReceiver xbeeReceiver) {
 		super();
-		Assert.notNull(xbeeDevice, "'xbeeDevice' must be set");
-		this.xBeeComponent = new DefaultXBeeComponent(xbeeDevice);
+		Assert.notNull(xbeeReceiver, "'xbeeReceiver' must be set");
+		this.xbeeReceiver = xbeeReceiver;
 	}
 
 	@Override
@@ -51,7 +49,7 @@ public class XBeeInboundGateway extends MessagingGatewaySupport {
 	}
 
 	private void setupListener() {
-		xBeeComponent.addXBeeReceiverListener(new XBeeReceiverListener() {
+		xbeeReceiver.addXBeeReceiverListener(new XBeeReceiverListener() {
 
 			@Override
 			public void onMessage(Message<byte[]> message) {
@@ -59,5 +57,4 @@ public class XBeeInboundGateway extends MessagingGatewaySupport {
 			}
 		});
 	}
-
 }
