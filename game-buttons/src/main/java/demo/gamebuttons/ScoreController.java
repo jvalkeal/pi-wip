@@ -17,23 +17,27 @@ package demo.gamebuttons;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.statemachine.annotation.OnStateEntry;
+import org.springframework.stereotype.Component;
 
 /**
- * {@code MemoryGame} runs a game logic where buttons/leds will illuminate with
- * static order and player is required to press buttons on same order. With
- * every cycle one more led is illuminated and user needs to remember order.
- * Game logic will fail if wrong button in pressed. User needs to wait for
+ * {@link Component @Component} which is getting component scanned and
+ * automatically created as a bean. Sole purpose of this class is to handle
+ * connected game score display.
  *
  * @author Janne Valkealahti
  *
  */
-public class MemoryGame {
+@Component
+public class ScoreController {
 
-	private static final Logger log = LoggerFactory.getLogger(MemoryGame.class);
+	private static final Logger log = LoggerFactory.getLogger(ScoreController.class);
 
-	@OnStateEntry(target = "MEMORYGAME_INIT")
-	public void initGame() {
-		log.info("Enter MEMORYGAME_INIT");
+	/**
+	 * Sets the score.
+	 *
+	 * @param score the new score
+	 */
+	public void setScore(String score) {
+		log.info("Score {}", score);
 	}
 }

@@ -15,16 +15,16 @@
  */
 package demo.gamebuttons;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+/**
+ * {@link Component @Component} which is getting component scanned and
+ * automatically created as a bean. Sole purpose of this class is to handle
+ * sounds emitted from a games.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 @Component
-public class ScoreDisplay {
-
-	private static final Logger log = LoggerFactory.getLogger(ScoreDisplay.class);
-
-	public void setScore(String score) {
-		log.info("Score {}", score);
-	}
+public class SoundController {
 }

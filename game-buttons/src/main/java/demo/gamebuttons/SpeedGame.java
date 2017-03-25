@@ -30,6 +30,14 @@ import org.springframework.statemachine.annotation.OnStateEntry;
 import org.springframework.statemachine.annotation.WithStateMachine;
 import org.springframework.util.StringUtils;
 
+/**
+ * {@code SpeedGame} runs a game logic where buttons/leds will illuminate with
+ * fastening order and player is required to press buttons on same order. Game
+ * logic will fail if wrong button in pressed.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 @WithStateMachine(id = IotStateMachineConstants.ID_STATEMACHINE)
 public class SpeedGame {
 
@@ -40,7 +48,7 @@ public class SpeedGame {
 	private ScheduledFuture<?> scheduledFuture;
 
 	@Autowired
-	private LedBlinker ledBlinker;
+	private LedController ledBlinker;
 
 	@Autowired
 	private TaskScheduler taskScheduler;
@@ -49,11 +57,11 @@ public class SpeedGame {
 	private StateMachine<String, String> stateMachine;
 
 	@Autowired
-	private ScoreDisplay scoreDisplay;
+	private ScoreController scoreDisplay;
 
-	@OnStateEntry(target = "SPEEDGAME_INIT")
+	@OnStateEntry(target = Application.STATE_SPEEDGAME_INIT)
 	public void initGame() {
-		log.info("Enter SPEEDGAME_INIT");
+		log.info("Enter {}", Application.STATE_SPEEDGAME_INIT);
 		if (scheduledFuture != null) {
 			throw new IllegalStateException("Game is already scheduled");
 		}
@@ -77,7 +85,7 @@ public class SpeedGame {
 		}, Duration.ofSeconds(1));
 	}
 
-	@OnStateEntry(target = "GAME_END")
+	@OnStateEntry(target = Application.STATE_GAME_END)
 	public void exitGame() {
 		log.info("Ending SpeedGame");
 		if (scheduledFuture != null) {
@@ -86,7 +94,7 @@ public class SpeedGame {
 		scheduledFuture = null;
 	}
 
-	@OnStateEntry(target = "SPEEDGAME_PRESS")
+	@OnStateEntry(target = Application.STATE_SPEEDGAME_PRESS)
 	public void button(StateContext<String, String> context) {
 		Collection<?> tags = context.getMessageHeaders().get(IotStateMachineConstants.IOT_TAGS, Collection.class);
 		log.info("tags {}", StringUtils.collectionToCommaDelimitedString(tags));
@@ -104,7 +112,7 @@ public class SpeedGame {
 		if (button > 0 && queue[++tail] == button) {
 			scoreDisplay.setScore(Integer.toString(tail + 1));
 		} else {
-			stateMachine.sendEvent("GAME_END");
+			stateMachine.sendEvent(Application.EVENT_GAME_END);
 		}
 	}
 

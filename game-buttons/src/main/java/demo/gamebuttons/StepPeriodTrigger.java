@@ -35,5 +35,4 @@ public class StepPeriodTrigger implements Trigger {
 	public Date nextExecutionTime(TriggerContext arg0) {
 		return null;
 	}
-
 }

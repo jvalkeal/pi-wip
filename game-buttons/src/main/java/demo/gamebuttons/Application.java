@@ -22,19 +22,37 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.iot.event.EnableIotContextEvents;
 import org.springframework.cloud.iot.statemachine.IotStateMachineConstants;
+import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.annotation.OnStateEntry;
 import org.springframework.statemachine.annotation.OnTransition;
 import org.springframework.statemachine.annotation.WithStateMachine;
 
+/**
+ * Main class handling hardware sequences outside of a running game. Flashes
+ * leds when application bootstraps and in idle randomly flashes leds.
+ * {@code #runIdleSequence()} and {@code #runIdleSequence()} are driven from a
+ * running {@link StateMachine}.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 @SpringBootApplication
 @EnableIotContextEvents
 @WithStateMachine(id = IotStateMachineConstants.ID_STATEMACHINE)
 public class Application {
 
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
+	public static final String STATE_SPEEDGAME_INIT = "SPEEDGAME_INIT";
+	public static final String STATE_SPEEDGAME_PRESS = "SPEEDGAME_PRESS";
+	public static final String STATE_GAME_END = "GAME_END";
+	public static final String EVENT_GAME_END = "GAME_END";
+
 
 	@Autowired
-	private LedBlinker ledBlinker;
+	private LedController ledBlinker;
+
+	@Autowired
+	private ScoreController scoreDisplay;
 
 	@OnTransition(source = "IDLE", target = "IDLE")
 	public void runIdleSequence() {
