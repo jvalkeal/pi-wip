@@ -38,7 +38,6 @@ import org.springframework.cloud.iot.support.IotUtils;
 public class RxMessageProtocol extends MessageProtocol {
 
 	private static final Logger log = LoggerFactory.getLogger(RxMessageProtocol.class);
-
 	private final Map<Integer, byte[]> frames = new HashMap<>();
 
 	public boolean add (byte[] frame) {
@@ -49,16 +48,18 @@ public class RxMessageProtocol extends MessageProtocol {
 	}
 
 	public byte[] getData() {
-		List<byte[]> collect = frames.entrySet().stream().sorted(Map.Entry.<Integer, byte[]>comparingByKey()).map(e -> e.getValue()).collect(Collectors.toList());
-		return concatenateByteArrays(collect);
+		List<byte[]> dataFrames = frames.entrySet()
+				.stream()
+				.sorted(Map.Entry.<Integer, byte[]>comparingByKey()).map(e -> e.getValue())
+				.collect(Collectors.toList());
+		return concatenateByteArrays(dataFrames);
 	}
 
-	public byte[] concatenateByteArrays(List<byte[]> blocks) {
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		for (byte[] b : blocks) {
-			os.write(b, 0, b.length);
+	private static byte[] concatenateByteArrays(List<byte[]> dataFrames) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		for (byte[] df : dataFrames) {
+			out.write(df, 0, df.length);
 		}
-		return os.toByteArray();
+		return out.toByteArray();
 	}
-
 }

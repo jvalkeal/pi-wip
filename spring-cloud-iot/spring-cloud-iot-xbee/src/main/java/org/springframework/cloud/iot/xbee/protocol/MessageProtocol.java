@@ -18,6 +18,13 @@ package org.springframework.cloud.iot.xbee.protocol;
 /**
  * Base class for message protocol which works on top of XBee's raw packet level
  * transport.
+ * <p>
+ * {@code MessageProtocol} is meant to overcome frame transport limitations in
+ * XBee devices which imposes hard limit how many bytes can be transferred per
+ * one frame. Depending on a device in use this limit changes anything from 80
+ * bytes to 256 bytes. This protocol give freedom to send larger payloads which
+ * will be disassembled on a transferring side and then reassembled on a
+ * receiving side.
  *
  * @author Janne Valkealahti
  *

@@ -63,5 +63,4 @@ public class TxMessageProtocol extends MessageProtocol {
 
 		return frames;
 	}
-
 }

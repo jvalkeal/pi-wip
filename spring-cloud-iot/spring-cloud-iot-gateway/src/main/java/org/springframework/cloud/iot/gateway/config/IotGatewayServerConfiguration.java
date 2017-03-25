@@ -15,6 +15,7 @@
  */
 package org.springframework.cloud.iot.gateway.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.iot.integration.coap.dsl.Coap;
 import org.springframework.cloud.iot.integration.xbee.dsl.XBee;
@@ -54,7 +55,7 @@ public class IotGatewayServerConfiguration {
 		public IntegrationFlow iotGatewayServerXBeeInboundFlow(XBeeDevice xbeeDevice) {
 			return IntegrationFlows
 					.from(XBee.inboundGateway(xbeeDevice))
-					.log()
+					.<byte[]>log(f -> new String(f.getPayload()))
 					.get();
 		}
 

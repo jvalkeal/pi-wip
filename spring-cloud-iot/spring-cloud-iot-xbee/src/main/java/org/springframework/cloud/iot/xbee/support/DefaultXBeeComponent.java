@@ -15,9 +15,6 @@
  */
 package org.springframework.cloud.iot.xbee.support;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.xbee.XBeeReceiver;
@@ -50,9 +47,8 @@ public class DefaultXBeeComponent implements XBeeSender, XBeeReceiver {
 
 	private final XBeeDevice xbeeDevice;
 	private final CompositeXBeeReceiverListener receiverListener = new CompositeXBeeReceiverListener();
-	private final Map<String, RxMessageProtocol> rxSessions = new HashMap<>();
-	private final Map<String, TxMessageProtocol> txSessions = new HashMap<>();
 	private final XBeeIDataReceiveListener xbeeDataListener = new XBeeIDataReceiveListener();
+	private final MessageProtocolSessions sessions = new MessageProtocolSessions();
 
 	public DefaultXBeeComponent(XBeeDevice xbeeDevice) {
 		this.xbeeDevice = xbeeDevice;
@@ -62,7 +58,7 @@ public class DefaultXBeeComponent implements XBeeSender, XBeeReceiver {
 	@Override
 	public void sendMessage(Message<byte[]> message) {
 		// create session which handles sending this message
-		TxMessageProtocol tx = new TxMessageProtocol(message.getPayload(), (short) 0);
+		TxMessageProtocol tx = sessions.createTxSession(message);
 		for (byte[] frame : tx.getFrames()) {
 			try {
 				log.debug("Broadcasting device='{}' frame='{}'", xbeeDevice, frame);
@@ -90,18 +86,11 @@ public class DefaultXBeeComponent implements XBeeSender, XBeeReceiver {
 
 		@Override
 		public void dataReceived(XBeeMessage xbeeMessage) {
-			byte[] data = xbeeMessage.getData();
-			String deviceID = xbeeMessage.getDevice().get64BitAddress().generateDeviceID();
-			int id = data[1] & 0xFF;
-			String key = deviceID + id;
-			RxMessageProtocol rxMessageSession = rxSessions.get(key);
-			if (rxMessageSession == null) {
-				rxMessageSession = new RxMessageProtocol();
-				rxSessions.put(key, rxMessageSession);
-			}
+			RxMessageProtocol rxMessageSession = sessions.getRxSession(xbeeMessage.getData(),
+					xbeeMessage.getDevice().get64BitAddress().generateDeviceID());
 
-			log.debug("Adding data {}", data);
-			boolean completed = rxMessageSession.add(data);
+			log.debug("Adding data {}", xbeeMessage.getData());
+			boolean completed = rxMessageSession.add(xbeeMessage.getData());
 			log.debug("Protocol completed={}", completed);
 			if (completed) {
 				byte[] full = rxMessageSession.getData();

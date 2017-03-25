@@ -20,7 +20,7 @@ import org.springframework.messaging.Message;
 
 /**
  * Higher level abstraction over raw {@code XBee} devices allowing to easier
- * communication over radio network. This interface provides receivieng features
+ * communication over radio network. This interface provides receiving features
  * using Spring messaging system where base message is {@link Message}.
  *
  * @author Janne Valkealahti
@@ -29,7 +29,17 @@ import org.springframework.messaging.Message;
  */
 public interface XBeeReceiver {
 
+	/**
+	 * Register the {@link XBeeReceiverListener}.
+	 *
+	 * @param listener the listener
+	 */
 	void addXBeeReceiverListener(XBeeReceiverListener listener);
 
+	/**
+	 * Unregister the {@link XBeeReceiverListener}.
+	 *
+	 * @param listener the listener
+	 */
 	void removeXBeeReceiverListener(XBeeReceiverListener listener);
 }
