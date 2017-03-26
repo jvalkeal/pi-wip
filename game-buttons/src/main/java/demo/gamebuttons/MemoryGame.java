@@ -17,6 +17,9 @@ package demo.gamebuttons;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.annotation.OnStateEntry;
 
 /**
@@ -32,8 +35,20 @@ public class MemoryGame {
 
 	private static final Logger log = LoggerFactory.getLogger(MemoryGame.class);
 
-	@OnStateEntry(target = "MEMORYGAME_INIT")
+	@Autowired
+	private LedController ledBlinker;
+
+	@Autowired
+	private TaskScheduler taskScheduler;
+
+	@Autowired
+	private StateMachine<String, String> stateMachine;
+
+	@Autowired
+	private ScoreController scoreDisplay;
+
+	@OnStateEntry(target = Application.STATE_MEMORYGAME_INIT)
 	public void initGame() {
-		log.info("Enter MEMORYGAME_INIT");
+		log.info("Enter {}", Application.STATE_MEMORYGAME_INIT);
 	}
 }

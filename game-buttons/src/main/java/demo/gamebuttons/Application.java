@@ -42,12 +42,16 @@ import org.springframework.statemachine.annotation.WithStateMachine;
 public class Application {
 
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
+
 	public static final String STATE_IDLE = "IDLE";
 	public static final String STATE_SPEEDGAME = "SPEEDGAME";
 	public static final String STATE_SPEEDGAME_INIT = "SPEEDGAME_INIT";
 	public static final String STATE_SPEEDGAME_WAIT = "SPEEDGAME_WAIT";
 	public static final String STATE_SPEEDGAME_PRESS = "SPEEDGAME_PRESS";
+	public static final String STATE_MEMORYGAME = "MEMORYGAME";
+	public static final String STATE_MEMORYGAME_INIT = "MEMORYGAME_INIT";
 	public static final String STATE_GAME_END = "GAME_END";
+
 	public static final String EVENT_GAME_END = "GAME_END";
 	public static final String EVENT_BUTTON_PRESSED = "BUTTON_PRESSED";
 	public static final String EVENT_BUTTON_RELEASED = "BUTTON_RELEASED";
