@@ -1,6 +1,8 @@
 buildscript {
 	ext {
 		springBootVersion = '2.0.0.BUILD-SNAPSHOT'
+		springCloudIotVersion = '1.0.0.BUILD-SNAPSHOT'
+		springStatemachineVersion = '2.0.0.BUILD-SNAPSHOT'
 	}
 	repositories {
 		mavenCentral()
@@ -32,7 +34,8 @@ repositories {
 
 dependencyManagement {
 	imports {
-		mavenBom "org.springframework.cloud.iot:spring-cloud-iot-bom:1.0.0.BUILD-SNAPSHOT"
+		mavenBom "org.springframework.cloud.iot:spring-cloud-iot-bom:${springCloudIotVersion}"
+		mavenBom "org.springframework.statemachine:spring-statemachine-bom:${springStatemachineVersion}"
 	}
 }
 
@@ -42,5 +45,6 @@ dependencies {
 	compile('org.springframework.cloud.iot:spring-cloud-iot-test')
 	compile('org.springframework.cloud.iot:spring-cloud-iot-statemachine')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile('org.springframework.statemachine:spring-statemachine-test')
 }
 

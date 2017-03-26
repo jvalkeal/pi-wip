@@ -15,6 +15,9 @@
  */
 package demo.gamebuttons;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.iot.component.sound.ActiveBuzzer;
+import org.springframework.cloud.iot.pi4j.support.Pi4jUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -27,4 +30,13 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SoundController {
+
+	@Autowired
+	private ActiveBuzzer buzzer;
+
+	public void sound() {
+		buzzer.setEnabled(true);
+		Pi4jUtils.delay(500);
+		buzzer.setEnabled(false);
+	}
 }

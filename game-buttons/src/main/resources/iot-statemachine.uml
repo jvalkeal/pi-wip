@@ -7,13 +7,25 @@
       <transition xmi:type="uml:Transition" xmi:id="_vGyUMAj9Eeegy89mAKnhrg" source="_bqPRYAj8Eeegy89mAKnhrg" target="_bqPRYAj8Eeegy89mAKnhrg">
         <trigger xmi:type="uml:Trigger" xmi:id="_y2YLYAj9Eeegy89mAKnhrg" event="_k_48sAj9Eeegy89mAKnhrg"/>
       </transition>
-      <transition xmi:type="uml:Transition" xmi:id="_2BnYUAj9Eeegy89mAKnhrg" name="BUTTON_RELEASED" source="_bqPRYAj8Eeegy89mAKnhrg" target="_hYgbwAj8Eeegy89mAKnhrg">
+      <transition xmi:type="uml:Transition" xmi:id="_2BnYUAj9Eeegy89mAKnhrg" name="BUTTON_RELEASED" source="_bqPRYAj8Eeegy89mAKnhrg" target="_KqG1cBH1Eeede_xO2L3Ung">
         <trigger xmi:type="uml:Trigger" xmi:id="_-OHfsAj9Eeegy89mAKnhrg" event="__2ww4AcuEeeyFtJkSD2EKA"/>
       </transition>
       <transition xmi:type="uml:Transition" xmi:id="_FwgdgAqHEee6e9XswO00VQ" name="GAME_END" source="_hYgbwAj8Eeegy89mAKnhrg" target="_uv0wIAqGEee6e9XswO00VQ">
         <trigger xmi:type="uml:Trigger" xmi:id="_HpkQ4AqHEee6e9XswO00VQ" event="_Aiti8AqHEee6e9XswO00VQ"/>
       </transition>
       <transition xmi:type="uml:Transition" xmi:id="_KByFcAqHEee6e9XswO00VQ" source="_uv0wIAqGEee6e9XswO00VQ" target="_bqPRYAj8Eeegy89mAKnhrg"/>
+      <transition xmi:type="uml:Transition" xmi:id="_TarTMBH1Eeede_xO2L3Ung" source="_KqG1cBH1Eeede_xO2L3Ung" target="_hYgbwAj8Eeegy89mAKnhrg"/>
+      <transition xmi:type="uml:Transition" xmi:id="_UbJRsBH1Eeede_xO2L3Ung" name="[gameChoiceGuard]" guard="_iuKO4BH2Eeede_xO2L3Ung" source="_KqG1cBH1Eeede_xO2L3Ung" target="_fWsc4BF_Eeede_xO2L3Ung">
+        <ownedRule xmi:type="uml:Constraint" xmi:id="_iuKO4BH2Eeede_xO2L3Ung" name="gameChoiceGuard">
+          <specification xmi:type="uml:OpaqueExpression" xmi:id="_iuKO4RH2Eeede_xO2L3Ung">
+            <language>bean</language>
+            <body>gameChoiceGuard</body>
+          </specification>
+        </ownedRule>
+      </transition>
+      <transition xmi:type="uml:Transition" xmi:id="_VUvPUBH5EeeR45gId3phtg" name="GAME_END" source="_fWsc4BF_Eeede_xO2L3Ung" target="_uv0wIAqGEee6e9XswO00VQ">
+        <trigger xmi:type="uml:Trigger" xmi:id="_ZneP0BH5EeeR45gId3phtg" event="_Aiti8AqHEee6e9XswO00VQ"/>
+      </transition>
       <subvertex xmi:type="uml:Pseudostate" xmi:id="_GVCD4ADkEeeK_Mx9dG65nQ" name=""/>
       <subvertex xmi:type="uml:State" xmi:id="_bqPRYAj8Eeegy89mAKnhrg" name="IDLE"/>
       <subvertex xmi:type="uml:State" xmi:id="_hYgbwAj8Eeegy89mAKnhrg" name="SPEEDGAME">
@@ -34,6 +46,16 @@
       </subvertex>
       <subvertex xmi:type="uml:State" xmi:id="_AVBpQADkEeeK_Mx9dG65nQ" name="SYSTEM_INIT"/>
       <subvertex xmi:type="uml:State" xmi:id="_uv0wIAqGEee6e9XswO00VQ" name="GAME_END"/>
+      <subvertex xmi:type="uml:State" xmi:id="_fWsc4BF_Eeede_xO2L3Ung" name="MEMORYGAME">
+        <region xmi:type="uml:Region" xmi:id="_5hJ-oBF_Eeede_xO2L3Ung" name="Region1">
+          <transition xmi:type="uml:Transition" xmi:id="_-YzDABF_Eeede_xO2L3Ung" source="_9ToKsBF_Eeede_xO2L3Ung" target="_5hNB8BF_Eeede_xO2L3Ung"/>
+          <subvertex xmi:type="uml:State" xmi:id="_5hNB8BF_Eeede_xO2L3Ung" name="MEMORYGAME_INIT"/>
+          <subvertex xmi:type="uml:Pseudostate" xmi:id="_9ToKsBF_Eeede_xO2L3Ung" name=""/>
+          <subvertex xmi:type="uml:State" xmi:id="_APykYBGBEeede_xO2L3Ung" name="MEMORYGAME_WAIT"/>
+          <subvertex xmi:type="uml:State" xmi:id="_C3TZMBGBEeede_xO2L3Ung" name="MEMORYGAME_PRESS"/>
+        </region>
+      </subvertex>
+      <subvertex xmi:type="uml:Pseudostate" xmi:id="_KqG1cBH1Eeede_xO2L3Ung" name="GAMECHOICE" kind="choice"/>
     </region>
   </packagedElement>
   <packagedElement xmi:type="uml:Signal" xmi:id="_ManiEADkEeeK_Mx9dG65nQ" name="BUTTON_PRESSED"/>

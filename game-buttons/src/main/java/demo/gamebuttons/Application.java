@@ -42,34 +42,43 @@ import org.springframework.statemachine.annotation.WithStateMachine;
 public class Application {
 
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
+	public static final String STATE_IDLE = "IDLE";
+	public static final String STATE_SPEEDGAME = "SPEEDGAME";
 	public static final String STATE_SPEEDGAME_INIT = "SPEEDGAME_INIT";
+	public static final String STATE_SPEEDGAME_WAIT = "SPEEDGAME_WAIT";
 	public static final String STATE_SPEEDGAME_PRESS = "SPEEDGAME_PRESS";
 	public static final String STATE_GAME_END = "GAME_END";
 	public static final String EVENT_GAME_END = "GAME_END";
-
-
-	@Autowired
-	private LedController ledBlinker;
+	public static final String EVENT_BUTTON_PRESSED = "BUTTON_PRESSED";
+	public static final String EVENT_BUTTON_RELEASED = "BUTTON_RELEASED";
 
 	@Autowired
-	private ScoreController scoreDisplay;
+	private LedController ledController;
+
+	@Autowired
+	private ScoreController scoreController;
+
+	@Autowired
+	private SoundController soundController;
 
 	@OnTransition(source = "IDLE", target = "IDLE")
 	public void runIdleSequence() {
 		log.info("runIdleSequence");
-		ledBlinker.pulse(LedButton.random().getValue(), 100);
+		ledController.pulse(LedButton.random().getValue(), 100);
 	}
 
 	@OnStateEntry(target = "SYSTEM_INIT")
 	public void runSystemInit() {
-		log.info("System init, leds should now flash few times");
-		ledBlinker.pulse(LedButton.LED1.getValue(), 200);
-		ledBlinker.pulse(LedButton.LED2.getValue(), 200);
-		ledBlinker.pulse(LedButton.LED3.getValue(), 200);
-		ledBlinker.pulse(LedButton.LED4.getValue(), 200);
-		ledBlinker.pulse(LedButton.getSet(LedButton.LED1, LedButton.LED2, LedButton.LED3, LedButton.LED4), 100);
-		ledBlinker.pulse(LedButton.getSet(LedButton.LED1, LedButton.LED2, LedButton.LED3, LedButton.LED4), 100);
-		ledBlinker.pulse(LedButton.getSet(LedButton.LED1, LedButton.LED2, LedButton.LED3, LedButton.LED4), 100);
+		log.info("System init, leds should now flash few times with some sounds");
+		soundController.sound();
+		ledController.pulse(LedButton.LED1.getValue(), 200);
+		ledController.pulse(LedButton.LED2.getValue(), 200);
+		ledController.pulse(LedButton.LED3.getValue(), 200);
+		ledController.pulse(LedButton.LED4.getValue(), 200);
+		ledController.pulse(LedButton.getSet(LedButton.LED1, LedButton.LED2, LedButton.LED3, LedButton.LED4), 100);
+		ledController.pulse(LedButton.getSet(LedButton.LED1, LedButton.LED2, LedButton.LED3, LedButton.LED4), 100);
+		ledController.pulse(LedButton.getSet(LedButton.LED1, LedButton.LED2, LedButton.LED3, LedButton.LED4), 100);
+		soundController.sound();
 	}
 
 	public static void main(String[] args) {

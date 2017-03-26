@@ -51,5 +51,11 @@ spring:
             enabled: true
             gpio:
               pin: 22
+        buzzer:
+          buzzer:
+            enabled: true
+            type: ACTIVE
+            gpio:
+              pin: 26
       raspberry:
         numberingScheme: BROADCOM
