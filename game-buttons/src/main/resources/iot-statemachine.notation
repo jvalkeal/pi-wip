@@ -2,7 +2,7 @@
 <notation:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:style="http://www.eclipse.org/papyrus/infra/viewpoints/policy/style" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_78nekADjEeeK_Mx9dG65nQ" type="PapyrusUMLStateMachineDiagram" name="StateMachine Diagram" measurementUnit="Pixel">
   <children xmi:type="notation:Shape" xmi:id="_78nekQDjEeeK_Mx9dG65nQ" type="StateMachine_Shape">
     <children xmi:type="notation:DecorationNode" xmi:id="_78nekgDjEeeK_Mx9dG65nQ" type="StateMachine_NameLabel">
-      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nekwDjEeeK_Mx9dG65nQ" width="872" height="23"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nekwDjEeeK_Mx9dG65nQ" width="1081" height="23"/>
     </children>
     <children xmi:type="notation:BasicCompartment" xmi:id="_78nelADjEeeK_Mx9dG65nQ" type="StateMachine_RegionCompartment">
       <children xmi:type="notation:Shape" xmi:id="_78nelQDjEeeK_Mx9dG65nQ" type="Region_Shape">
@@ -143,7 +143,7 @@
           </children>
           <children xmi:type="notation:Shape" xmi:id="_fX1FUBF_Eeede_xO2L3Ung" type="State_Shape">
             <children xmi:type="notation:DecorationNode" xmi:id="_fX2TcBF_Eeede_xO2L3Ung" type="State_NameLabel">
-              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_f_6ZABF_Eeede_xO2L3Ung" width="505" height="23"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_f_6ZABF_Eeede_xO2L3Ung" width="598" height="23"/>
             </children>
             <children xmi:type="notation:DecorationNode" xmi:id="_fX26gBF_Eeede_xO2L3Ung" type="State_FloatingNameLabel">
               <layoutConstraint xmi:type="notation:Location" xmi:id="_fX26gRF_Eeede_xO2L3Ung" x="40"/>
@@ -191,7 +191,7 @@
                       <layoutConstraint xmi:type="notation:Bounds" xmi:id="_AQH7lBGBEeede_xO2L3Ung" y="-1" width="193"/>
                     </children>
                     <element xmi:type="uml:State" href="iot-statemachine.uml#_APykYBGBEeede_xO2L3Ung"/>
-                    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_AQHUgRGBEeede_xO2L3Ung" x="42" y="128" width="193" height="50"/>
+                    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_AQHUgRGBEeede_xO2L3Ung" x="19" y="145" width="193" height="50"/>
                   </children>
                   <children xmi:type="notation:Shape" xmi:id="_C3ke8BGBEeede_xO2L3Ung" type="State_Shape">
                     <children xmi:type="notation:DecorationNode" xmi:id="_C3lGABGBEeede_xO2L3Ung" type="State_NameLabel">
@@ -204,17 +204,17 @@
                       <layoutConstraint xmi:type="notation:Bounds" xmi:id="_C3lGBBGBEeede_xO2L3Ung" y="-1" width="193"/>
                     </children>
                     <element xmi:type="uml:State" href="iot-statemachine.uml#_C3TZMBGBEeede_xO2L3Ung"/>
-                    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_C3ke8RGBEeede_xO2L3Ung" x="274" y="134" width="193" height="50"/>
+                    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_C3ke8RGBEeede_xO2L3Ung" x="382" y="145" width="193" height="50"/>
                   </children>
                   <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5hMa4RF_Eeede_xO2L3Ung"/>
                 </children>
                 <element xmi:type="uml:Region" href="iot-statemachine.uml#_5hJ-oBF_Eeede_xO2L3Ung"/>
-                <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5hLz0RF_Eeede_xO2L3Ung" width="505" height="253"/>
+                <layoutConstraint xmi:type="notation:Bounds" xmi:id="_5hLz0RF_Eeede_xO2L3Ung" width="598" height="250"/>
               </children>
-              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_fX26gxF_Eeede_xO2L3Ung" y="23" width="505" height="253"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_fX26gxF_Eeede_xO2L3Ung" y="23" width="598" height="250"/>
             </children>
             <element xmi:type="uml:State" href="iot-statemachine.uml#_fWsc4BF_Eeede_xO2L3Ung"/>
-            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_fX1FURF_Eeede_xO2L3Ung" x="24" y="635" width="505" height="276"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_fX1FURF_Eeede_xO2L3Ung" x="24" y="635" width="598" height="273"/>
           </children>
           <children xmi:type="notation:Shape" xmi:id="_KqczsBH1Eeede_xO2L3Ung" type="Pseudostate_ChoiceShape">
             <children xmi:type="notation:DecorationNode" xmi:id="_KqdawBH1Eeede_xO2L3Ung" type="Pseudostate_ChoiceFloatingNameLabel">
@@ -229,12 +229,12 @@
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nemQDjEeeK_Mx9dG65nQ"/>
         </children>
         <element xmi:type="uml:Region" href="iot-statemachine.uml#_78m3gADjEeeK_Mx9dG65nQ"/>
-        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nemgDjEeeK_Mx9dG65nQ" width="872" height="942"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nemgDjEeeK_Mx9dG65nQ" width="1081" height="1128"/>
       </children>
-      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nemwDjEeeK_Mx9dG65nQ" y="23" width="872" height="942"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nemwDjEeeK_Mx9dG65nQ" y="23" width="1081" height="1128"/>
     </children>
     <element xmi:type="uml:StateMachine" href="iot-statemachine.uml#_78eUoADjEeeK_Mx9dG65nQ"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nenADjEeeK_Mx9dG65nQ" x="30" y="30" width="872" height="965"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nenADjEeeK_Mx9dG65nQ" x="30" y="30" width="1081" height="1151"/>
   </children>
   <styles xmi:type="notation:StringValueStyle" xmi:id="_78nenQDjEeeK_Mx9dG65nQ" name="diagram_compatibility_version" stringValue="1.2.0"/>
   <styles xmi:type="notation:DiagramStyle" xmi:id="_78nengDjEeeK_Mx9dG65nQ"/>
@@ -428,7 +428,7 @@
     <element xmi:type="uml:Transition" href="iot-statemachine.uml#_KByFcAqHEee6e9XswO00VQ"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_KCGOggqHEee6e9XswO00VQ" points="[674, 385, -643984, -643984]$[674, 194, -643984, -643984]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_KCpoIAqHEee6e9XswO00VQ" id="(0.0,0.3010752688172043)"/>
-    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_KCpoIQqHEee6e9XswO00VQ" id="(1.0,0.1951219512195122)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_KCpoIQqHEee6e9XswO00VQ" id="(1.0,0.21138211382113822)"/>
   </edges>
   <edges xmi:type="notation:Connector" xmi:id="_-aZlgBF_Eeede_xO2L3Ung" type="Transition_Edge" source="_9T8TwBF_Eeede_xO2L3Ung" target="_5hNpABF_Eeede_xO2L3Ung">
     <children xmi:type="notation:DecorationNode" xmi:id="_-aaMkBF_Eeede_xO2L3Ung" type="Transition_NameLabel">
@@ -479,12 +479,12 @@
     <element xmi:type="uml:Transition" href="iot-statemachine.uml#_UbJRsBH1Eeede_xO2L3Ung"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_UbhFIhH1Eeede_xO2L3Ung" points="[191, 538, -643984, -643984]$[191, 688, -643984, -643984]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_UcIwMBH1Eeede_xO2L3Ung" id="(0.4839882121807468,0.9839882121807477)"/>
-    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_UcJXQBH1Eeede_xO2L3Ung" id="(0.2693069306930693,0.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_UcJXQBH1Eeede_xO2L3Ung" id="(0.22742474916387959,0.0)"/>
   </edges>
   <edges xmi:type="notation:Connector" xmi:id="_VYHTcBH5EeeR45gId3phtg" type="Transition_Edge" source="_fX1FUBF_Eeede_xO2L3Ung" target="_uwLVcAqGEee6e9XswO00VQ">
     <children xmi:type="notation:DecorationNode" xmi:id="_VYJvsBH5EeeR45gId3phtg" type="Transition_NameLabel">
       <styles xmi:type="notation:BooleanValueStyle" xmi:id="_chw2sBH5EeeR45gId3phtg" name="IS_UPDATED_POSITION" booleanValue="true"/>
-      <layoutConstraint xmi:type="notation:Location" xmi:id="_VYJvsRH5EeeR45gId3phtg" x="-181" y="-16"/>
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_VYJvsRH5EeeR45gId3phtg" x="-56" y="-83"/>
     </children>
     <children xmi:type="notation:DecorationNode" xmi:id="_VYJvshH5EeeR45gId3phtg" type="Transition_GuardLabel">
       <styles xmi:type="notation:BooleanValueStyle" xmi:id="_ciM7kBH5EeeR45gId3phtg" name="IS_UPDATED_POSITION" booleanValue="true"/>
@@ -499,5 +499,53 @@
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_VYH6gRH5EeeR45gId3phtg" points="[560, 769, -643984, -643984]$[756, 769, -643984, -643984]$[756, 587, -643984, -643984]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_VZJ1QBH5EeeR45gId3phtg" id="(1.0,0.29347826086956524)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_VZJ1QRH5EeeR45gId3phtg" id="(0.46745562130177515,1.0)"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_jzKnwBbbEeerWpKmbVSSMQ" type="Transition_Edge" source="_5hNpABF_Eeede_xO2L3Ung" target="_AQHUgBGBEeede_xO2L3Ung">
+    <children xmi:type="notation:DecorationNode" xmi:id="_jzL14BbbEeerWpKmbVSSMQ" type="Transition_NameLabel">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_jzL14RbbEeerWpKmbVSSMQ"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_jzL14hbbEeerWpKmbVSSMQ" type="Transition_GuardLabel">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_jzL14xbbEeerWpKmbVSSMQ"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_jzL15BbbEeerWpKmbVSSMQ" type="Transition_StereotypeLabel">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_jzL15RbbEeerWpKmbVSSMQ" y="60"/>
+    </children>
+    <styles xmi:type="notation:FontStyle" xmi:id="_jzKnwRbbEeerWpKmbVSSMQ"/>
+    <element xmi:type="uml:Transition" href="iot-statemachine.uml#_jwGssBbbEeerWpKmbVSSMQ"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_jzKnwhbbEeerWpKmbVSSMQ" points="[209, 789, -643984, -643984]$[209, 856, -643984, -643984]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_j0KtUBbbEeerWpKmbVSSMQ" id="(0.22797927461139897,1.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_j0KtURbbEeerWpKmbVSSMQ" id="(0.694300518134715,0.0)"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_lRltkBbbEeerWpKmbVSSMQ" type="Transition_Edge" source="_C3ke8BGBEeede_xO2L3Ung" target="_AQHUgBGBEeede_xO2L3Ung">
+    <children xmi:type="notation:DecorationNode" xmi:id="_lRltkxbbEeerWpKmbVSSMQ" type="Transition_NameLabel">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_lRltlBbbEeerWpKmbVSSMQ" x="66" y="15"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_lRltlRbbEeerWpKmbVSSMQ" type="Transition_GuardLabel">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_lRmUoBbbEeerWpKmbVSSMQ"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_lRmUoRbbEeerWpKmbVSSMQ" type="Transition_StereotypeLabel">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_lRmUohbbEeerWpKmbVSSMQ" y="60"/>
+    </children>
+    <styles xmi:type="notation:FontStyle" xmi:id="_lRltkRbbEeerWpKmbVSSMQ"/>
+    <element xmi:type="uml:Transition" href="iot-statemachine.uml#_lRDiEBbbEeerWpKmbVSSMQ"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_lRltkhbbEeerWpKmbVSSMQ" points="[438, 867, -643984, -643984]$[268, 867, -643984, -643984]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_lSfFcBbbEeerWpKmbVSSMQ" id="(0.0,0.22)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_lSfsgBbbEeerWpKmbVSSMQ" id="(1.0,0.22)"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_mA8G4BbbEeerWpKmbVSSMQ" type="Transition_Edge" source="_AQHUgBGBEeede_xO2L3Ung" target="_C3ke8BGBEeede_xO2L3Ung">
+    <children xmi:type="notation:DecorationNode" xmi:id="_mA8t8BbbEeerWpKmbVSSMQ" type="Transition_NameLabel">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_mA8t8RbbEeerWpKmbVSSMQ" x="-68" y="13"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_mA8t8hbbEeerWpKmbVSSMQ" type="Transition_GuardLabel">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_mA8t8xbbEeerWpKmbVSSMQ"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_mA8t9BbbEeerWpKmbVSSMQ" type="Transition_StereotypeLabel">
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_mA8t9RbbEeerWpKmbVSSMQ" y="60"/>
+    </children>
+    <styles xmi:type="notation:FontStyle" xmi:id="_mA8G4RbbEeerWpKmbVSSMQ"/>
+    <element xmi:type="uml:Transition" href="iot-statemachine.uml#_mAgpEBbbEeerWpKmbVSSMQ"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_mA8G4hbbEeerWpKmbVSSMQ" points="[268, 889, -643984, -643984]$[438, 889, -643984, -643984]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_mBuxEBbbEeerWpKmbVSSMQ" id="(1.0,0.66)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_mBuxERbbEeerWpKmbVSSMQ" id="(0.0,0.66)"/>
   </edges>
 </notation:Diagram>

@@ -17,13 +17,16 @@ package org.springframework.cloud.iot.support;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.cloud.iot.component.Taggable;
+import org.springframework.cloud.iot.component.IotProperties;
+import org.springframework.cloud.iot.component.IotTags;
 import org.springframework.cloud.iot.event.IotEventPublisher;
 
 /**
@@ -33,13 +36,14 @@ import org.springframework.cloud.iot.event.IotEventPublisher;
  * @author Janne Valkealahti
  *
  */
-public class IotObjectSupport extends LifecycleObjectSupport implements BeanFactoryAware, Taggable {
+public class IotObjectSupport extends LifecycleObjectSupport implements BeanFactoryAware, IotTags, IotProperties {
 
 	private static final Logger log = LoggerFactory.getLogger(IotObjectSupport.class);
 
 	private volatile BeanFactory beanFactory;
 	private volatile IotEventPublisher iotEventPublisher;
 	private final Collection<String> tags = new ArrayList<>();
+	private final Map<String, Object> properties = new HashMap<>();
 
 	/** Flag for application context events */
 	private boolean contextEventsEnabled = true;
@@ -60,6 +64,19 @@ public class IotObjectSupport extends LifecycleObjectSupport implements BeanFact
 	@Override
 	public Collection<String> getTags() {
 		return tags;
+	}
+
+	@Override
+	public void setProperties(Map<String, Object> properties) {
+		this.properties.clear();
+		if (properties != null) {
+			this.properties.putAll(properties);
+		}
+	}
+
+	@Override
+	public Map<String, Object> getProperties() {
+		return properties;
 	}
 
 	protected BeanFactory getBeanFactory() {

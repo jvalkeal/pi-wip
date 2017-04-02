@@ -1,3 +1,5 @@
+game:
+  total: 12
 spring:
   cloud:
     iot:
@@ -5,28 +7,32 @@ spring:
       components:
         button1:
           button:
-            tags: [button1]
+            properties:
+              id: 0x80
             enabled: true
             gpio:
               pin: 24
               reference: GND
         button2:
           button:
-            tags: [button2]
+            properties:
+              id: 0x40
             enabled: true
             gpio:
               pin: 23
               reference: GND
         button3:
           button:
-            tags: [button3]
+            properties:
+              id: 0x20
             enabled: true
             gpio:
               pin: 25
               reference: GND
         button4:
           button:
-            tags: [button4]
+            properties:
+              id: 0x10
             enabled: true
             gpio:
               pin: 12

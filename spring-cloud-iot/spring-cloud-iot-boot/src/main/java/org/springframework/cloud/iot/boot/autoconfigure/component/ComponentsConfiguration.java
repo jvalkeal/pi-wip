@@ -15,6 +15,8 @@
  */
 package org.springframework.cloud.iot.boot.autoconfigure.component;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.beans.factory.FactoryBean;
@@ -92,6 +94,11 @@ public class ComponentsConfiguration extends AbstractConfigurationSupport implem
 				bdb.addConstructorArgValue(type.getButton().getTags());
 				bdb.addConstructorArgValue(String.valueOf(type.getButton().getGpio().getPin()));
 				bdb.addConstructorArgValue(type.getButton().getGpio().getReference());
+				Map<String, Object> componentProperties = new HashMap<>();
+				if (type.getButton().getProperties() != null) {
+					componentProperties.putAll(type.getButton().getProperties());
+				}
+				bdb.addPropertyValue("iotProperties", componentProperties);
 				AbstractBeanDefinition beanDefinition = bdb.getBeanDefinition();
 				if (beanDefinition instanceof RootBeanDefinition) {
 					((RootBeanDefinition)beanDefinition).setTargetType(Pi4jButton.class);

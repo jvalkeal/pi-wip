@@ -13,22 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.statemachine;
+package org.springframework.cloud.iot.component;
 
-/**
- * Constants used in iot statemachine.
- *
- * @author Janne Valkealahti
- *
- */
-public class IotStateMachineConstants {
+import java.util.Map;
 
-	/** Header name for tags. */
-	public static final String IOT_TAGS = "iotTags";
+public interface IotProperties {
 
-	/** Header name for properties. */
-	public static final String IOT_PROPERTIES = "iotProperties";
+	void setProperties(Map<String, Object> properties);
 
-	/** Bean id for state machine. */
-	public static final String ID_STATEMACHINE = "iotStateMachine";
+	Map<String, Object> getProperties();
 }

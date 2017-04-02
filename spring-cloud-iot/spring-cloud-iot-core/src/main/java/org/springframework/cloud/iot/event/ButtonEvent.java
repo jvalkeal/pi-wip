@@ -16,6 +16,7 @@
 package org.springframework.cloud.iot.event;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.springframework.cloud.iot.component.Button;
 
@@ -43,11 +44,22 @@ public class ButtonEvent extends IotEvent {
 		this.pressed = pressed;
 	}
 
-	public ButtonEvent(Object source, boolean pressed, Collection<String> tags) {
+	/**
+	 * Instantiates a new button event.
+	 *
+	 * @param source the source
+	 * @param pressed the pressed
+	 * @param tags the tags
+	 * @param properties the properties
+	 */
+	public ButtonEvent(Object source, boolean pressed, Collection<String> tags, Map<String, Object> properties) {
 		super(source);
 		this.pressed = pressed;
 		if (tags != null) {
 			this.tags.addAll(tags);
+		}
+		if (properties != null) {
+			this.properties.putAll(properties);
 		}
 	}
 

@@ -17,6 +17,8 @@ package org.springframework.cloud.iot.event;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.context.ApplicationEvent;
 
@@ -31,6 +33,7 @@ public abstract class IotEvent extends ApplicationEvent {
 
 	private static final long serialVersionUID = -4596603783239694082L;
 	protected final Collection<String> tags = new ArrayList<>();
+	protected final Map<String, Object> properties = new HashMap<>();
 
 	/**
 	 * Instantiates a new {@code IotEvent}.
@@ -58,8 +61,17 @@ public abstract class IotEvent extends ApplicationEvent {
 		return tags;
 	}
 
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
+	public Map<String, Object> getProperties() {
+		return properties;
+	}
+
 	@Override
 	public String toString() {
-		return "IotEvent [tags=" + tags + ", source=" + source + "]";
+		return "IotEvent [tags=" + tags + ", properties=" + properties + "]";
 	}
 }

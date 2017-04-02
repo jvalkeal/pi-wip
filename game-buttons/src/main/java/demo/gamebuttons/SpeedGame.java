@@ -17,15 +17,13 @@ package demo.gamebuttons;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.iot.statemachine.IotStateMachineConstants;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.statemachine.StateContext;
-import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.annotation.OnStateEntry;
 import org.springframework.statemachine.annotation.WithStateMachine;
 import org.springframework.util.StringUtils;
@@ -39,59 +37,33 @@ import org.springframework.util.StringUtils;
  *
  */
 @WithStateMachine(id = IotStateMachineConstants.ID_STATEMACHINE)
-public class SpeedGame {
+public class SpeedGame extends AbstractGame {
 
 	private static final Logger log = LoggerFactory.getLogger(SpeedGame.class);
-	private int[] queue = new int[12];
+	private int[] queue;
 	private int tail = -1;
 	private int head = 0;
-	private ScheduledFuture<?> scheduledFuture;
-
-	@Autowired
-	private LedController ledBlinker;
-
-	@Autowired
-	private TaskScheduler taskScheduler;
-
-	@Autowired
-	private StateMachine<String, String> stateMachine;
-
-	@Autowired
-	private ScoreController scoreDisplay;
 
 	@OnStateEntry(target = Application.STATE_SPEEDGAME_INIT)
 	public void initGame() {
 		log.info("Enter {}", Application.STATE_SPEEDGAME_INIT);
-		if (scheduledFuture != null) {
+		if (getScheduledFuture() != null) {
 			throw new IllegalStateException("Game is already scheduled");
 		}
 		tail = -1;
 		head = 0;
-		for (int i = 0; i < 12; i += 4) {
-			queue[i] = LedButton.random().getValue();
-			queue[i + 1] = LedButton.random().getValue();
-			queue[i + 2] = LedButton.random().getValue();
-			queue[i + 3] = LedButton.random().getValue();
-		}
-		scheduledFuture = taskScheduler.scheduleAtFixedRate(new Runnable() {
+		queue = getButtonQueue();
+		ScheduledFuture<?> scheduledFuture = getTaskScheduler().scheduleAtFixedRate(new Runnable() {
 
 			@Override
 			public void run() {
 				if (head < queue.length) {
 					log.info("pulse {} at {}", queue[head], head);
-					ledBlinker.pulse(queue[head++], 200);
+					getLedController().pulse(queue[head++], 200);
 				}
 			}
 		}, Duration.ofSeconds(1));
-	}
-
-	@OnStateEntry(target = Application.STATE_GAME_END)
-	public void exitGame() {
-		log.info("Ending SpeedGame");
-		if (scheduledFuture != null) {
-			scheduledFuture.cancel(true);
-		}
-		scheduledFuture = null;
+		setScheduledFuture(scheduledFuture);
 	}
 
 	@OnStateEntry(target = Application.STATE_SPEEDGAME_PRESS)
@@ -99,20 +71,18 @@ public class SpeedGame {
 		Collection<?> tags = context.getMessageHeaders().get(IotStateMachineConstants.IOT_TAGS, Collection.class);
 		log.info("tags {}", StringUtils.collectionToCommaDelimitedString(tags));
 		int button = -1;
-		if (tags.contains("button1")) {
-			button = 0x80;
-		} else if (tags.contains("button2")) {
-			button = 0x40;
-		} else if (tags.contains("button3")) {
-			button = 0x20;
-		} else if (tags.contains("button4")) {
-			button = 0x10;
+
+		Map<?, ?> properties = context.getMessageHeaders().get(IotStateMachineConstants.IOT_PROPERTIES, Map.class);
+		log.debug("properties {}", properties);
+		Object id = properties != null ? properties.get("id") : null;
+		if (id instanceof Integer) {
+			button = ((Integer)id).intValue();
 		}
 
 		if (button > 0 && queue[++tail] == button) {
-			scoreDisplay.setScore(Integer.toString(tail + 1));
+			getDisplayController().setScore(Integer.toString(tail + 1));
 		} else {
-			stateMachine.sendEvent(Application.EVENT_GAME_END);
+			getStateMachine().sendEvent(Application.EVENT_GAME_END);
 		}
 	}
 

@@ -125,7 +125,7 @@ public class Pi4jButton extends IotObjectSupport implements Button {
 		if (isContextEventsEnabled()) {
 			IotEventPublisher publisher = getIotEventPublisher();
 			if (publisher != null) {
-				publisher.publishIotEvent(new ButtonEvent(this, pressed, getTags()));
+				publisher.publishIotEvent(new ButtonEvent(this, pressed, getTags(), getProperties()));
 			}
 		}
 	}

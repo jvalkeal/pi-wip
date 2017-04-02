@@ -13,31 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demo.gamebuttons;
+package org.springframework.cloud.iot.component;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import java.util.Collection;
 
 /**
- * {@link Component @Component} which is getting component scanned and
- * automatically created as a bean. Sole purpose of this class is to handle
- * connected game score display.
+ * {@code Taggable} is an interface for a component aware of a collection of
+ * {@code tags}. Instead of a component having a single unique identifier it can
+ * be also identified by a collection of tag identifiers.
  *
  * @author Janne Valkealahti
  *
  */
-@Component
-public class ScoreController {
-
-	private static final Logger log = LoggerFactory.getLogger(ScoreController.class);
+public interface IotTags {
 
 	/**
-	 * Sets the score.
+	 * Gets the tags.
 	 *
-	 * @param score the new score
+	 * @return the tags
 	 */
-	public void setScore(String score) {
-		log.info("Score {}", score);
-	}
+	Collection<String> getTags();
+
+	/**
+	 * Sets the tags.
+	 *
+	 * @param tags the new tags
+	 */
+	void setTags(Collection<String> tags);
 }

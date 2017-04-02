@@ -16,13 +16,15 @@
 package org.springframework.cloud.iot.boot.autoconfigure.component;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties.NumberingScheme;
-import org.springframework.cloud.iot.component.Taggable;
+import org.springframework.cloud.iot.component.IotProperties;
+import org.springframework.cloud.iot.component.IotTags;
 import org.springframework.context.SmartLifecycle;
 
 import com.pi4j.io.gpio.GpioController;
@@ -45,6 +47,7 @@ public abstract class AbstractComponentGpioFactoryBean<T extends SmartLifecycle>
 	private final Class<T> clazz;
 	private T lifecycle;
 	private Collection<String> tags;
+	private Map<String, Object> properties;
 
 	public AbstractComponentGpioFactoryBean(GpioController gpioController, NumberingScheme numberingScheme,
 			Class<T> clazz) {
@@ -73,8 +76,11 @@ public abstract class AbstractComponentGpioFactoryBean<T extends SmartLifecycle>
 		if (lifecycle instanceof InitializingBean) {
 			((InitializingBean)lifecycle).afterPropertiesSet();
 		}
-		if (lifecycle instanceof Taggable) {
-			((Taggable)lifecycle).setTags(tags);
+		if (lifecycle instanceof IotTags) {
+			((IotTags)lifecycle).setTags(tags);
+		}
+		if (lifecycle instanceof IotProperties) {
+			((IotProperties)lifecycle).setProperties(properties);
 		}
 		return lifecycle;
 	}
@@ -114,6 +120,10 @@ public abstract class AbstractComponentGpioFactoryBean<T extends SmartLifecycle>
 		if (instance instanceof DisposableBean) {
 			((DisposableBean)instance).destroy();
 		}
+	}
+
+	public void setIotProperties(Map<String, Object> properties) {
+		this.properties = properties;
 	}
 
 	/**

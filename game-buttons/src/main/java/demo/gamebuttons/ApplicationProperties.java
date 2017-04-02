@@ -13,31 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.component;
+package demo.gamebuttons;
 
-import java.util.Collection;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * {@code Taggable} is an interface for a component aware of a collection of
- * {@code tags}. Instead of a component having a single unique identifier it can
- * be also identified by a collection of tag identifiers.
- *
- * @author Janne Valkealahti
- *
- */
-public interface Taggable {
+@ConfigurationProperties(prefix = "game")
+public class ApplicationProperties {
 
-	/**
-	 * Gets the tags.
-	 *
-	 * @return the tags
-	 */
-	Collection<String> getTags();
+	private int total = 100;
 
-	/**
-	 * Sets the tags.
-	 *
-	 * @param tags the new tags
-	 */
-	void setTags(Collection<String> tags);
+	public int getTotal() {
+		return total;
+	}
+
+	public void setTotal(int total) {
+		this.total = total;
+	}
 }

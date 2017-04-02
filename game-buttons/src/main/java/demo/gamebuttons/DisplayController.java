@@ -13,22 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.statemachine;
+package demo.gamebuttons;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
- * Constants used in iot statemachine.
+ * {@link Component @Component} which is getting component scanned and
+ * automatically created as a bean. Sole purpose of this class is to handle
+ * connected game score display.
  *
  * @author Janne Valkealahti
  *
  */
-public class IotStateMachineConstants {
+@Component
+public class DisplayController {
 
-	/** Header name for tags. */
-	public static final String IOT_TAGS = "iotTags";
+	private static final Logger log = LoggerFactory.getLogger(DisplayController.class);
 
-	/** Header name for properties. */
-	public static final String IOT_PROPERTIES = "iotProperties";
-
-	/** Bean id for state machine. */
-	public static final String ID_STATEMACHINE = "iotStateMachine";
+	/**
+	 * Sets the text
+	 *
+	 * @param text the new text
+	 */
+	public void setScore(String text) {
+		log.info("Score {}", text);
+	}
 }

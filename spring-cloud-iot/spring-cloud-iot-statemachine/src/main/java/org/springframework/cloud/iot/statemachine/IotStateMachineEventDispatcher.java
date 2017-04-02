@@ -48,6 +48,7 @@ public class IotStateMachineEventDispatcher implements ApplicationListener<IotEv
 	public void onApplicationEvent(IotEvent event) {
 		MessageBuilder<String> builder = MessageBuilder.withPayload(event.getEventId());
 		builder.setHeader(IotStateMachineConstants.IOT_TAGS, event.getTags());
+		builder.setHeader(IotStateMachineConstants.IOT_PROPERTIES, event.getProperties());
 		Message<String> message = builder.build();
 		log.debug("Dispatching message to 'iotStateMachine' {}", message);
 		stateMachine.sendEvent(message);

@@ -16,6 +16,7 @@
 package org.springframework.cloud.iot.properties;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Generic component properties.
@@ -30,6 +31,9 @@ public abstract class ComponentProperties {
 
 	/** Tags for the component */
 	private List<String> tags;
+
+	/** Properties for the component */
+	private Map<String, Object> properties;
 
 	/**
 	 * Checks if component is enabled.
@@ -65,5 +69,23 @@ public abstract class ComponentProperties {
 	 */
 	public void setTags(List<String> tags) {
 		this.tags = tags;
+	}
+
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
+	public Map<String, Object> getProperties() {
+		return properties;
+	}
+
+	/**
+	 * Sets the properties.
+	 *
+	 * @param properties the properties
+	 */
+	public void setProperties(Map<String, Object> properties) {
+		this.properties = properties;
 	}
 }

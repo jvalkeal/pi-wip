@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.iot.event.EnableIotContextEvents;
 import org.springframework.cloud.iot.statemachine.IotStateMachineConstants;
 import org.springframework.statemachine.StateMachine;
@@ -39,10 +40,12 @@ import org.springframework.statemachine.annotation.WithStateMachine;
 @SpringBootApplication
 @EnableIotContextEvents
 @WithStateMachine(id = IotStateMachineConstants.ID_STATEMACHINE)
+@EnableConfigurationProperties(ApplicationProperties.class)
 public class Application {
 
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
 
+	// State id's
 	public static final String STATE_IDLE = "IDLE";
 	public static final String STATE_SPEEDGAME = "SPEEDGAME";
 	public static final String STATE_SPEEDGAME_INIT = "SPEEDGAME_INIT";
@@ -50,8 +53,11 @@ public class Application {
 	public static final String STATE_SPEEDGAME_PRESS = "SPEEDGAME_PRESS";
 	public static final String STATE_MEMORYGAME = "MEMORYGAME";
 	public static final String STATE_MEMORYGAME_INIT = "MEMORYGAME_INIT";
+	public static final String STATE_MEMORYGAME_WAIT = "MEMORYGAME_WAIT";
+	public static final String STATE_MEMORYGAME_PRESS = "MEMORYGAME_PRESS";
 	public static final String STATE_GAME_END = "GAME_END";
 
+	// Event id's
 	public static final String EVENT_GAME_END = "GAME_END";
 	public static final String EVENT_BUTTON_PRESSED = "BUTTON_PRESSED";
 	public static final String EVENT_BUTTON_RELEASED = "BUTTON_RELEASED";
@@ -60,7 +66,7 @@ public class Application {
 	private LedController ledController;
 
 	@Autowired
-	private ScoreController scoreController;
+	private DisplayController displayController;
 
 	@Autowired
 	private SoundController soundController;

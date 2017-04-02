@@ -15,12 +15,16 @@
  */
 package demo.gamebuttons;
 
+import java.time.Duration;
+import java.util.Map;
+import java.util.concurrent.ScheduledFuture;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.TaskScheduler;
-import org.springframework.statemachine.StateMachine;
+import org.springframework.cloud.iot.statemachine.IotStateMachineConstants;
+import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.annotation.OnStateEntry;
+import org.springframework.statemachine.annotation.WithStateMachine;
 
 /**
  * {@code MemoryGame} runs a game logic where buttons/leds will illuminate with
@@ -31,24 +35,45 @@ import org.springframework.statemachine.annotation.OnStateEntry;
  * @author Janne Valkealahti
  *
  */
-public class MemoryGame {
+@WithStateMachine(id = IotStateMachineConstants.ID_STATEMACHINE)
+public class MemoryGame extends AbstractGame {
 
 	private static final Logger log = LoggerFactory.getLogger(MemoryGame.class);
-
-	@Autowired
-	private LedController ledBlinker;
-
-	@Autowired
-	private TaskScheduler taskScheduler;
-
-	@Autowired
-	private StateMachine<String, String> stateMachine;
-
-	@Autowired
-	private ScoreController scoreDisplay;
+	private int[] queue = new int[12];
 
 	@OnStateEntry(target = Application.STATE_MEMORYGAME_INIT)
 	public void initGame() {
 		log.info("Enter {}", Application.STATE_MEMORYGAME_INIT);
+		if (getScheduledFuture() != null) {
+			throw new IllegalStateException("Game is already scheduled");
+		}
+
+		for (int i = 0; i < 12; i += 4) {
+			queue[i] = LedButton.random().getValue();
+			queue[i + 1] = LedButton.random().getValue();
+			queue[i + 2] = LedButton.random().getValue();
+			queue[i + 3] = LedButton.random().getValue();
+		}
+
+		ScheduledFuture<?> scheduledFuture = getTaskScheduler().scheduleAtFixedRate(new Runnable() {
+
+			@Override
+			public void run() {
+			}
+		}, Duration.ofSeconds(1));
+		setScheduledFuture(scheduledFuture);
 	}
+
+	@OnStateEntry(target = Application.STATE_MEMORYGAME_PRESS)
+	public void buttonxxx(StateContext<String, String> context) {
+		Map<?, ?> properties = context.getMessageHeaders().get(IotStateMachineConstants.IOT_PROPERTIES, Map.class);
+		log.debug("properties {}", properties);
+		Object id = properties != null ? properties.get("id") : null;
+		int button = -1;
+		if (id instanceof Integer) {
+			button = ((Integer)id).intValue();
+		}
+		log.info("button {}", button);
+	}
+
 }
