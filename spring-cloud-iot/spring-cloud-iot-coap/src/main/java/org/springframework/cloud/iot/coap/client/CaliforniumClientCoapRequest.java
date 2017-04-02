@@ -17,7 +17,6 @@ package org.springframework.cloud.iot.coap.client;
 
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResponse;
-import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.CoapStatus;
 import org.springframework.util.Assert;

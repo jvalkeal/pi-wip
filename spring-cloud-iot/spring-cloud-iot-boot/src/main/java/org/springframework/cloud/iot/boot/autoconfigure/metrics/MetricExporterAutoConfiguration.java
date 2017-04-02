@@ -44,8 +44,6 @@ import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 
-import com.digi.xbee.api.XBeeDevice;
-
 /**
  * {@link EnableAutoConfiguration Auto-configuration} for
  * {@link ExportMetricWriter} enabling export into Spring Integration channels

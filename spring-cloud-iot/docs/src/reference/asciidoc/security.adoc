@@ -10,3 +10,6 @@ Spring samples. On default we try to expose as little as possible
 while still giving user a configuration options to opt out and expose
 parts needed.
 ====
+
+== Introduction
+xxx

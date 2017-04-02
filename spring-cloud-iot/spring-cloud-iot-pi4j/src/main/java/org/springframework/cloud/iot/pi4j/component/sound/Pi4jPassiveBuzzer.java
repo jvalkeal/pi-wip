@@ -20,9 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.component.sound.PassiveBuzzer;
 import org.springframework.cloud.iot.support.IotObjectSupport;
 
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.GpioPinPwmOutput;
-import com.pi4j.io.gpio.PinState;
 
 public class Pi4jPassiveBuzzer extends IotObjectSupport implements PassiveBuzzer {
 

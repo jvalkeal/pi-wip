@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 import org.junit.After;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration;
+import org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration;
 import org.springframework.boot.test.util.EnvironmentTestUtils;
 import org.springframework.cloud.iot.boot.autoconfigure.component.ComponentsConfiguration;
 import org.springframework.cloud.iot.component.Button;

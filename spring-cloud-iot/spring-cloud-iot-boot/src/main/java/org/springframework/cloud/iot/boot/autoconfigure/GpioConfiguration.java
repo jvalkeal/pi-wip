@@ -15,38 +15,12 @@
  */
 package org.springframework.cloud.iot.boot.autoconfigure;
 
-import java.util.Map.Entry;
-
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.cloud.iot.boot.properties.GpioConfigurationProperties;
-import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.RaspberryConfigurationProperties;
-import org.springframework.cloud.iot.boot.properties.GpioConfigurationProperties.PinType;
-import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties.NumberingScheme;
-import org.springframework.cloud.iot.component.Button;
-import org.springframework.cloud.iot.component.DimmedLed;
-import org.springframework.cloud.iot.component.Relay;
-import org.springframework.cloud.iot.pi4j.Pi4jButton;
-import org.springframework.cloud.iot.pi4j.Pi4jDimmedLed;
-import org.springframework.cloud.iot.pi4j.Pi4jGpioRelayComponent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
-
-import com.pi4j.component.button.impl.GpioButtonComponent;
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioPinDigitalInput;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.GpioPinPwmOutput;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinMode;
-import com.pi4j.io.gpio.PinPullResistance;
-import com.pi4j.io.gpio.RaspiBcmPin;
-import com.pi4j.io.gpio.RaspiPin;
 
 /**
  * Central GPIO {@link Configuration} registering devices as beans.

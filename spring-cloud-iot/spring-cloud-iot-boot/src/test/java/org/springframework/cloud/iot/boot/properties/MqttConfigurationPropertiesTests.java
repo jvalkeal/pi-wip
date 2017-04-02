@@ -23,6 +23,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +33,7 @@ public class MqttConfigurationPropertiesTests {
 	@Test
 	public void testAllProperties() {
 		SpringApplication app = new SpringApplication(TestConfiguration.class);
-		app.setWebEnvironment(false);
+		app.setWebApplicationType(WebApplicationType.NONE);
 		ConfigurableApplicationContext context = app
 				.run(new String[] { "--spring.config.name=MqttConfigurationPropertiesTests1" });
 		MqttConfigurationProperties properties = context.getBean(MqttConfigurationProperties.class);
@@ -56,7 +57,7 @@ public class MqttConfigurationPropertiesTests {
 	@Test
 	public void testUsernamePasswordSet() {
 		SpringApplication app = new SpringApplication(TestConfiguration.class);
-		app.setWebEnvironment(false);
+		app.setWebApplicationType(WebApplicationType.NONE);
 		ConfigurableApplicationContext context = app
 				.run(new String[] { "--spring.config.name=MqttConfigurationPropertiesTests2" });
 		MqttConfigurationProperties properties = context.getBean(MqttConfigurationProperties.class);
@@ -72,7 +73,7 @@ public class MqttConfigurationPropertiesTests {
 	@Test
 	public void testUsernamePasswordSetInAddress() {
 		SpringApplication app = new SpringApplication(TestConfiguration.class);
-		app.setWebEnvironment(false);
+		app.setWebApplicationType(WebApplicationType.NONE);
 		ConfigurableApplicationContext context = app
 				.run(new String[] { "--spring.config.name=MqttConfigurationPropertiesTests3" });
 		MqttConfigurationProperties properties = context.getBean(MqttConfigurationProperties.class);

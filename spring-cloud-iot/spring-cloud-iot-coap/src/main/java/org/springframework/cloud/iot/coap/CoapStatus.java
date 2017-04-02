@@ -16,7 +16,6 @@
 package org.springframework.cloud.iot.coap;
 
 import org.eclipse.californium.core.coap.MessageFormatException;
-import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 
 public enum CoapStatus {
 

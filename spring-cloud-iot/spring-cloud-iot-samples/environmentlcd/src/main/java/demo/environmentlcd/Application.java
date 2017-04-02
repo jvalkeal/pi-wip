@@ -15,6 +15,8 @@
  */
 package demo.environmentlcd;
 
+import java.time.Duration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +52,7 @@ public class Application implements CommandLineRunner {
 					log.info("New temperature {} humidity {}", t, h);
 					return new Double[] { t, h };
 				})
-				.sampleMillis(1000)
+				.sample(Duration.ofMillis(1000))
 				.subscribe(a -> {
 					lcd.setText(LAYOUT_TEXT_TEMP, String.format("%.1f", a[0]));
 					lcd.setText(LAYOUT_TEXT_HUM, String.format("%.1f", a[1]));

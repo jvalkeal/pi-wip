@@ -412,6 +412,7 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 			}
 		}
 
+		@SuppressWarnings("unchecked")
 		private void convertMessage(Object requestBody, ServerCoapResponse response) {
 			for (CoapMessageConverter<?> converter : getMessageConverters()) {
 				if (converter.canWrite(requestBody.getClass(), null)) {

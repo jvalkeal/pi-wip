@@ -183,12 +183,10 @@ public class CoapTemplate implements CoapOperations {
 					emitter.error(new CoapClientException("Request for url [" + url + "] either timeout'd or was rejected"));
 				}
 			});
-
-			emitter.setCancellation(() -> {
+			emitter.onDispose(() -> {
 				logger.debug("Emitter cancellation, proactive cancel for coap observer");
 				observe.proactiveCancel();
 			});
-
 		});
 
 	}
@@ -241,6 +239,7 @@ public class CoapTemplate implements CoapOperations {
 			}
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public void doWithRequest(ClientCoapRequest request) {
 			super.doWithRequest(request);

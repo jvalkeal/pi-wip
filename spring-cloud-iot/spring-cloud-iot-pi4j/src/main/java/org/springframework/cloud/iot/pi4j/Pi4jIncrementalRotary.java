@@ -16,7 +16,6 @@
 package org.springframework.cloud.iot.pi4j;
 
 import org.springframework.cloud.iot.component.IncrementalRotary;
-import org.springframework.cloud.iot.listener.CompositeButtonListener;
 import org.springframework.cloud.iot.listener.CompositeRotaryListener;
 import org.springframework.cloud.iot.listener.RotaryListener;
 import org.springframework.cloud.iot.support.LifecycleObjectSupport;
