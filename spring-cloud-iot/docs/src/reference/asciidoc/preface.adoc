@@ -15,7 +15,19 @@ This reference documentation contains the following parts.
 
 <<iot-components>> Spring Cloud Iot built-in component support
 
+<<iot-metrics>> Introduction working with metrics
+
+<<iot-security>> Spring Cloud Iot Security documentation
+
+<<iot-coap>> Spring Cloud Iot built-in CoAP support
+
+<<iot-xbee>> Spring Cloud Iot built-in XBee support
+
+<<iot-statemachine>> Spring Cloud Iot built-in Statemachine support
+
 <<iot-examples>> Spring Cloud Iot Samples
+
+<<iot-faq>> Frequently asked questions
 
 <<appendices>> generic info about used material and IoT
 

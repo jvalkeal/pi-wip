@@ -7,6 +7,7 @@ buildscript {
 		californiumVersion = '2.0.0-M2'
 		xbeeVersion = '1.2.0'
 		nrjavaserialVersion = '3.12.1'
+		springCloudStreamAppStarterVersion = '1.2.0.BUILD-SNAPSHOT'
 	}
 	repositories {
 		mavenCentral()

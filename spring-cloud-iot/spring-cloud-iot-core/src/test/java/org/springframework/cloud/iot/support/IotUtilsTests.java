@@ -27,10 +27,15 @@ public class IotUtilsTests {
 		// 0x7F 127 01111111
 		// 0x80 128 10000000
 		assertThat(IotUtils.isBitSet(0x7F, 0x80), is(false));
+		// 0x7F 127 01111111
 		// 0xC0 192 11000000
 		assertThat(IotUtils.isBitSet(0x7F, 0xC0), is(false));
+		// 0xC0 192 11000000
 		// 0xC1 193 11000001
-		assertThat(IotUtils.isBitSet(0xC0, 0xC1), is(true));
+		assertThat(IotUtils.isBitSet(0xC0, 0xC1), is(false));
+		// 0x03 003 00000011
+		// 0x02 002 00000010
+		assertThat(IotUtils.isBitSet(0x03, 0x02), is(true));
 	}
 
 	@Test

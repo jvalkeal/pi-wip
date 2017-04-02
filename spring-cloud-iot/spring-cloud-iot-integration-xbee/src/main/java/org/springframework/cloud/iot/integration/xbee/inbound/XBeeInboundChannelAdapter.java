@@ -53,10 +53,9 @@ public class XBeeInboundChannelAdapter extends MessageProducerSupport {
 
 			@Override
 			public void onMessage(Message<byte[]> message) {
-				logger.info("DATA: " + new String(message.getPayload()));
+				logger.debug("onMessage: " + message);
 				sendMessage(message);
 			}
 		});
 	}
-
 }

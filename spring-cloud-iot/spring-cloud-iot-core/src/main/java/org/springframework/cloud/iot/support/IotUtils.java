@@ -52,7 +52,7 @@ public abstract class IotUtils {
 	 * @return true, if is bit set
 	 */
 	public static boolean isBitSet(int value, int flags) {
-		return (flags & value) == value;
+		return (flags & value) == flags;
 	}
 
 	/**

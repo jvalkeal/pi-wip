@@ -74,3 +74,24 @@ xxx.
 
 === Sunfounder Super Kit Example 13
 xxx.
+
+[[iot-examples-xbee]]
+== Spring Clout Iot XBee Samples
+xxx.
+
+[[iot-examples-xbee-receivedata]]
+=== Spring Clout Iot XBee Receive Data
+xxx.
+
+[[iot-examples-xbee-senddata]]
+=== Spring Clout Iot XBee Send Data
+xxx.
+
+[[iot-examples-stream]]
+== Spring Clout Iot Stream Samples
+xxx.
+
+[[iot-examples-stream-ticktock]]
+=== Spring Clout Iot Stream Ticktock
+xxx.
+

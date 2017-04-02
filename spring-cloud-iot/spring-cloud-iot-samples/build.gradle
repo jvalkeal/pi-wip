@@ -218,3 +218,36 @@ project('spring-cloud-iot-samples-xbee-receivedata') {
 		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
 }
+
+project('spring-cloud-iot-samples-time-source') {
+	apply plugin: 'org.springframework.boot'
+	description = 'Spring Cloud IOT Stream Time Source Sample'
+	dependencyManagement {
+		imports {
+			mavenBom "org.springframework.cloud.stream.app:time-app-dependencies:${springCloudStreamAppStarterVersion}"
+			mavenBom "org.springframework.cloud.stream.app:app-starters-core-dependencies:${springCloudStreamAppStarterVersion}"
+		}
+	}
+	dependencies {
+		compile project(":spring-cloud-iot-stream-binder-xbee")
+		compile('org.springframework.cloud.stream.app:spring-cloud-starter-stream-source-time')
+		runtime('org.springframework.boot:spring-boot-starter-web')
+	}
+}
+
+project('spring-cloud-iot-samples-log-sink') {
+	apply plugin: 'org.springframework.boot'
+	description = 'Spring Cloud IOT Stream Log Sink Sample'
+	dependencyManagement {
+		imports {
+			mavenBom "org.springframework.cloud.stream.app:log-app-dependencies:${springCloudStreamAppStarterVersion}"
+			mavenBom "org.springframework.cloud.stream.app:app-starters-core-dependencies:${springCloudStreamAppStarterVersion}"
+		}
+	}
+	dependencies {
+		compile project(":spring-cloud-iot-stream-binder-xbee")
+		compile('org.springframework.cloud.stream.app:spring-cloud-starter-stream-sink-log')
+		runtime('org.springframework.boot:spring-boot-starter-web')
+	}
+}
+
