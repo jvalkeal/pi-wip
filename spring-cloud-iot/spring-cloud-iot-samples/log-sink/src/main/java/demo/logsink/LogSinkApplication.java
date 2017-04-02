@@ -28,6 +28,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.handler.LoggingHandler;
 
+//tag::snippetA1[]
 @SpringBootApplication
 @EnableBinding(Source.class)
 @Import(LogSinkConfiguration.class)
@@ -49,3 +50,4 @@ public class LogSinkApplication {
 		SpringApplication.run(LogSinkApplication.class, args);
 	}
 }
+//end::snippetA1[]

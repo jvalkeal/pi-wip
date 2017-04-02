@@ -2,6 +2,17 @@
 = IoT Examples
 xxx.
 
+[source,text]
+----
+./gradlew clean build -x test
+----
+
+Every sample is located in its own directory under
+`spring-cloud-iot-samples`. Samples are based on spring-boot and
+spring-shell and you will find usual boot fat jars under every sample
+projects `build/libs` directory.
+
+
 [[iot-examples-generic]]
 == Spring Clout Iot Generic Samples
 xxx.
@@ -93,5 +104,63 @@ xxx.
 
 [[iot-examples-stream-ticktock]]
 === Spring Clout Iot Stream Ticktock
-xxx.
+This sample is a simple _ticktock_ stream sample familiar from _Spring
+Cloud Dataflow_ as a basic `time` source into `log` sink.
 
+For _source_ application we simply cope existing
+`TimeSourceApplication` as is and define _XBee_ to be in
+`/dev/ttyUSB0`.
+[source,yaml,indent=0]
+----
+include::samples/time-source/src/main/resources/application.yml[tags=snippetA1]
+----
+
+[source,java,indent=0]
+----
+include::samples/time-source/src/main/java/demo/timesource/TimeSourceApplication.java[tags=snippetA1]
+----
+
+For _sink_ application we simply cope existing
+`LogSinkApplication` as is and define _XBee_ to be in
+`/dev/ttyUSB0`.
+[source,yaml,indent=0]
+----
+include::samples/log-sink/src/main/resources/application.yml[tags=snippetA1]
+----
+
+[source,java,indent=0]
+----
+include::samples/log-sink/src/main/java/demo/logsink/LogSinkApplication.java[tags=snippetA1]
+----
+
+Start both applications as:
+
+[source,text,subs="verbatim,attributes"]
+----
+$ sudo java -jar spring-cloud-iot-samples-log-sink-{revnumber}.jar \
+--spring.cloud.stream.bindings.input.contentType=text/plain
+----
+
+[source,text,subs="verbatim,attributes"]
+----
+$ sudo java -jar spring-cloud-iot-samples-time-source-{revnumber}.jar
+----
+
+`TimeSourceApplication` simply logs itself as started.
+
+[source,text,subs="verbatim,attributes"]
+----
+2017-04-02 16:19:05.132  INFO 3605 --- [           main] demo.timesource.TimeSourceApplication
+: Started TimeSourceApplication in 37.447 seconds (JVM running for 39.272)
+----
+
+`LogSinkApplication` simply logs messages received from
+`TimeSourceApplication`.
+
+[source,text,subs="verbatim,attributes"]
+----
+2017-04-02 17:54:37.655  INFO 7061 --- [           main] demo.logsink.LogSinkApplication
+: Started LogSinkApplication in 36.182 seconds (JVM running for 38.031)
+2017-04-02 17:55:13.874  INFO 7061 --- [ool-10-thread-1] log.sink : 04/02/17 17:55:13
+2017-04-02 17:55:14.786  INFO 7061 --- [ool-12-thread-1] log.sink : 04/02/17 17:55:14
+----

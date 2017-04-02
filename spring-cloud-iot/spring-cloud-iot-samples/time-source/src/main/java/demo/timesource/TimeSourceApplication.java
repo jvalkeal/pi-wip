@@ -29,6 +29,7 @@ import org.springframework.cloud.stream.app.trigger.TriggerPropertiesMaxMessages
 import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.context.annotation.Import;
 
+//tag::snippetA1[]
 @SpringBootApplication
 @EnableBinding(Source.class)
 @Import({TriggerConfiguration.class, TriggerPropertiesMaxMessagesDefaultOne.class})
@@ -46,3 +47,4 @@ public class TimeSourceApplication {
 		SpringApplication.run(TimeSourceApplication.class, args);
 	}
 }
+//end::snippetA1[]

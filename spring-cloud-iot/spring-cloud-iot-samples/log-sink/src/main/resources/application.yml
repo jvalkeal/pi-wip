@@ -1,3 +1,4 @@
+# tag::snippetA1[]
 server:
   port: 0
 logging:
@@ -8,3 +9,4 @@ spring:
     iot:
       xbee:
         serialPort: /dev/ttyUSB0
+# end::snippetA1[]
