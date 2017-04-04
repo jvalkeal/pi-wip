@@ -16,51 +16,53 @@
 package org.springframework.cloud.iot.integration.xbee.outbound;
 
 import org.springframework.cloud.iot.xbee.XBeeSender;
-import org.springframework.integration.handler.AbstractReplyProducingMessageHandler;
+import org.springframework.integration.handler.AbstractMessageProducingHandler;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.Assert;
 
 /**
- * Outbound gateway using XBee mesh network.
+ * Outbound channel adapter using XBee mesh network.
  *
  * @author Janne Valkealahti
  *
  */
-public class XBeeOutboundGateway extends AbstractReplyProducingMessageHandler {
+public class XBeeOutboundChannelAdapter extends AbstractMessageProducingHandler {
 
 	private final XBeeSender xbeeSender;
 
 	/**
-	 * Instantiates a new xbee outbound gateway.
+	 * Instantiates a new xbee inbound channel adapter.
 	 *
-	 * @param xbeeSender the xbee senser
+	 * @param xbeeReceiver the xbee receiver
 	 */
-	public XBeeOutboundGateway(XBeeSender xbeeSender) {
+	public XBeeOutboundChannelAdapter(XBeeSender xbeeSender) {
 		super();
 		Assert.notNull(xbeeSender, "'xbeeSender' must be set");
 		this.xbeeSender = xbeeSender;
 	}
 
 	@Override
-	protected Object handleRequestMessage(Message<?> requestMessage) {
-		byte[] data = null;
+	protected void onInit() throws Exception {
+		super.onInit();
+	}
 
-		Object payload = requestMessage.getPayload();
+	@Override
+	public String getComponentType() {
+		return "xbee:outbound-channel-adapter";
+	}
+
+	@Override
+	protected void handleMessageInternal(Message<?> message) throws Exception {
+		byte[] data = null;
+		Object payload = message.getPayload();
 		if (payload instanceof String) {
 			data = ((String)payload).getBytes();
 		} else if (payload instanceof byte[]) {
 			data = (byte[])payload;
 		}
-
 		if (data != null && data.length > 0) {
 			xbeeSender.sendMessage(MessageBuilder.withPayload(data).build());
 		}
-		return null;
-	}
-
-	@Override
-	public String getComponentType() {
-		return "xbee:outbound-gateway";
 	}
 }

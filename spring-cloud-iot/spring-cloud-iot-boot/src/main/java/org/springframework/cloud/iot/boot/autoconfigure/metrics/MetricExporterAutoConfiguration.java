@@ -118,7 +118,6 @@ public class MetricExporterAutoConfiguration {
 
 		@Bean
 		public MessageChannel iotMetricWriterCoapOutboundChannel() {
-			// TODO: should do backoff buffering in case endpoint is not available
 			return new DirectChannel();
 		}
 
@@ -154,7 +153,6 @@ public class MetricExporterAutoConfiguration {
 
 		@Bean
 		public MessageChannel iotMetricWriterXBeeOutboundChannel() {
-			// TODO: should do backoff buffering in case endpoint is not available
 			return new DirectChannel();
 		}
 

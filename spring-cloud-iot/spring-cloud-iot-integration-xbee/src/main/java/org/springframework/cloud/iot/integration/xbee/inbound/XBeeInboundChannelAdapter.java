@@ -48,6 +48,11 @@ public class XBeeInboundChannelAdapter extends MessageProducerSupport {
 		setupListener();
 	}
 
+	@Override
+	public String getComponentType() {
+		return "xbee:inbound-channel-adapter";
+	}
+
 	private void setupListener() {
 		xbeeReceiver.addXBeeReceiverListener(new XBeeReceiverListener() {
 

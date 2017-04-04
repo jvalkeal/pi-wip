@@ -48,6 +48,11 @@ public class XBeeInboundGateway extends MessagingGatewaySupport {
 		setupListener();
 	}
 
+	@Override
+	public String getComponentType() {
+		return "xbee:inbound-gateway";
+	}
+
 	private void setupListener() {
 		xbeeReceiver.addXBeeReceiverListener(new XBeeReceiverListener() {
 
