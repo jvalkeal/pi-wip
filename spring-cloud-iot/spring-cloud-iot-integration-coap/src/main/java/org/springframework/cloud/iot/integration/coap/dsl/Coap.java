@@ -27,16 +27,32 @@ import org.springframework.cloud.iot.integration.coap.inbound.CoapInboundGateway
  */
 public final class Coap {
 
-	public static CoapOutboundGatewaySpec outboundGateway(URI url) {
-		return new CoapOutboundGatewaySpec(url);
-	}
-
+	/**
+	 * Create an {@link CoapInboundGatewaySpec} builder for request-reply gateway.
+	 *
+	 * @return the CoapInboundGatewaySpec instance
+	 */
 	public static CoapInboundGatewaySpec inboundGateway() {
 		return new CoapInboundGatewaySpec(new CoapInboundGateway());
 	}
 
+	/**
+	 * Create an {@link CoapInboundGatewaySpec} builder for one-way adapter.
+	 *
+	 * @return the CoapInboundGatewaySpec instance
+	 */
 	public static CoapInboundGatewaySpec inboundChannelAdapter() {
 		return new CoapInboundGatewaySpec(new CoapInboundGateway(false));
+	}
+
+	/**
+	 * Create an {@link CoapOutboundGatewaySpec} builder for request-reply gateway.
+	 *
+	 * @param url the url
+	 * @return the CoapOutboundGatewaySpec instance
+	 */
+	public static CoapOutboundGatewaySpec outboundGateway(URI url) {
+		return new CoapOutboundGatewaySpec(url);
 	}
 
 	private Coap() {
