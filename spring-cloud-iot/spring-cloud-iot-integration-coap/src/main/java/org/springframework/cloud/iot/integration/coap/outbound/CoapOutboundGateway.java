@@ -20,8 +20,8 @@ import java.net.URI;
 import org.springframework.cloud.iot.coap.CoapEntity;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.CoapResponseEntity;
+import org.springframework.cloud.iot.coap.californium.CoapTemplate;
 import org.springframework.cloud.iot.coap.client.CoapOperations;
-import org.springframework.cloud.iot.coap.client.CoapTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
@@ -45,7 +45,6 @@ import org.springframework.util.StringUtils;
 public class CoapOutboundGateway extends AbstractReplyProducingMessageHandler {
 
 	private final CoapOperations coapOperations;
-
 	private volatile boolean extractPayload = true;
 	private volatile boolean expectReply = true;
 	private volatile boolean extractPayloadExplicitlySet = false;
@@ -78,7 +77,11 @@ public class CoapOutboundGateway extends AbstractReplyProducingMessageHandler {
 		} catch (Exception e) {
 			throw new MessageHandlingException(requestMessage, "COAP request execution failed", e);
 		}
+	}
 
+	@Override
+	public String getComponentType() {
+		return (this.expectReply) ? "coap:outbound-gateway" : "coap:outbound-channel-adapter";
 	}
 
 	/**

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.coap.client;
+package org.springframework.cloud.iot.coap.californium;
 
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -29,6 +29,14 @@ import org.eclipse.californium.core.CoapResponse;
 import org.springframework.cloud.iot.coap.CoapEntity;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.CoapResponseEntity;
+import org.springframework.cloud.iot.coap.client.ClientCoapRequest;
+import org.springframework.cloud.iot.coap.client.ClientCoapResponse;
+import org.springframework.cloud.iot.coap.client.CoapClientException;
+import org.springframework.cloud.iot.coap.client.CoapMessageConverterExtractor;
+import org.springframework.cloud.iot.coap.client.CoapOperations;
+import org.springframework.cloud.iot.coap.client.DefaultClientCoapResponse;
+import org.springframework.cloud.iot.coap.client.RequestCallback;
+import org.springframework.cloud.iot.coap.client.ResponseExtractor;
 import org.springframework.cloud.iot.coap.converter.ByteArrayCoapMessageConverter;
 import org.springframework.cloud.iot.coap.converter.CoapMessageConverter;
 import org.springframework.cloud.iot.coap.converter.GsonCoapMessageConverter;

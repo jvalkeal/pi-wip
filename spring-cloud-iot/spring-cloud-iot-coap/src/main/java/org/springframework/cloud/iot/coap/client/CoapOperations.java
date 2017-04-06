@@ -20,6 +20,7 @@ import java.net.URI;
 import org.springframework.cloud.iot.coap.CoapEntity;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.CoapResponseEntity;
+import org.springframework.cloud.iot.coap.californium.CoapTemplate;
 
 import reactor.core.publisher.Flux;
 

@@ -15,7 +15,7 @@ buildscript {
 		maven { url 'http://repo.spring.io/plugins-snapshot' }
 	}
 	dependencies {
-		classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
+		classpath("io.spring.gradle:propdeps-plugin:0.0.8")
 		classpath('org.asciidoctor:asciidoctor-gradle-plugin:1.5.3')
 		classpath("io.spring.gradle:docbook-reference-plugin:0.3.1")
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -24,7 +24,7 @@ buildscript {
 
 def sampleProjects() {
 	subprojects.findAll { project ->
-		project.name.contains('spring-cloud-iot-samples') && project.name != 'spring-cloud-iot-common'
+		project.name.contains('spring-cloud-iot-samples') && project.name != 'spring-cloud-iot-samples-common'
 	}
 }
 
@@ -261,10 +261,11 @@ project('spring-cloud-iot-statemachine') {
 	}
 }
 
-project('spring-cloud-iot-samples-common') {
+//project('spring-cloud-iot-samples-common') {
 //	configurations.archives.artifacts.removeAll { it.archiveTask.is jar }
-	tasks.findByPath("artifactoryPublish")?.enabled = false
-}
+//	tasks.findByPath("artifactoryPublish")?.enabled = false
+//
+//}
 
 project('spring-cloud-iot-bom') {
 	description = "Spring Cloud IoT (Bill of Materials)"
@@ -430,6 +431,6 @@ configure(rootProject) {
 
 	task wrapper(type: Wrapper) {
 		description = 'Generates gradlew[.bat] scripts'
-		gradleVersion = '3.1'
+		gradleVersion = '3.4.1'
 	}
 }

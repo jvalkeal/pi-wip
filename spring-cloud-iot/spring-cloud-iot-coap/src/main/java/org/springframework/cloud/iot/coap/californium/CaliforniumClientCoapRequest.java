@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.coap.client;
+package org.springframework.cloud.iot.coap.californium;
 
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResponse;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.CoapStatus;
+import org.springframework.cloud.iot.coap.client.ClientCoapRequest;
+import org.springframework.cloud.iot.coap.client.ClientCoapResponse;
+import org.springframework.cloud.iot.coap.client.DefaultClientCoapResponse;
 import org.springframework.util.Assert;
 
 /**

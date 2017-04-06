@@ -15,6 +15,8 @@
  */
 package org.springframework.cloud.iot.coap.client;
 
+import org.springframework.cloud.iot.coap.californium.CoapTemplate;
+
 /**
  * Generic callback interface used by {@link CoapTemplate}'s retrieval methods
  * Implementations of this interface perform the actual work of extracting data

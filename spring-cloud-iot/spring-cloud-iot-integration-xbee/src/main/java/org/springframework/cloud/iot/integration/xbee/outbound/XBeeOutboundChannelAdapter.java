@@ -34,7 +34,7 @@ public class XBeeOutboundChannelAdapter extends AbstractMessageProducingHandler 
 	/**
 	 * Instantiates a new xbee inbound channel adapter.
 	 *
-	 * @param xbeeReceiver the xbee receiver
+	 * @param xbeeSender the xbee sender
 	 */
 	public XBeeOutboundChannelAdapter(XBeeSender xbeeSender) {
 		super();

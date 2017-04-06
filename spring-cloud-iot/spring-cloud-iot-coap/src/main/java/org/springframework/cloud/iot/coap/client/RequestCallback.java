@@ -15,6 +15,8 @@
  */
 package org.springframework.cloud.iot.coap.client;
 
+import org.springframework.cloud.iot.coap.californium.CoapTemplate;
+
 /**
  * Callback interface for code that operates on a {@link ClientCoapRequest}. Allows
  * to manipulate the request.
