@@ -15,6 +15,7 @@
  */
 package org.springframework.cloud.iot.coap.support;
 
+import org.springframework.cloud.iot.coap.CoapStatus;
 import org.springframework.cloud.iot.coap.server.ServerCoapResponse;
 
 public class GenericServerCoapResponse implements ServerCoapResponse {
@@ -22,6 +23,7 @@ public class GenericServerCoapResponse implements ServerCoapResponse {
 	private Integer contentFormat;
 	private Integer accept;
 	private byte[] requestPayload;
+	private CoapStatus status;
 
 	@Override
 	public void setContentFormat(Integer contentFormat) {
@@ -48,6 +50,15 @@ public class GenericServerCoapResponse implements ServerCoapResponse {
 
 	public byte[] getRequestPayload() {
 		return requestPayload;
+	}
+
+	@Override
+	public CoapStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(CoapStatus status) {
+		this.status = status;
 	}
 
 	@Override

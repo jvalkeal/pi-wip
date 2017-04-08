@@ -50,7 +50,8 @@ public class CaliforniumCoapServerFactory implements ConfigurableCoapServerFacto
 		server.add(coapResources.toArray(new Resource[0]));
 
 		for (Entry<String,CoapServerHandler> entry : mappings.entrySet()) {
-			server.add(new CaliforniumCoapServerHandlerResource(entry.getKey(), entry.getValue()));
+			CaliforniumCoapServerHandlerResource resource = new CaliforniumCoapServerHandlerResource(entry.getKey(), entry.getValue());
+			server.add(resource);
 		}
 
 		return new CaliforniumCoapServer(server);

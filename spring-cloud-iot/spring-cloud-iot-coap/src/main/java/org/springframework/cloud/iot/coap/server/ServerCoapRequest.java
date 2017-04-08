@@ -16,7 +16,13 @@
 package org.springframework.cloud.iot.coap.server;
 
 import org.springframework.cloud.iot.coap.CoapInputMessage;
+import org.springframework.cloud.iot.coap.CoapMethod;
 
 public interface ServerCoapRequest extends CoapInputMessage {
 
+	int getContentFormat();
+
+	String getUriPath();
+
+	CoapMethod getMethod();
 }

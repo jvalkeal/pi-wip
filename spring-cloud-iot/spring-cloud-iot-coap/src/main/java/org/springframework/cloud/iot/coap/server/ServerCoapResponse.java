@@ -16,7 +16,10 @@
 package org.springframework.cloud.iot.coap.server;
 
 import org.springframework.cloud.iot.coap.CoapOutputMessage;
+import org.springframework.cloud.iot.coap.CoapStatus;
 
 public interface ServerCoapResponse extends CoapOutputMessage {
+
+	CoapStatus getStatus();
 
 }

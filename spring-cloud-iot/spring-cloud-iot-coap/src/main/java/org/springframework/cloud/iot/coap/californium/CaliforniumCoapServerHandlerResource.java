@@ -15,7 +15,6 @@
  */
 package org.springframework.cloud.iot.coap.californium;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.californium.core.CoapResource;
@@ -24,7 +23,6 @@ import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.core.server.resources.Resource;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.server.CoapServerHandler;
-import org.springframework.cloud.iot.coap.server.ServerCoapRequest;
 import org.springframework.cloud.iot.coap.server.ServerCoapResponse;
 import org.springframework.cloud.iot.coap.support.GenericServerCoapRequest;
 import org.springframework.util.CollectionUtils;
@@ -38,7 +36,7 @@ import org.springframework.util.CollectionUtils;
  */
 public class CaliforniumCoapServerHandlerResource extends AbstractCoapResource {
 
-	private List<CoapMethod> allowedMethods = Arrays.asList(CoapMethod.GET);
+	private List<CoapMethod> allowedMethods = null;
 	private final CoapServerHandler handler;
 
 	public CaliforniumCoapServerHandlerResource(String name, CoapServerHandler handler) {
@@ -82,13 +80,24 @@ public class CaliforniumCoapServerHandlerResource extends AbstractCoapResource {
 		}
 	}
 
+	public void setAllowedMethods(List<CoapMethod> allowedMethods) {
+		this.allowedMethods = allowedMethods;
+	}
+
 	private void handleRequest(CoapResource resource, CoapExchange exchange) {
-		ServerCoapRequest request = new GenericServerCoapRequest(exchange.getRequestPayload());
+		GenericServerCoapRequest request = new GenericServerCoapRequest(exchange.getRequestPayload());
+		request.setMethod(CoapMethod.resolve(exchange.getRequestCode().name()));
+		request.setContentFormat(exchange.getRequestOptions().getContentFormat());
 		ServerCoapResponse response = handler.handle(request);
-		exchange.respond(ResponseCode.CREATED, response.getBody());
+		ResponseCode responseCode = response.getStatus() != null ? ResponseCode.valueOf(response.getStatus().value) : ResponseCode.CREATED;
+		exchange.respond(responseCode, response.getBody());
 	}
 
 	private boolean isMethodAllowed(CoapExchange exchange) {
-		return CollectionUtils.containsInstance(allowedMethods, CoapMethod.resolve(exchange.getRequestCode().name()));
+		if (allowedMethods == null) {
+			return true;
+		} else {
+			return CollectionUtils.containsInstance(allowedMethods, CoapMethod.resolve(exchange.getRequestCode().name()));
+		}
 	}
 }

@@ -15,11 +15,14 @@
  */
 package org.springframework.cloud.iot.coap.support;
 
+import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.server.ServerCoapRequest;
 
 public class GenericServerCoapRequest implements ServerCoapRequest {
 
 	private final byte[] body;
+	private CoapMethod method;
+	private int contentFormat = -1;
 
 	public GenericServerCoapRequest(byte[] body) {
 		this.body = body;
@@ -27,7 +30,30 @@ public class GenericServerCoapRequest implements ServerCoapRequest {
 
 	@Override
 	public byte[] getBody() {
+		return body;
+	}
+
+	@Override
+	public int getContentFormat() {
+		return contentFormat;
+	}
+
+	public void setContentFormat(int contentFormat) {
+		this.contentFormat = contentFormat;
+	}
+
+	@Override
+	public String getUriPath() {
 		return null;
+	}
+
+	public void setMethod(CoapMethod method) {
+		this.method = method;
+	}
+
+	@Override
+	public CoapMethod getMethod() {
+		return method;
 	}
 
 }
