@@ -44,4 +44,12 @@ public interface CoapOutputMessage {
 	 * @param requestPayload the new request payload
 	 */
 	void setRequestPayload(byte[] requestPayload);
+
+	/**
+	 * Return the body of message as an byte array.
+	 *
+	 * @return the body as a byte array
+	 */
+	byte[] getBody();
+
 }

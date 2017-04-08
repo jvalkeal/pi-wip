@@ -31,12 +31,12 @@ import org.eclipse.californium.core.server.resources.Resource;
 import org.springframework.cloud.iot.coap.CoapInputMessage;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.californium.AbstractCoapResource;
-import org.springframework.cloud.iot.coap.californium.CaliforniumServerCoapResponse;
 import org.springframework.cloud.iot.coap.californium.CoapServerFactoryBean;
 import org.springframework.cloud.iot.coap.converter.ByteArrayCoapMessageConverter;
 import org.springframework.cloud.iot.coap.converter.CoapMessageConverter;
 import org.springframework.cloud.iot.coap.converter.StringCoapMessageConverter;
 import org.springframework.cloud.iot.coap.server.ServerCoapResponse;
+import org.springframework.cloud.iot.coap.support.GenericServerCoapResponse;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
@@ -401,7 +401,7 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 			Message<?> responseMessage;
 			try {
 				responseMessage = doHandleRequest(exchange);
-				CaliforniumServerCoapResponse response = new CaliforniumServerCoapResponse();
+				GenericServerCoapResponse response = new GenericServerCoapResponse();
 				if (responseMessage != null) {
 					convertMessage(responseMessage.getPayload(), response);
 				}

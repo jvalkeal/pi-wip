@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.coap.californium;
+package org.springframework.cloud.iot.coap.support;
 
 import org.springframework.cloud.iot.coap.server.ServerCoapResponse;
 
-public class CaliforniumServerCoapResponse implements ServerCoapResponse {
+public class GenericServerCoapResponse implements ServerCoapResponse {
 
 	private Integer contentFormat;
 	private Integer accept;
@@ -47,6 +47,11 @@ public class CaliforniumServerCoapResponse implements ServerCoapResponse {
 	}
 
 	public byte[] getRequestPayload() {
+		return requestPayload;
+	}
+
+	@Override
+	public byte[] getBody() {
 		return requestPayload;
 	}
 }

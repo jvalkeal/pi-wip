@@ -91,4 +91,9 @@ public class CaliforniumClientCoapRequest implements ClientCoapRequest {
 		}
 		return new DefaultClientCoapResponse(response.getPayload(), CoapStatus.valueOf(response.advanced().getRawCode()));
 	}
+
+	@Override
+	public byte[] getBody() {
+		return requestPayload;
+	}
 }
