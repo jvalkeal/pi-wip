@@ -160,9 +160,18 @@ project('spring-cloud-iot-samples-segment-displays') {
 	}
 }
 
-project('spring-cloud-iot-samples-gateway') {
+project('spring-cloud-iot-samples-gateway-server') {
 	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Gateway Server Sample'
+	dependencies {
+		compile project(":spring-cloud-iot-gateway")
+		runtime('org.springframework.boot:spring-boot-starter-web')
+	}
+}
+
+project('spring-cloud-iot-samples-gateway-client') {
+	apply plugin: 'org.springframework.boot'
+	description = 'Spring Cloud IOT Gateway Client Sample'
 	dependencies {
 		compile project(":spring-cloud-iot-gateway")
 		runtime('org.springframework.boot:spring-boot-starter-web')

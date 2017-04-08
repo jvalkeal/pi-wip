@@ -15,29 +15,27 @@
  */
 package org.springframework.cloud.iot.gateway;
 
-import org.springframework.cloud.iot.gateway.service.rest.RestGatewayService;
+import org.junit.After;
+import org.junit.Before;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Configuration;
 
-public class GatewayTests extends AbstractGatewayTests {
+public abstract class AbstractGatewayTests {
 
-	public void testGateway() {
-		context.register(Config1.class);
-		context.refresh();
+	protected AnnotationConfigApplicationContext context;
 
-//		RestGatewayService restGatewayService = context.getBean(RestGatewayService.class);
-
+	@Before
+	public void setup() {
+		context = buildContext();
 	}
 
-	@Configuration
-	@EnableIotGatewayClient
-	@EnableIotGatewayServer
-	protected static class Config1 {
-
+	@After
+	public void clean() {
+		if (context != null) {
+			context.close();
+		}
 	}
 
-	@Override
 	protected AnnotationConfigApplicationContext buildContext() {
-		return new AnnotationConfigApplicationContext();
+		return null;
 	}
 }

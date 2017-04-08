@@ -1,0 +1,6 @@
+spring:
+  cloud:
+    iot:
+      xbee:
+        enabled: true
+        serialPort: /dev/ttyUSB0

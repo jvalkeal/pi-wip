@@ -15,10 +15,17 @@
  */
 package org.springframework.cloud.iot.gateway.config;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.iot.coap.californium.CoapTemplate;
 import org.springframework.cloud.iot.coap.client.CoapOperations;
+import org.springframework.cloud.iot.integration.coap.dsl.Coap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.dsl.IntegrationFlow;
+import org.springframework.integration.dsl.IntegrationFlows;
 
 /**
  * Configuration for IoT gateway client.
@@ -32,6 +39,20 @@ public class IotGatewayClientConfiguration {
 	public CoapOperations iotCoapOperations() {
 		// for convenience create template for user disposal
 		return new CoapTemplate();
+	}
+
+	@Configuration
+	@ConditionalOnProperty(prefix = "spring.cloud.iot.coap", name = "enabled", havingValue = "true", matchIfMissing = false)
+	public static class CoapClientConfiguration {
+
+		@Bean
+		public IntegrationFlow iotGatewayServerCoapInboundFlow() throws URISyntaxException {
+			return IntegrationFlows
+					.from("iot.coapOutboundChannel")
+					.handle(Coap.outboundGateway(new URI("")))
+					.log()
+					.get();
+		}
 	}
 
 }

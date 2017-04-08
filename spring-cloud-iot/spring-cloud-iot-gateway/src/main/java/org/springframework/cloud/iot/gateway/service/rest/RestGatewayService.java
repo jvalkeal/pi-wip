@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demo.gateway;
+package org.springframework.cloud.iot.gateway.service.rest;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.iot.gateway.EnableIotGatewayServer;
+import org.springframework.integration.annotation.Gateway;
+import org.springframework.integration.annotation.MessagingGateway;
 
-@EnableIotGatewayServer
-@SpringBootApplication
-public class Application {
+@MessagingGateway
+public interface RestGatewayService {
 
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
+	@Gateway(requestChannel = "iot.coapOutboundChannel")
+	String getUrl(String url);
 }
