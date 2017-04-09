@@ -260,3 +260,15 @@ project('spring-cloud-iot-samples-log-sink') {
 	}
 }
 
+project('spring-cloud-iot-samples-game-buttons') {
+	apply plugin: 'org.springframework.boot'
+	description = 'Spring Cloud IOT Buttons Game Sample'
+	dependencies {
+		compile project(":spring-cloud-iot-test")
+		compile project(":spring-cloud-iot-boot")
+		compile project(":spring-cloud-iot-statemachine")
+		runtime('org.springframework.boot:spring-boot-starter-web')
+		testCompile('org.springframework.boot:spring-boot-starter-test')
+		testCompile('org.springframework.statemachine:spring-statemachine-test')
+	}
+}

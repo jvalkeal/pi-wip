@@ -41,6 +41,7 @@ include 'spring-cloud-iot-samples:xbee-senddata'
 include 'spring-cloud-iot-samples:xbee-receivedata'
 include 'spring-cloud-iot-samples:time-source'
 include 'spring-cloud-iot-samples:log-sink'
+include 'spring-cloud-iot-samples:game-buttons'
 
 rootProject.children.find {
 	if (it.name == 'spring-cloud-iot-samples') {
