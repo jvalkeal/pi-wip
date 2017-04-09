@@ -59,7 +59,6 @@ public class Application {
 
 	// Event id's
 	public static final String EVENT_GAME_END = "GAME_END";
-	public static final String EVENT_BUTTON_PRESSED = "BUTTON_PRESSED";
 	public static final String EVENT_BUTTON_RELEASED = "BUTTON_RELEASED";
 
 	@Autowired

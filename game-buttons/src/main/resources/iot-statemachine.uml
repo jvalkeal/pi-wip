@@ -33,12 +33,10 @@
         <region xmi:type="uml:Region" xmi:id="_G4enwAj-Eeegy89mAKnhrg" name="Region1">
           <transition xmi:type="uml:Transition" xmi:id="_K7i0kAj-Eeegy89mAKnhrg" source="_Jvn0AAj-Eeegy89mAKnhrg" target="_G4hrEAj-Eeegy89mAKnhrg"/>
           <transition xmi:type="uml:Transition" xmi:id="_Ro2aEAj-Eeegy89mAKnhrg" source="_G4hrEAj-Eeegy89mAKnhrg" target="_PFY-0Aj-Eeegy89mAKnhrg"/>
-          <transition xmi:type="uml:Transition" xmi:id="_eIGnsAkMEeegy89mAKnhrg" name="BUTTON_PRESSED" source="_PFY-0Aj-Eeegy89mAKnhrg" target="_YECzgAkMEeegy89mAKnhrg">
-            <trigger xmi:type="uml:Trigger" xmi:id="_gjxY4AkMEeegy89mAKnhrg" event="_O4bBQADkEeeK_Mx9dG65nQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_eIGnsAkMEeegy89mAKnhrg" name="BUTTON_RELEASED" source="_PFY-0Aj-Eeegy89mAKnhrg" target="_YECzgAkMEeegy89mAKnhrg">
+            <trigger xmi:type="uml:Trigger" xmi:id="_gjxY4AkMEeegy89mAKnhrg" event="__2ww4AcuEeeyFtJkSD2EKA"/>
           </transition>
-          <transition xmi:type="uml:Transition" xmi:id="_ev8q0AkMEeegy89mAKnhrg" name="BUTTON_RELEASED" source="_YECzgAkMEeegy89mAKnhrg" target="_PFY-0Aj-Eeegy89mAKnhrg">
-            <trigger xmi:type="uml:Trigger" xmi:id="_kiWuUAkMEeegy89mAKnhrg" event="__2ww4AcuEeeyFtJkSD2EKA"/>
-          </transition>
+          <transition xmi:type="uml:Transition" xmi:id="_ev8q0AkMEeegy89mAKnhrg" source="_YECzgAkMEeegy89mAKnhrg" target="_PFY-0Aj-Eeegy89mAKnhrg"/>
           <subvertex xmi:type="uml:State" xmi:id="_G4hrEAj-Eeegy89mAKnhrg" name="SPEEDGAME_INIT"/>
           <subvertex xmi:type="uml:Pseudostate" xmi:id="_Jvn0AAj-Eeegy89mAKnhrg" name=""/>
           <subvertex xmi:type="uml:State" xmi:id="_PFY-0Aj-Eeegy89mAKnhrg" name="SPEEDGAME_WAIT"/>
@@ -51,11 +49,9 @@
         <region xmi:type="uml:Region" xmi:id="_5hJ-oBF_Eeede_xO2L3Ung" name="Region1">
           <transition xmi:type="uml:Transition" xmi:id="_-YzDABF_Eeede_xO2L3Ung" source="_9ToKsBF_Eeede_xO2L3Ung" target="_5hNB8BF_Eeede_xO2L3Ung"/>
           <transition xmi:type="uml:Transition" xmi:id="_jwGssBbbEeerWpKmbVSSMQ" source="_5hNB8BF_Eeede_xO2L3Ung" target="_APykYBGBEeede_xO2L3Ung"/>
-          <transition xmi:type="uml:Transition" xmi:id="_lRDiEBbbEeerWpKmbVSSMQ" name="BUTTON_RELEASED" source="_C3TZMBGBEeede_xO2L3Ung" target="_APykYBGBEeede_xO2L3Ung">
-            <trigger xmi:type="uml:Trigger" xmi:id="_tO6JcBbbEeerWpKmbVSSMQ" event="__2ww4AcuEeeyFtJkSD2EKA"/>
-          </transition>
-          <transition xmi:type="uml:Transition" xmi:id="_mAgpEBbbEeerWpKmbVSSMQ" name="BUTTON_PRESSED" source="_APykYBGBEeede_xO2L3Ung" target="_C3TZMBGBEeede_xO2L3Ung">
-            <trigger xmi:type="uml:Trigger" xmi:id="_xxtmQBbbEeerWpKmbVSSMQ" event="_O4bBQADkEeeK_Mx9dG65nQ"/>
+          <transition xmi:type="uml:Transition" xmi:id="_lRDiEBbbEeerWpKmbVSSMQ" source="_C3TZMBGBEeede_xO2L3Ung" target="_APykYBGBEeede_xO2L3Ung"/>
+          <transition xmi:type="uml:Transition" xmi:id="_mAgpEBbbEeerWpKmbVSSMQ" name="BUTTON_RELEASED" source="_APykYBGBEeede_xO2L3Ung" target="_C3TZMBGBEeede_xO2L3Ung">
+            <trigger xmi:type="uml:Trigger" xmi:id="_xxtmQBbbEeerWpKmbVSSMQ" event="__2ww4AcuEeeyFtJkSD2EKA"/>
           </transition>
           <subvertex xmi:type="uml:State" xmi:id="_5hNB8BF_Eeede_xO2L3Ung" name="MEMORYGAME_INIT"/>
           <subvertex xmi:type="uml:Pseudostate" xmi:id="_9ToKsBF_Eeede_xO2L3Ung" name=""/>
