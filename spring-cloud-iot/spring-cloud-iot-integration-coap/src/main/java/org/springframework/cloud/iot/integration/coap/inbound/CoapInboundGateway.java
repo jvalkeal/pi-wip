@@ -346,6 +346,7 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 				}
 				response.setStatus(CoapStatus.CREATED);
 			} catch (Exception e) {
+				logger.error("Unable to handle request", e);
 				response.setStatus(CoapStatus.INTERNAL_SERVER_ERROR);
 			}
 			return response;

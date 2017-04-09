@@ -16,8 +16,11 @@
 package org.springframework.cloud.iot.integration.coap.dsl;
 
 import java.net.URI;
+import java.util.function.Function;
 
 import org.springframework.cloud.iot.integration.coap.inbound.CoapInboundGateway;
+import org.springframework.integration.expression.FunctionExpression;
+import org.springframework.messaging.Message;
 
 /**
  * The Spring Integration Coap components Factory.
@@ -53,6 +56,27 @@ public final class Coap {
 	 */
 	public static CoapOutboundGatewaySpec outboundGateway(URI url) {
 		return new CoapOutboundGatewaySpec(url);
+	}
+
+	/**
+	 * Create an {@link CoapOutboundGatewaySpec} builder for request-reply gateway.
+	 *
+	 * @param uri the uri
+	 * @return the CoapOutboundGatewaySpec instance
+	 */
+	public static CoapOutboundGatewaySpec outboundGateway(String uri) {
+		return new CoapOutboundGatewaySpec(uri);
+	}
+
+	/**
+	 * Create an {@link CoapOutboundGatewaySpec} builder for request-reply gateway.
+	 *
+	 * @param <P> the type of payload
+	 * @param uriFunction the uri function
+	 * @return the CoapOutboundGatewaySpec instance
+	 */
+	public static <P> CoapOutboundGatewaySpec outboundGateway(Function<Message<P>, ?> uriFunction) {
+		return new CoapOutboundGatewaySpec(new FunctionExpression<>(uriFunction));
 	}
 
 	private Coap() {

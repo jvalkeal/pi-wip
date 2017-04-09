@@ -16,6 +16,10 @@
 package org.springframework.cloud.iot.integration.coap.outbound;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 import org.springframework.cloud.iot.coap.CoapEntity;
 import org.springframework.cloud.iot.coap.CoapMethod;
@@ -24,8 +28,11 @@ import org.springframework.cloud.iot.coap.californium.CoapTemplate;
 import org.springframework.cloud.iot.coap.client.CoapOperations;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.expression.Expression;
+import org.springframework.expression.common.LiteralExpression;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.integration.expression.ExpressionEvalMap;
 import org.springframework.integration.expression.ExpressionUtils;
+import org.springframework.integration.expression.FunctionExpression;
 import org.springframework.integration.expression.ValueExpression;
 import org.springframework.integration.handler.AbstractReplyProducingMessageHandler;
 import org.springframework.integration.support.AbstractIntegrationMessageBuilder;
@@ -35,6 +42,8 @@ import org.springframework.messaging.MessagingException;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * Outbound gateway using {@link CoapOperations}.
@@ -51,11 +60,31 @@ public class CoapOutboundGateway extends AbstractReplyProducingMessageHandler {
 	private volatile StandardEvaluationContext evaluationContext;
 	private volatile Expression expectedResponseTypeExpression;
 	private volatile Expression coapMethodExpression = new ValueExpression<>(CoapMethod.POST);
-	private URI url;
+	private final Map<String, Expression> uriVariableExpressions = new HashMap<>();
+	private final Expression uriExpression;
+	private volatile Expression uriVariablesExpression;
+	private volatile boolean encodeUri = true;
 
-	public CoapOutboundGateway(URI url) {
-		this.url = url;
-		this.coapOperations = new CoapTemplate();
+	public CoapOutboundGateway(URI uri) {
+		this(new ValueExpression<URI>(uri), null);
+	}
+
+	public CoapOutboundGateway(String uri) {
+		this(new LiteralExpression(uri), null);
+	}
+
+	public CoapOutboundGateway(Function<Message<?>, ?> uriFunction) {
+		this(new FunctionExpression<>(uriFunction), null);
+	}
+
+	public CoapOutboundGateway(Expression uriExpression) {
+		this(uriExpression, null);
+	}
+
+	public CoapOutboundGateway(Expression uriExpression, CoapOperations coapOperations) {
+		Assert.notNull(uriExpression, "URI Expression is required");
+		this.uriExpression = uriExpression;
+		this.coapOperations = coapOperations != null ? coapOperations : new CoapTemplate();
 	}
 
 	@Override
@@ -70,7 +99,8 @@ public class CoapOutboundGateway extends AbstractReplyProducingMessageHandler {
 			CoapMethod coapMethod = determineCoapMethod(requestMessage);
 			Object expectedResponseType = determineExpectedResponseType(requestMessage);
 			CoapEntity<?> coapRequest = this.generateCoapRequest(requestMessage, coapMethod);
-			CoapResponseEntity<?> coapResponse = coapOperations.exchange(url, coapMethod, coapRequest, (Class<?>) expectedResponseType);
+			URI uri = generateUri(requestMessage);
+			CoapResponseEntity<?> coapResponse = coapOperations.exchange(uri, coapMethod, coapRequest, (Class<?>) expectedResponseType);
 			return getReply(coapResponse);
 		} catch (MessagingException e) {
 			throw e;
@@ -123,6 +153,81 @@ public class CoapOutboundGateway extends AbstractReplyProducingMessageHandler {
 
 	public void setExpectedResponseTypeExpression(Expression expectedResponseTypeExpression) {
 		this.expectedResponseTypeExpression = expectedResponseTypeExpression;
+	}
+
+	/**
+	 * Set the Map of URI variable expressions to evaluate against the outbound message
+	 * when replacing the variable placeholders in a URI template.
+	 *
+	 * @param uriVariableExpressions The URI variable expressions.
+	 */
+	public void setUriVariableExpressions(Map<String, Expression> uriVariableExpressions) {
+		synchronized (this.uriVariableExpressions) {
+			this.uriVariableExpressions.clear();
+			this.uriVariableExpressions.putAll(uriVariableExpressions);
+		}
+	}
+
+	/**
+	 * Set the {@link Expression} to evaluate against the outbound message; the expression
+	 * must evaluate to a Map of URI variable expressions to evaluate against the outbound message
+	 * when replacing the variable placeholders in a URI template.
+	 *
+	 * @param uriVariablesExpression The URI variables expression.
+	 */
+	public void setUriVariablesExpression(Expression uriVariablesExpression) {
+		this.uriVariablesExpression = uriVariablesExpression;
+	}
+
+	/**
+	 * Specify whether the real URI should be encoded after <code>uriVariables</code>
+	 * expanding and before send request via {@link CoapTemplate}. The default value is <code>true</code>.
+	 *
+	 * @param encodeUri true if the URI should be encoded.
+	 *
+	 * @see UriComponentsBuilder
+	 */
+	public void setEncodeUri(boolean encodeUri) {
+		this.encodeUri = encodeUri;
+	}
+
+	private URI generateUri(Message<?> requestMessage) {
+		Object uri = this.uriExpression.getValue(this.evaluationContext, requestMessage);
+		Assert.state(uri instanceof String || uri instanceof URI,
+				"'uriExpression' evaluation must result in a 'String' or 'URI' instance, not: "
+						+ (uri == null ? "null" : uri.getClass()));
+		Map<String, ?> uriVariables = determineUriVariables(requestMessage);
+		UriComponentsBuilder uriComponentsBuilder = uri instanceof String
+				? UriComponentsBuilder.fromUriString((String) uri)
+				: UriComponentsBuilder.fromUri((URI) uri);
+		UriComponents uriComponents = uriComponentsBuilder.buildAndExpand(uriVariables);
+		try {
+			return this.encodeUri ? uriComponents.toUri() : new URI(uriComponents.toUriString());
+		}
+		catch (URISyntaxException e) {
+			throw new MessageHandlingException(requestMessage, "Invalid URI [" + uri + "]", e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private Map<String, ?> determineUriVariables(Message<?> requestMessage) {
+		Map<String, ?> expressions;
+
+		if (this.uriVariablesExpression != null) {
+			Object expressionsObject = this.uriVariablesExpression.getValue(this.evaluationContext, requestMessage);
+			Assert.state(expressionsObject instanceof Map,
+					"The 'uriVariablesExpression' evaluation must result in a 'Map'.");
+			expressions = (Map<String, ?>) expressionsObject;
+		}
+		else {
+			expressions = this.uriVariableExpressions;
+		}
+
+		return ExpressionEvalMap.from(expressions)
+				.usingEvaluationContext(this.evaluationContext)
+				.withRoot(requestMessage)
+				.build();
+
 	}
 
 	private CoapMethod determineCoapMethod(Message<?> requestMessage) {

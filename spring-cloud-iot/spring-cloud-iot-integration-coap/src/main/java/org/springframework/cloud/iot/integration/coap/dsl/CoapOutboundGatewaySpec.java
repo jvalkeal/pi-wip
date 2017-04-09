@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.springframework.cloud.iot.integration.coap.outbound.CoapOutboundGateway;
+import org.springframework.expression.Expression;
 import org.springframework.integration.dsl.ComponentsRegistration;
 import org.springframework.integration.dsl.MessageHandlerSpec;
 
@@ -34,6 +35,14 @@ public class CoapOutboundGatewaySpec extends MessageHandlerSpec<CoapOutboundGate
 
 	CoapOutboundGatewaySpec(URI url) {
 		this.target = new CoapOutboundGateway(url);
+	}
+
+	CoapOutboundGatewaySpec(String uri) {
+		this.target = new CoapOutboundGateway(uri);
+	}
+
+	CoapOutboundGatewaySpec(Expression uriExpression) {
+		this.target = new CoapOutboundGateway(uriExpression);
 	}
 
 	public CoapOutboundGatewaySpec expectedResponseType(Class<?> expectedResponseType) {

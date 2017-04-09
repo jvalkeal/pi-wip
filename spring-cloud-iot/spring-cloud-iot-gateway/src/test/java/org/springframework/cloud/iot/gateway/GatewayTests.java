@@ -15,25 +15,40 @@
  */
 package org.springframework.cloud.iot.gateway;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
+import org.junit.Test;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.cloud.iot.gateway.service.rest.RestGatewayService;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.config.EnableIntegration;
 
 public class GatewayTests extends AbstractGatewayTests {
 
+	@Test
 	public void testGateway() {
-		context.register(Config1.class);
-		context.refresh();
+		SpringApplication app = new SpringApplication(Config1.class);
+		app.setWebApplicationType(WebApplicationType.NONE);
+		ConfigurableApplicationContext context = app
+				.run(new String[] { "--spring.cloud.iot.coap.enabled=true" });
 
-//		RestGatewayService restGatewayService = context.getBean(RestGatewayService.class);
+		RestGatewayService restGatewayService = context.getBean(RestGatewayService.class);
+		assertThat(restGatewayService, notNullValue());
 
+		String response = restGatewayService.getUrl("coap://localhost", "hello");
+		assertThat(response, is("Echo:hello"));
 	}
 
 	@Configuration
 	@EnableIotGatewayClient
 	@EnableIotGatewayServer
+	@EnableIntegration
 	protected static class Config1 {
-
 	}
 
 	@Override

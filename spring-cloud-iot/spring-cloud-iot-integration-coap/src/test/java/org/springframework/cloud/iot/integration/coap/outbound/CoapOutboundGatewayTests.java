@@ -29,6 +29,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
+import org.springframework.web.util.UriComponentsBuilder;
 
 public class CoapOutboundGatewayTests extends AbstractCoapTests {
 
@@ -45,6 +46,27 @@ public class CoapOutboundGatewayTests extends AbstractCoapTests {
 		gateway.setExpectedResponseType(String.class);
 
 		gateway.handleMessage(MessageBuilder.withPayload("dummy").build());
+
+		Message<?> receive = replyChannel.receive();
+		assertThat(receive, notNullValue());
+		assertThat(receive.getPayload(), is("hello"));
+	}
+
+	@Test
+	public void testSimpleMessageHandle11() throws Exception {
+		context.register(TestCoapServerConfiguration.class);
+		context.refresh();
+
+		CoapOutboundGateway gateway = new CoapOutboundGateway(
+				m -> UriComponentsBuilder.fromUriString((String) m.getHeaders().get("uri")).build().toUri());
+		QueueChannel replyChannel = new QueueChannel();
+		gateway.setOutputChannel(replyChannel);
+		gateway.setExpectedResponseType(String.class);
+		gateway.setBeanFactory(context.getBeanFactory());
+		gateway.afterPropertiesSet();
+
+		gateway.handleMessage(
+				MessageBuilder.withPayload("dummy").setHeader("uri", "coap://localhost:5683/testresource1").build());
 
 		Message<?> receive = replyChannel.receive();
 		assertThat(receive, notNullValue());
