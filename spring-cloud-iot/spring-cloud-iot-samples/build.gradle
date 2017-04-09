@@ -4,7 +4,6 @@ configurations.archives.artifacts.removeAll { it.archiveTask.is jar }
 tasks.findByPath("artifactoryPublish")?.enabled = false
 
 project('spring-cloud-iot-samples-sunfounder-sensor-01') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 1'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -12,7 +11,6 @@ project('spring-cloud-iot-samples-sunfounder-sensor-01') {
 }
 
 project('spring-cloud-iot-samples-sunfounder-sensor-04') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 4'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -20,7 +18,6 @@ project('spring-cloud-iot-samples-sunfounder-sensor-04') {
 }
 
 project('spring-cloud-iot-samples-sunfounder-sensor-06') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 6'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -29,7 +26,6 @@ project('spring-cloud-iot-samples-sunfounder-sensor-06') {
 }
 
 project('spring-cloud-iot-samples-sunfounder-sensor-10-passive') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 10 Passive'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -38,7 +34,6 @@ project('spring-cloud-iot-samples-sunfounder-sensor-10-passive') {
 }
 
 project('spring-cloud-iot-samples-sunfounder-sensor-10-active') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 10 Active'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -47,7 +42,6 @@ project('spring-cloud-iot-samples-sunfounder-sensor-10-active') {
 }
 
 project('spring-cloud-iot-samples-sunfounder-sensor-15') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 15'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -56,7 +50,6 @@ project('spring-cloud-iot-samples-sunfounder-sensor-15') {
 }
 
 project('spring-cloud-iot-samples-sunfounder-sensor-16') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 16'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -64,7 +57,6 @@ project('spring-cloud-iot-samples-sunfounder-sensor-16') {
 }
 
 project('spring-cloud-iot-samples-sunfounder-sensor-18') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 18'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -72,7 +64,6 @@ project('spring-cloud-iot-samples-sunfounder-sensor-18') {
 }
 
 project('spring-cloud-iot-samples-sunfounder-sensor-26') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 26'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -80,7 +71,6 @@ project('spring-cloud-iot-samples-sunfounder-sensor-26') {
 }
 
 project('spring-cloud-iot-samples-sunfounder-sensor-27') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 27'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -89,7 +79,6 @@ project('spring-cloud-iot-samples-sunfounder-sensor-27') {
 }
 
 project('spring-cloud-iot-samples-sunfounder-sensor-28') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 28'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -98,7 +87,6 @@ project('spring-cloud-iot-samples-sunfounder-sensor-28') {
 }
 
 project('spring-cloud-iot-samples-sunfounder-sensor-30') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 30'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -106,7 +94,6 @@ project('spring-cloud-iot-samples-sunfounder-sensor-30') {
 }
 
 project('spring-cloud-iot-samples-sunfounder-super-01') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Sunfounder Super Kit Sample 01'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -115,7 +102,6 @@ project('spring-cloud-iot-samples-sunfounder-super-01') {
 }
 
 project('spring-cloud-iot-samples-sunfounder-super-02') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Sunfounder Super Kit Sample 02'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -124,7 +110,6 @@ project('spring-cloud-iot-samples-sunfounder-super-02') {
 }
 
 project('spring-cloud-iot-samples-sunfounder-super-11-segment') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Sunfounder Super Kit Sample 11 Segment'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -133,7 +118,6 @@ project('spring-cloud-iot-samples-sunfounder-super-11-segment') {
 }
 
 project('spring-cloud-iot-samples-sunfounder-super-13') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Sunfounder Super Kit Sample 13'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -142,7 +126,6 @@ project('spring-cloud-iot-samples-sunfounder-super-13') {
 }
 
 project('spring-cloud-iot-samples-environmentlcd') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Environment on LCD Sample'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -152,7 +135,6 @@ project('spring-cloud-iot-samples-environmentlcd') {
 }
 
 project('spring-cloud-iot-samples-segment-displays') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IoT Environment Segment Displays Sample'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -161,7 +143,6 @@ project('spring-cloud-iot-samples-segment-displays') {
 }
 
 project('spring-cloud-iot-samples-gateway-server') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Gateway Server Sample'
 	dependencies {
 		compile project(":spring-cloud-iot-gateway")
@@ -170,7 +151,6 @@ project('spring-cloud-iot-samples-gateway-server') {
 }
 
 project('spring-cloud-iot-samples-gateway-client') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Gateway Client Sample'
 	dependencies {
 		compile project(":spring-cloud-iot-gateway")
@@ -179,7 +159,6 @@ project('spring-cloud-iot-samples-gateway-client') {
 }
 
 project('spring-cloud-iot-samples-dashboard') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Dashboard Sample'
 	dependencies {
 		compile project(":spring-cloud-iot-boot")
@@ -189,7 +168,6 @@ project('spring-cloud-iot-samples-dashboard') {
 }
 
 project('spring-cloud-iot-samples-fake-sensor') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Fake Sensor Sample'
 	dependencies {
 		compile project(":spring-cloud-iot-test")
@@ -200,7 +178,6 @@ project('spring-cloud-iot-samples-fake-sensor') {
 }
 
 project('spring-cloud-iot-samples-fake-component') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Fake Component Sample'
 	dependencies {
 		compile project(":spring-cloud-iot-test")
@@ -211,7 +188,6 @@ project('spring-cloud-iot-samples-fake-component') {
 }
 
 project('spring-cloud-iot-samples-xbee-senddata') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Xbee Send Data Sample'
 	dependencies {
 		compile project(":spring-cloud-iot-xbee")
@@ -220,7 +196,6 @@ project('spring-cloud-iot-samples-xbee-senddata') {
 }
 
 project('spring-cloud-iot-samples-xbee-receivedata') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Xbee Receive Data Sample'
 	dependencies {
 		compile project(":spring-cloud-iot-xbee")
@@ -229,7 +204,6 @@ project('spring-cloud-iot-samples-xbee-receivedata') {
 }
 
 project('spring-cloud-iot-samples-time-source') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Stream Time Source Sample'
 	dependencyManagement {
 		imports {
@@ -245,7 +219,6 @@ project('spring-cloud-iot-samples-time-source') {
 }
 
 project('spring-cloud-iot-samples-log-sink') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Stream Log Sink Sample'
 	dependencyManagement {
 		imports {
@@ -261,7 +234,6 @@ project('spring-cloud-iot-samples-log-sink') {
 }
 
 project('spring-cloud-iot-samples-game-buttons') {
-	apply plugin: 'org.springframework.boot'
 	description = 'Spring Cloud IOT Buttons Game Sample'
 	dependencies {
 		compile project(":spring-cloud-iot-test")
