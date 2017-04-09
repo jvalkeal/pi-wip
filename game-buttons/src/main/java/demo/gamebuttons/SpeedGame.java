@@ -19,11 +19,14 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
+import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.statemachine.IotStateMachineConstants;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.statemachine.StateContext;
+import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.annotation.OnStateEntry;
 import org.springframework.statemachine.annotation.WithStateMachine;
 import org.springframework.util.StringUtils;
@@ -44,6 +47,22 @@ public class SpeedGame extends AbstractGame {
 	private int tail = -1;
 	private int head = 0;
 
+	/**
+	 * Instantiates a new speed game.
+	 *
+	 * @param applicationProperties the application properties
+	 * @param ledController the led controller
+	 * @param displayController the display controller
+	 * @param stateMachine the state machine
+	 * @param taskScheduler the task scheduler
+	 * @param gameButtonSupplier the game button supplier
+	 */
+	public SpeedGame(ApplicationProperties applicationProperties, LedController ledController,
+			DisplayController displayController, StateMachine<String, String> stateMachine,
+			TaskScheduler taskScheduler, Supplier<int[]> gameButtonSupplier) {
+		super(applicationProperties, ledController, displayController, stateMachine, taskScheduler, gameButtonSupplier);
+	}
+
 	@OnStateEntry(target = Application.STATE_SPEEDGAME_INIT)
 	public void initGame() {
 		log.info("Enter {}", Application.STATE_SPEEDGAME_INIT);
@@ -53,13 +72,13 @@ public class SpeedGame extends AbstractGame {
 		tail = -1;
 		head = 0;
 		queue = getButtonQueue();
-		ScheduledFuture<?> scheduledFuture = getTaskScheduler().scheduleAtFixedRate(new Runnable() {
+		ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(new Runnable() {
 
 			@Override
 			public void run() {
 				if (head < queue.length) {
 					log.info("pulse {} at {}", queue[head], head);
-					getLedController().pulse(queue[head++], 200);
+					ledController.pulse(queue[head++], 200);
 				}
 			}
 		}, Duration.ofSeconds(1));
@@ -80,9 +99,9 @@ public class SpeedGame extends AbstractGame {
 		}
 
 		if (button > 0 && queue[++tail] == button) {
-			getDisplayController().setScore(Integer.toString(tail + 1));
+			displayController.setScore(Integer.toString(tail + 1));
 		} else {
-			getStateMachine().sendEvent(Application.EVENT_GAME_END);
+			stateMachine.sendEvent(Application.EVENT_GAME_END);
 		}
 	}
 

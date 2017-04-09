@@ -2,7 +2,7 @@
 <notation:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:style="http://www.eclipse.org/papyrus/infra/viewpoints/policy/style" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_78nekADjEeeK_Mx9dG65nQ" type="PapyrusUMLStateMachineDiagram" name="StateMachine Diagram" measurementUnit="Pixel">
   <children xmi:type="notation:Shape" xmi:id="_78nekQDjEeeK_Mx9dG65nQ" type="StateMachine_Shape">
     <children xmi:type="notation:DecorationNode" xmi:id="_78nekgDjEeeK_Mx9dG65nQ" type="StateMachine_NameLabel">
-      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nekwDjEeeK_Mx9dG65nQ" width="1081" height="23"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nekwDjEeeK_Mx9dG65nQ" width="844" height="23"/>
     </children>
     <children xmi:type="notation:BasicCompartment" xmi:id="_78nelADjEeeK_Mx9dG65nQ" type="StateMachine_RegionCompartment">
       <children xmi:type="notation:Shape" xmi:id="_78nelQDjEeeK_Mx9dG65nQ" type="Region_Shape">
@@ -229,12 +229,12 @@
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nemQDjEeeK_Mx9dG65nQ"/>
         </children>
         <element xmi:type="uml:Region" href="iot-statemachine.uml#_78m3gADjEeeK_Mx9dG65nQ"/>
-        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nemgDjEeeK_Mx9dG65nQ" width="1081" height="1128"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nemgDjEeeK_Mx9dG65nQ" width="844" height="938"/>
       </children>
-      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nemwDjEeeK_Mx9dG65nQ" y="23" width="1081" height="1128"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nemwDjEeeK_Mx9dG65nQ" y="23" width="844" height="938"/>
     </children>
     <element xmi:type="uml:StateMachine" href="iot-statemachine.uml#_78eUoADjEeeK_Mx9dG65nQ"/>
-    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nenADjEeeK_Mx9dG65nQ" x="30" y="30" width="1081" height="1151"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_78nenADjEeeK_Mx9dG65nQ" x="30" y="30" width="844" height="961"/>
   </children>
   <styles xmi:type="notation:StringValueStyle" xmi:id="_78nenQDjEeeK_Mx9dG65nQ" name="diagram_compatibility_version" stringValue="1.2.0"/>
   <styles xmi:type="notation:DiagramStyle" xmi:id="_78nengDjEeeK_Mx9dG65nQ"/>

@@ -16,10 +16,10 @@
 package demo.gamebuttons;
 
 import java.util.concurrent.ScheduledFuture;
+import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.annotation.OnStateEntry;
@@ -33,38 +33,42 @@ import org.springframework.statemachine.annotation.OnStateEntry;
 public class AbstractGame {
 
 	private static final Logger log = LoggerFactory.getLogger(AbstractGame.class);
-
-	@Autowired
-	private LedController ledController;
-
-	@Autowired
-	private TaskScheduler taskScheduler;
-
-	@Autowired
-	private StateMachine<String, String> stateMachine;
-
-	@Autowired
-	private DisplayController displayController;
-
-	@Autowired
-	private ApplicationProperties applicationProperties;
-
+	protected ApplicationProperties applicationProperties;
+	protected LedController ledController;
+	protected DisplayController displayController;
+	protected StateMachine<String, String> stateMachine;
+	protected TaskScheduler taskScheduler;
+	protected Supplier<int[]> gameButtonSupplier;
 	private ScheduledFuture<?> scheduledFuture;
 
-	protected LedController getLedController() {
-		return ledController;
+	/**
+	 * Instantiates a new abstract game.
+	 *
+	 * @param applicationProperties the application properties
+	 * @param ledController the led controller
+	 * @param displayController the display controller
+	 * @param stateMachine the state machine
+	 * @param taskScheduler the task scheduler
+	 * @param gameButtonSupplier the game button supplier
+	 */
+	public AbstractGame(ApplicationProperties applicationProperties, LedController ledController,
+			DisplayController displayController, StateMachine<String, String> stateMachine,
+			TaskScheduler taskScheduler, Supplier<int[]> gameButtonSupplier) {
+		this.applicationProperties = applicationProperties;
+		this.ledController = ledController;
+		this.displayController = displayController;
+		this.stateMachine = stateMachine;
+		this.taskScheduler = taskScheduler;
+		this.gameButtonSupplier = gameButtonSupplier;
 	}
 
-	protected TaskScheduler getTaskScheduler() {
-		return taskScheduler;
-	}
-
-	protected StateMachine<String, String> getStateMachine() {
-		return stateMachine;
-	}
-
-	protected DisplayController getDisplayController() {
-		return displayController;
+	@OnStateEntry(target = Application.STATE_GAME_END)
+	public void exitGame() {
+		log.info("Ending Game");
+		if (scheduledFuture != null) {
+			scheduledFuture.cancel(true);
+		}
+		scheduledFuture = null;
 	}
 
 	protected ScheduledFuture<?> getScheduledFuture() {
@@ -76,19 +80,11 @@ public class AbstractGame {
 	}
 
 	protected int[] getButtonQueue() {
-		int[] queue = new int[applicationProperties.getTotal()];
-		for (int i = 0; i < applicationProperties.getTotal(); i++) {
-			queue[i] = LedButton.random().getValue();
-		}
-		return queue;
-	}
-
-	@OnStateEntry(target = Application.STATE_GAME_END)
-	public void exitGame() {
-		log.info("Ending Game");
-		if (scheduledFuture != null) {
-			scheduledFuture.cancel(true);
-		}
-		scheduledFuture = null;
+		return gameButtonSupplier.get();
+//		int[] queue = new int[applicationProperties.getTotal()];
+//		for (int i = 0; i < applicationProperties.getTotal(); i++) {
+//			queue[i] = LedButton.random().getValue();
+//		}
+//		return queue;
 	}
 }

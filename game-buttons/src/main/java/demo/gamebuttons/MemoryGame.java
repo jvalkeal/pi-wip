@@ -18,11 +18,14 @@ package demo.gamebuttons;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
+import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.statemachine.IotStateMachineConstants;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.statemachine.StateContext;
+import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.annotation.OnStateEntry;
 import org.springframework.statemachine.annotation.WithStateMachine;
 
@@ -39,7 +42,23 @@ import org.springframework.statemachine.annotation.WithStateMachine;
 public class MemoryGame extends AbstractGame {
 
 	private static final Logger log = LoggerFactory.getLogger(MemoryGame.class);
-	private int[] queue = new int[12];
+	private int[] queue;
+
+	/**
+	 * Instantiates a new memory game.
+	 *
+	 * @param applicationProperties the application properties
+	 * @param ledController the led controller
+	 * @param displayController the display controller
+	 * @param stateMachine the state machine
+	 * @param taskScheduler the task scheduler
+	 * @param gameButtonSupplier the game button supplier
+	 */
+	public MemoryGame(ApplicationProperties applicationProperties, LedController ledController,
+			DisplayController displayController, StateMachine<String, String> stateMachine,
+			TaskScheduler taskScheduler, Supplier<int[]> gameButtonSupplier) {
+		super(applicationProperties, ledController, displayController, stateMachine, taskScheduler, gameButtonSupplier);
+	}
 
 	@OnStateEntry(target = Application.STATE_MEMORYGAME_INIT)
 	public void initGame() {
@@ -47,15 +66,8 @@ public class MemoryGame extends AbstractGame {
 		if (getScheduledFuture() != null) {
 			throw new IllegalStateException("Game is already scheduled");
 		}
-
-		for (int i = 0; i < 12; i += 4) {
-			queue[i] = LedButton.random().getValue();
-			queue[i + 1] = LedButton.random().getValue();
-			queue[i + 2] = LedButton.random().getValue();
-			queue[i + 3] = LedButton.random().getValue();
-		}
-
-		ScheduledFuture<?> scheduledFuture = getTaskScheduler().scheduleAtFixedRate(new Runnable() {
+		queue = gameButtonSupplier.get();
+		ScheduledFuture<?> scheduledFuture = taskScheduler.scheduleAtFixedRate(new Runnable() {
 
 			@Override
 			public void run() {
@@ -65,7 +77,7 @@ public class MemoryGame extends AbstractGame {
 	}
 
 	@OnStateEntry(target = Application.STATE_MEMORYGAME_PRESS)
-	public void buttonxxx(StateContext<String, String> context) {
+	public void button(StateContext<String, String> context) {
 		Map<?, ?> properties = context.getMessageHeaders().get(IotStateMachineConstants.IOT_PROPERTIES, Map.class);
 		log.debug("properties {}", properties);
 		Object id = properties != null ? properties.get("id") : null;
