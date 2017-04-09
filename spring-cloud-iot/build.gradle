@@ -311,12 +311,13 @@ project('spring-cloud-iot-bom') {
 }
 
 configure(sampleProjects()) {
-//	configurations.archives.artifacts.removeAll { it.archiveTask.is jar }
+	apply plugin: 'org.springframework.boot'
 	tasks.findByPath("artifactoryPublish")?.enabled = false
 	dependencies {
 		compile project(":spring-cloud-iot-boot")
 		runtime('org.springframework.boot:spring-boot-starter')
 	}
+	build.dependsOn bootJar
 }
 
 configure(rootProject) {
