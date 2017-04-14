@@ -337,6 +337,7 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 		@Override
 		public ServerCoapResponse handle(ServerCoapRequest request) {
 			GenericServerCoapResponse response = new GenericServerCoapResponse();
+			System.out.println("XXX5 " + request.getHeaders());
 
 			Message<?> responseMessage;
 			try {

@@ -15,14 +15,17 @@
  */
 package org.springframework.cloud.iot.gateway;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.cloud.iot.gateway.service.rest.RestGatewayService;
+import org.springframework.cloud.iot.gateway.service.rest.RestGatewayServiceRequest;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
@@ -35,13 +38,28 @@ public class GatewayTests extends AbstractGatewayTests {
 		SpringApplication app = new SpringApplication(Config1.class);
 		app.setWebApplicationType(WebApplicationType.NONE);
 		ConfigurableApplicationContext context = app
-				.run(new String[] { "--spring.cloud.iot.coap.enabled=true" });
+				.run(new String[] { "--spring.cloud.iot.coap.enabled=true",
+						"--spring.cloud.stream.bindings.iotGatewayClient.binder=coap",
+						"--spring.cloud.stream.bindings.iotGatewayClient.producer.useNativeEncoding=true" });
 
-		RestGatewayService restGatewayService = context.getBean(RestGatewayService.class);
-		assertThat(restGatewayService, notNullValue());
+//		spring.cloud.stream.bindings.iotGatewayClient.binder=coap
+//		spring.cloud.stream.bindings.iotGatewayServer.binder=coap
+//		spring.cloud.stream.bindings.iotGatewayClient.producer.useNativeEncoding=true
 
-		String response = restGatewayService.getUrl("coap://localhost", "hello");
-		assertThat(response, is("Echo:hello"));
+//		RestGatewayService restGatewayService = context.getBean(RestGatewayService.class);
+//		assertThat(restGatewayService, notNullValue());
+//		String body = restGatewayService.execute(new RestGatewayServiceRequest("http://example.com")).getBody();
+//		assertThat(body, containsString("Example Domain"));
+		context.close();
+	}
+
+	@Test
+	public void testAutowire() {
+		SpringApplication app = new SpringApplication(Config1.class, BeanConfig.class);
+		app.setWebApplicationType(WebApplicationType.NONE);
+		ConfigurableApplicationContext context = app.run(new String[] { "--spring.cloud.iot.coap.enabled=true",
+				"--spring.cloud.stream.bindings.iotGatewayClient.binder=coap" });
+		context.close();
 	}
 
 	@Configuration
@@ -49,6 +67,13 @@ public class GatewayTests extends AbstractGatewayTests {
 	@EnableIotGatewayServer
 	@EnableIntegration
 	protected static class Config1 {
+	}
+
+	@Configuration
+	protected static class BeanConfig {
+
+		@Autowired
+		RestGatewayService restGatewayService;
 	}
 
 	@Override

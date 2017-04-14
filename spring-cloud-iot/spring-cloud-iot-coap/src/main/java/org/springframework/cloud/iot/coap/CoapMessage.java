@@ -15,38 +15,8 @@
  */
 package org.springframework.cloud.iot.coap;
 
-/**
- * Represents an CoAP request or response entity, consisting of headers and body.
- *
- * @author Janne Valkealahti
- *
- * @param <T> the type of a entity body
- */
-public class CoapEntity<T> {
+public interface CoapMessage {
 
-	public static final CoapEntity<?> EMPTY = new CoapEntity<>();
+	CoapHeaders getHeaders();
 
-	private final T body;
-	private final CoapHeaders headers;
-
-	public CoapEntity() {
-		this(null);
-	}
-
-	public CoapEntity(T body) {
-		this(body, null);
-	}
-
-	public CoapEntity(T body, CoapHeaders headers) {
-		this.body = body;
-		this.headers = headers != null ? headers : new CoapHeaders();
-	}
-
-	public T getBody() {
-		return body;
-	}
-
-	public CoapHeaders getHeaders() {
-		return headers;
-	}
 }

@@ -1,0 +1,2 @@
+coap:\
+org.springframework.cloud.iot.stream.binder.coap.config.CoapBinderAutoConfiguration

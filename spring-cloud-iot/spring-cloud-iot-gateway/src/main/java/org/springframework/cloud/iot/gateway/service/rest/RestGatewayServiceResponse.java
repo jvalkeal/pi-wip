@@ -20,7 +20,6 @@ public class RestGatewayServiceResponse {
 	private String body;
 
 	public RestGatewayServiceResponse(String body) {
-		super();
 		this.body = body;
 	}
 

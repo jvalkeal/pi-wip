@@ -18,7 +18,6 @@ package org.springframework.cloud.iot.integration.coap.dsl;
 import java.net.URI;
 import java.util.function.Function;
 
-import org.springframework.cloud.iot.integration.coap.inbound.CoapInboundGateway;
 import org.springframework.integration.expression.FunctionExpression;
 import org.springframework.messaging.Message;
 
@@ -36,7 +35,7 @@ public final class Coap {
 	 * @return the CoapInboundGatewaySpec instance
 	 */
 	public static CoapInboundGatewaySpec inboundGateway() {
-		return new CoapInboundGatewaySpec(new CoapInboundGateway());
+		return new CoapInboundGatewaySpec(true);
 	}
 
 	/**
@@ -45,7 +44,7 @@ public final class Coap {
 	 * @return the CoapInboundGatewaySpec instance
 	 */
 	public static CoapInboundGatewaySpec inboundChannelAdapter() {
-		return new CoapInboundGatewaySpec(new CoapInboundGateway(false));
+		return new CoapInboundGatewaySpec(false);
 	}
 
 	/**

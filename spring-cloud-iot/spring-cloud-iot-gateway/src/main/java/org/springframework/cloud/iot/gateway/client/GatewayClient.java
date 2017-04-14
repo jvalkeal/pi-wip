@@ -13,40 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.coap;
+package org.springframework.cloud.iot.gateway.client;
+
+import org.springframework.cloud.stream.annotation.Output;
+import org.springframework.messaging.MessageChannel;
 
 /**
- * Represents an CoAP request or response entity, consisting of headers and body.
+ * Bindable interface with one output channel.
  *
  * @author Janne Valkealahti
  *
- * @param <T> the type of a entity body
  */
-public class CoapEntity<T> {
+public interface GatewayClient {
 
-	public static final CoapEntity<?> EMPTY = new CoapEntity<>();
+	String OUTPUT = "iotGatewayClient";
 
-	private final T body;
-	private final CoapHeaders headers;
-
-	public CoapEntity() {
-		this(null);
-	}
-
-	public CoapEntity(T body) {
-		this(body, null);
-	}
-
-	public CoapEntity(T body, CoapHeaders headers) {
-		this.body = body;
-		this.headers = headers != null ? headers : new CoapHeaders();
-	}
-
-	public T getBody() {
-		return body;
-	}
-
-	public CoapHeaders getHeaders() {
-		return headers;
-	}
+	@Output(GatewayClient.OUTPUT)
+	MessageChannel gatewayClient();
 }

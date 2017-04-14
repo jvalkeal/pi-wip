@@ -15,6 +15,7 @@
  */
 package org.springframework.cloud.iot.coap.support;
 
+import org.springframework.cloud.iot.coap.CoapHeaders;
 import org.springframework.cloud.iot.coap.CoapStatus;
 import org.springframework.cloud.iot.coap.server.ServerCoapResponse;
 
@@ -64,5 +65,10 @@ public class GenericServerCoapResponse implements ServerCoapResponse {
 	@Override
 	public byte[] getBody() {
 		return requestPayload;
+	}
+
+	@Override
+	public CoapHeaders getHeaders() {
+		return null;
 	}
 }

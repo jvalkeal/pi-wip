@@ -17,18 +17,13 @@ package org.springframework.cloud.iot.gateway.service.rest;
 
 public class RestGatewayServiceRequest {
 
-	private String uri;
+	private String url;
 
-	public RestGatewayServiceRequest(String uri) {
-		super();
-		this.uri = uri;
+	public RestGatewayServiceRequest(String url) {
+		this.url = url;
 	}
 
-	public String getUri() {
-		return uri;
-	}
-
-	public void setUri(String uri) {
-		this.uri = uri;
+	public String getUrl() {
+		return url;
 	}
 }

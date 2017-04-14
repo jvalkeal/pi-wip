@@ -15,13 +15,14 @@
  */
 package org.springframework.cloud.iot.gateway.service.rest;
 
+import org.springframework.cloud.iot.gateway.client.GatewayClient;
 import org.springframework.integration.annotation.Gateway;
+import org.springframework.integration.annotation.GatewayHeader;
 import org.springframework.integration.annotation.MessagingGateway;
-import org.springframework.messaging.handler.annotation.Header;
 
-@MessagingGateway
+@MessagingGateway(defaultHeaders = @GatewayHeader(name = "gatewayService", value = "RestGatewayService"))
 public interface RestGatewayService {
 
-	@Gateway(requestChannel = "iot.coapOutboundChannel")
-	String getUrl(@Header("uri") String url, String content);
+	@Gateway(requestChannel = GatewayClient.OUTPUT)
+	RestGatewayServiceResponse execute(RestGatewayServiceRequest request);
 }

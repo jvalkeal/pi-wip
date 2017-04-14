@@ -10,6 +10,7 @@ include 'spring-cloud-iot-gateway'
 include 'spring-cloud-iot-xbee'
 include 'spring-cloud-iot-integration-xbee'
 include 'spring-cloud-iot-stream-binder-xbee'
+include 'spring-cloud-iot-stream-binder-coap'
 include 'spring-cloud-iot-statemachine'
 include 'spring-cloud-iot-bom'
 

@@ -15,38 +15,15 @@
  */
 package org.springframework.cloud.iot.coap;
 
-/**
- * Represents an CoAP request or response entity, consisting of headers and body.
- *
- * @author Janne Valkealahti
- *
- * @param <T> the type of a entity body
- */
-public class CoapEntity<T> {
+import org.springframework.util.LinkedMultiValueMap;
 
-	public static final CoapEntity<?> EMPTY = new CoapEntity<>();
+public class CoapHeaders extends LinkedMultiValueMap<Integer, byte[]> {
 
-	private final T body;
-	private final CoapHeaders headers;
+	private static final long serialVersionUID = 9213168835890681490L;
 
-	public CoapEntity() {
-		this(null);
-	}
+//	   The range of 2048..64999 is
+//	   for all other options including private or vendor-specific ones,
+//	   which undergo a Designated Expert review to help ensure that the
+//	   option semantics are defined correctly.
 
-	public CoapEntity(T body) {
-		this(body, null);
-	}
-
-	public CoapEntity(T body, CoapHeaders headers) {
-		this.body = body;
-		this.headers = headers != null ? headers : new CoapHeaders();
-	}
-
-	public T getBody() {
-		return body;
-	}
-
-	public CoapHeaders getHeaders() {
-		return headers;
-	}
 }

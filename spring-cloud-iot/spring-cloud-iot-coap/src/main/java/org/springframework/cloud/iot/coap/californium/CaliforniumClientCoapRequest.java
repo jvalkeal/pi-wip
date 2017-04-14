@@ -15,8 +15,16 @@
  */
 package org.springframework.cloud.iot.coap.californium;
 
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResponse;
+import org.eclipse.californium.core.coap.Option;
+import org.eclipse.californium.core.coap.OptionSet;
+import org.eclipse.californium.core.coap.Request;
+import org.springframework.cloud.iot.coap.CoapHeaders;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.CoapStatus;
 import org.springframework.cloud.iot.coap.client.ClientCoapRequest;
@@ -34,6 +42,7 @@ public class CaliforniumClientCoapRequest implements ClientCoapRequest {
 
 	private final CoapClient coapClient;
 	private final CoapMethod coapMethod;
+	private final CoapHeaders coapHeaders;
 	private Integer contentFormat;
 	private Integer accept;
 	private byte[] requestPayload;
@@ -45,10 +54,22 @@ public class CaliforniumClientCoapRequest implements ClientCoapRequest {
 	 * @param coapMethod the coap method
 	 */
 	public CaliforniumClientCoapRequest(CoapClient coapClient, CoapMethod coapMethod) {
+		this(coapClient, coapMethod, null);
+	}
+
+	/**
+	 * Instantiates a new californium client coap request.
+	 *
+	 * @param coapClient the coap client
+	 * @param coapMethod the coap method
+	 * @param coapHeaders the coap headers
+	 */
+	public CaliforniumClientCoapRequest(CoapClient coapClient, CoapMethod coapMethod, CoapHeaders coapHeaders) {
 		Assert.notNull(coapClient, "CoapClient must be set");
 		Assert.notNull(coapMethod, "CoapMethod must be set");
 		this.coapClient = coapClient;
 		this.coapMethod = coapMethod;
+		this.coapHeaders = coapHeaders != null ? coapHeaders : new CoapHeaders();
 	}
 
 	@Override
@@ -67,28 +88,68 @@ public class CaliforniumClientCoapRequest implements ClientCoapRequest {
 	}
 
 	@Override
+	public CoapHeaders getHeaders() {
+		return coapHeaders;
+	}
+
+	@Override
 	public ClientCoapResponse execute() {
 		CoapResponse response = null;
+
+		Request request = null;
+
 		if (coapMethod == CoapMethod.GET) {
+			request = Request.newGet();
 			if (contentFormat != null) {
-				response = coapClient.get(contentFormat);
-			} else {
-				response = coapClient.get();
+				request.getOptions().setAccept(contentFormat);
 			}
 		} else if (coapMethod == CoapMethod.POST) {
+			request = Request.newPost();
+			request.setPayload(requestPayload);
+			request.getOptions().setContentFormat(contentFormat);
 			if (accept != null) {
-				response = coapClient.post(requestPayload, contentFormat, accept);
-			} else {
-				response = coapClient.post(requestPayload, contentFormat);
+				request.getOptions().setAccept(accept);
 			}
 		} else if (coapMethod == CoapMethod.DELETE) {
-			response = coapClient.delete();
+			request = Request.newDelete();
 		} else if (coapMethod == CoapMethod.PUT) {
-			response = coapClient.put(requestPayload, contentFormat);
+			request = Request.newPut();
 		} else {
 			// well, should not actually happen
 			throw new IllegalArgumentException("Unsupported coap method, was [" + coapMethod + "]");
 		}
+
+		if (coapHeaders != null) {
+			OptionSet options = request.getOptions();
+			for (Entry<Integer, List<byte[]>> entry : coapHeaders.entrySet()) {
+				for (byte[] optionValue : entry.getValue()) {
+					options.addOption(new Option(entry.getKey(), optionValue));
+				}
+			}
+		}
+
+		response = coapClient.advanced(request);
+
+//		if (coapMethod == CoapMethod.GET) {
+//			if (contentFormat != null) {
+//				response = coapClient.get(contentFormat);
+//			} else {
+//				response = coapClient.get();
+//			}
+//		} else if (coapMethod == CoapMethod.POST) {
+//			if (accept != null) {
+//				response = coapClient.post(requestPayload, contentFormat, accept);
+//			} else {
+//				response = coapClient.post(requestPayload, contentFormat);
+//			}
+//		} else if (coapMethod == CoapMethod.DELETE) {
+//			response = coapClient.delete();
+//		} else if (coapMethod == CoapMethod.PUT) {
+//			response = coapClient.put(requestPayload, contentFormat);
+//		} else {
+//			// well, should not actually happen
+//			throw new IllegalArgumentException("Unsupported coap method, was [" + coapMethod + "]");
+//		}
 		return new DefaultClientCoapResponse(response.getPayload(), CoapStatus.valueOf(response.advanced().getRawCode()));
 	}
 

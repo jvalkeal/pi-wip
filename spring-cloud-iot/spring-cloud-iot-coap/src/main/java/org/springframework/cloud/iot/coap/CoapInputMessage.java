@@ -22,7 +22,7 @@ package org.springframework.cloud.iot.coap;
  * @author Janne Valkealahti
  *
  */
-public interface CoapInputMessage {
+public interface CoapInputMessage extends CoapMessage {
 
 	/**
 	 * Return the body of message as an byte array.

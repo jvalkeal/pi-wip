@@ -4,9 +4,10 @@ buildscript {
 		springBootVersion = '2.0.0.BUILD-SNAPSHOT'
 		springStatemachineVersion = '2.0.0.BUILD-SNAPSHOT'
 		pi4jVersion = '1.2-SNAPSHOT'
-		californiumVersion = '2.0.0-M2'
+		californiumVersion = '2.0.0-M3'
 		xbeeVersion = '1.2.0'
 		nrjavaserialVersion = '3.12.1'
+		springCloudStreamVersion = 'Chelsea.BUILD-SNAPSHOT'
 		springCloudStreamAppStarterVersion = '1.2.0.BUILD-SNAPSHOT'
 	}
 	repositories {
@@ -53,6 +54,7 @@ configure(allprojects) {
 	dependencyManagement {
 		imports {
 			mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
+			mavenBom "org.springframework.cloud:spring-cloud-stream-dependencies:$springCloudStreamVersion"
 			mavenBom "org.springframework.statemachine:spring-statemachine-bom:$springStatemachineVersion"
 		}
 		dependencies {
@@ -197,8 +199,8 @@ project('spring-cloud-iot-gateway') {
 	description = "Spring Cloud IoT Gateway"
 
 	dependencies {
-		compile project(":spring-cloud-iot-integration-coap")
-		compile project(":spring-cloud-iot-integration-xbee")
+		compile project(":spring-cloud-iot-stream-binder-coap")
+		compile project(":spring-cloud-iot-stream-binder-xbee")
 		compile('org.springframework.integration:spring-integration-mqtt')
 		compile('org.slf4j:slf4j-api')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
@@ -241,7 +243,19 @@ project('spring-cloud-iot-stream-binder-xbee') {
 
 	dependencies {
 		compile project(":spring-cloud-iot-integration-xbee")
-		compile('org.springframework.cloud:spring-cloud-stream:1.2.0.BUILD-SNAPSHOT')
+		compile('org.springframework.cloud:spring-cloud-stream')
+		compile('org.slf4j:slf4j-api')
+		testCompile('org.springframework.boot:spring-boot-starter-test')
+		testRuntime('org.springframework.boot:spring-boot-starter')
+	}
+}
+
+project('spring-cloud-iot-stream-binder-coap') {
+	description = "Spring Cloud IoT Stream Binder CoAP"
+
+	dependencies {
+		compile project(":spring-cloud-iot-integration-coap")
+		compile('org.springframework.cloud:spring-cloud-stream')
 		compile('org.slf4j:slf4j-api')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
 		testRuntime('org.springframework.boot:spring-boot-starter')

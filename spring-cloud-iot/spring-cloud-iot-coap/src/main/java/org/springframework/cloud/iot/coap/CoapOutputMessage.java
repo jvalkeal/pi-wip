@@ -22,7 +22,7 @@ package org.springframework.cloud.iot.coap;
  * @author Janne Valkealahti
  *
  */
-public interface CoapOutputMessage {
+public interface CoapOutputMessage extends CoapMessage {
 
 	/**
 	 * Sets the content format.

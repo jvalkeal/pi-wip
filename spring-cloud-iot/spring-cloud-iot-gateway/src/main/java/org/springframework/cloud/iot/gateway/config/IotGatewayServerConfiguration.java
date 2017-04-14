@@ -40,7 +40,13 @@ public class IotGatewayServerConfiguration {
 		public IntegrationFlow iotGatewayServerCoapInboundFlow() {
 			return IntegrationFlows
 					.from(Coap.inboundGateway())
-					.handle((p, h) -> "Echo:" + p)
+//					.handle((p, h) -> "Example Domain")
+					.handle((p, h) -> {
+						System.out.println("XXX1 " + p.getClass());
+						System.out.println("XXX1 " + p);
+						System.out.println("XXX1 " + h);
+						return "Example Domain";
+					})
 					.get();
 		}
 	}

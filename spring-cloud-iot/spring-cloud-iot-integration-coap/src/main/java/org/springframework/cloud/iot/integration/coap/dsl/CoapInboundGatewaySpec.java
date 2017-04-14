@@ -32,8 +32,11 @@ import org.springframework.integration.dsl.MessagingGatewaySpec;
 public class CoapInboundGatewaySpec extends MessagingGatewaySpec<CoapInboundGatewaySpec, CoapInboundGateway>
 		implements ComponentsRegistration {
 
-	public CoapInboundGatewaySpec(CoapInboundGateway gateway) {
-		super(gateway);
+	private final boolean expectReply;
+
+	public CoapInboundGatewaySpec(boolean expectReply) {
+		super(null);
+		this.expectReply = expectReply;
 	}
 
 	@Override
@@ -41,4 +44,9 @@ public class CoapInboundGatewaySpec extends MessagingGatewaySpec<CoapInboundGate
 		return Collections.emptyList();
 	}
 
+	@Override
+	protected CoapInboundGateway doGet() {
+		CoapInboundGateway gateway = new CoapInboundGateway(expectReply);
+		return gateway;
+	}
 }

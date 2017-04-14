@@ -15,12 +15,16 @@
  */
 package org.springframework.cloud.iot.coap.californium;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
+import org.eclipse.californium.core.coap.Option;
+import org.eclipse.californium.core.coap.OptionSet;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.core.server.resources.Resource;
+import org.springframework.cloud.iot.coap.CoapHeaders;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.server.CoapServerHandler;
 import org.springframework.cloud.iot.coap.server.ServerCoapResponse;
@@ -85,12 +89,31 @@ public class CaliforniumCoapServerHandlerResource extends AbstractCoapResource {
 	}
 
 	private void handleRequest(CoapResource resource, CoapExchange exchange) {
-		GenericServerCoapRequest request = new GenericServerCoapRequest(exchange.getRequestPayload());
+//		System.out.println("XXXX4 " + findOtherOption(exchange.getRequestOptions(), 9999).getStringValue());
+
+		CoapHeaders coapHeaders = new CoapHeaders();
+		Option xxx = findOtherOption(exchange.getRequestOptions(), 9999);
+		if (xxx != null) {
+			coapHeaders.add(xxx.getNumber(), xxx.getStringValue().getBytes());
+		}
+
+		GenericServerCoapRequest request = new GenericServerCoapRequest(exchange.getRequestPayload(), coapHeaders);
 		request.setMethod(CoapMethod.resolve(exchange.getRequestCode().name()));
 		request.setContentFormat(exchange.getRequestOptions().getContentFormat());
 		ServerCoapResponse response = handler.handle(request);
 		ResponseCode responseCode = response.getStatus() != null ? ResponseCode.valueOf(response.getStatus().value) : ResponseCode.CREATED;
 		exchange.respond(responseCode, response.getBody());
+	}
+
+	private Option findOtherOption(OptionSet optionSet, int id) {
+		Iterator<Option> iterator = optionSet.asSortedList().iterator();
+		while (iterator.hasNext()) {
+			Option option = (Option) iterator.next();
+			if (option.getNumber() == id) {
+				return option;
+			}
+		}
+		return null;
 	}
 
 	private boolean isMethodAllowed(CoapExchange exchange) {

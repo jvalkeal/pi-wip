@@ -15,6 +15,7 @@
  */
 package org.springframework.cloud.iot.coap.client;
 
+import org.springframework.cloud.iot.coap.CoapHeaders;
 import org.springframework.cloud.iot.coap.CoapStatus;
 
 public class DefaultClientCoapResponse implements ClientCoapResponse {
@@ -39,5 +40,10 @@ public class DefaultClientCoapResponse implements ClientCoapResponse {
 	@Override
 	public CoapStatus getStatusCode() {
 		return status;
+	}
+	
+	@Override
+	public CoapHeaders getHeaders() {
+		return null;
 	}
 }

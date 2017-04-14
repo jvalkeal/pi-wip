@@ -17,15 +17,18 @@ package org.springframework.cloud.iot.integration.coap.outbound;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 import org.springframework.cloud.iot.coap.CoapEntity;
+import org.springframework.cloud.iot.coap.CoapHeaders;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.CoapResponseEntity;
 import org.springframework.cloud.iot.coap.californium.CoapTemplate;
 import org.springframework.cloud.iot.coap.client.CoapOperations;
+import org.springframework.cloud.iot.integration.coap.support.DefaultCoapHeaderMapper;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.expression.Expression;
 import org.springframework.expression.common.LiteralExpression;
@@ -35,6 +38,7 @@ import org.springframework.integration.expression.ExpressionUtils;
 import org.springframework.integration.expression.FunctionExpression;
 import org.springframework.integration.expression.ValueExpression;
 import org.springframework.integration.handler.AbstractReplyProducingMessageHandler;
+import org.springframework.integration.mapping.HeaderMapper;
 import org.springframework.integration.support.AbstractIntegrationMessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandlingException;
@@ -64,6 +68,7 @@ public class CoapOutboundGateway extends AbstractReplyProducingMessageHandler {
 	private final Expression uriExpression;
 	private volatile Expression uriVariablesExpression;
 	private volatile boolean encodeUri = true;
+	private volatile HeaderMapper<CoapHeaders> headerMapper = DefaultCoapHeaderMapper.outboundMapper();
 
 	public CoapOutboundGateway(URI uri) {
 		this(new ValueExpression<URI>(uri), null);
@@ -94,7 +99,6 @@ public class CoapOutboundGateway extends AbstractReplyProducingMessageHandler {
 
 	@Override
 	protected Object handleRequestMessage(Message<?> requestMessage) {
-
 		try {
 			CoapMethod coapMethod = determineCoapMethod(requestMessage);
 			Object expectedResponseType = determineExpectedResponseType(requestMessage);
@@ -191,6 +195,17 @@ public class CoapOutboundGateway extends AbstractReplyProducingMessageHandler {
 		this.encodeUri = encodeUri;
 	}
 
+	/**
+	 * Set the {@link HeaderMapper} to use when mapping between COAP headers and
+	 * MessageHeaders.
+	 *
+	 * @param headerMapper The header mapper.
+	 */
+	public void setHeaderMapper(HeaderMapper<CoapHeaders> headerMapper) {
+		Assert.notNull(headerMapper, "headerMapper must not be null");
+		this.headerMapper = headerMapper;
+	}
+
 	private URI generateUri(Message<?> requestMessage) {
 		Object uri = this.uriExpression.getValue(this.evaluationContext, requestMessage);
 		Assert.state(uri instanceof String || uri instanceof URI,
@@ -277,10 +292,19 @@ public class CoapOutboundGateway extends AbstractReplyProducingMessageHandler {
 			// payload is already an CoapEntity, just return it as-is
 			return (CoapEntity<?>) payload;
 		}
+
+		CoapHeaders coapHeaders = this.mapHeaders(message);
+
 		if (!shouldIncludeRequestBody(coapMethod)) {
 			return new CoapEntity<Object>();
 		}
-		return new CoapEntity<Object>(payload);
+		return new CoapEntity<Object>(payload, coapHeaders);
+	}
+
+	protected CoapHeaders mapHeaders(Message<?> message) {
+		CoapHeaders coapHeaders = new CoapHeaders();
+		this.headerMapper.fromHeaders(message.getHeaders(), coapHeaders);
+		return coapHeaders;
 	}
 
 	private CoapEntity<?> createCoapEntityFromMessage(Message<?> message, CoapMethod coapMethod) {

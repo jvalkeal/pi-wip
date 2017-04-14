@@ -35,7 +35,7 @@ public class Application {
 
 	@Scheduled(fixedDelay = 1000)
 	public void doRestGatewayServiceCall() {
-		log.info("Result from RestGatewayService.getUrl {}", restGatewayService.getUrl("coap://californium.eclipse.org:5683", ""));
+//		log.info("Result from RestGatewayService.getUrl {}", restGatewayService.getUrl("coap://californium.eclipse.org:5683", ""));
 	}
 
 	public static void main(String[] args) {

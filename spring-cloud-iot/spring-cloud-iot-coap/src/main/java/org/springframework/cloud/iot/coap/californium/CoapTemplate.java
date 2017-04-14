@@ -27,6 +27,7 @@ import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapObserveRelation;
 import org.eclipse.californium.core.CoapResponse;
 import org.springframework.cloud.iot.coap.CoapEntity;
+import org.springframework.cloud.iot.coap.CoapHeaders;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.CoapResponseEntity;
 import org.springframework.cloud.iot.coap.client.ClientCoapRequest;
@@ -251,6 +252,8 @@ public class CoapTemplate implements CoapOperations {
 		@Override
 		public void doWithRequest(ClientCoapRequest request) {
 			super.doWithRequest(request);
+
+			request.getHeaders().putAll(this.requestEntity.getHeaders());
 
 			Object requestBody = this.requestEntity.getBody();
 
