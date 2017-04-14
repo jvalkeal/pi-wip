@@ -45,6 +45,7 @@ public class IotGatewayServerConfiguration {
 						System.out.println("XXX1 " + p.getClass());
 						System.out.println("XXX1 " + p);
 						System.out.println("XXX1 " + h);
+//						System.out.println("XXX1 " + h.g);
 						return "Example Domain";
 					})
 					.get();

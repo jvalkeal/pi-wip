@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
+import org.springframework.cloud.iot.coap.CoapHeaders;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.CoapStatus;
 import org.springframework.cloud.iot.coap.californium.CaliforniumCoapServerFactory;
@@ -33,12 +34,14 @@ import org.springframework.cloud.iot.coap.server.CoapServerHandler;
 import org.springframework.cloud.iot.coap.server.ServerCoapRequest;
 import org.springframework.cloud.iot.coap.server.ServerCoapResponse;
 import org.springframework.cloud.iot.coap.support.GenericServerCoapResponse;
+import org.springframework.cloud.iot.integration.coap.support.DefaultCoapHeaderMapper;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.integration.MessageTimeoutException;
 import org.springframework.integration.expression.ExpressionUtils;
 import org.springframework.integration.gateway.MessagingGatewaySupport;
+import org.springframework.integration.mapping.HeaderMapper;
 import org.springframework.integration.support.AbstractIntegrationMessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessagingException;
@@ -71,6 +74,8 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 	private List<CoapMethod> allowedMethods = Arrays.asList(CoapMethod.POST);
 	private volatile EvaluationContext evaluationContext;
 	private CoapServer coapServer;
+	private volatile HeaderMapper<CoapHeaders> headerMapper = DefaultCoapHeaderMapper.inboundMapper();
+
 
 	/**
 	 * Construct a gateway that will wait for the {@link #setReplyTimeout(long)
@@ -137,6 +142,16 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 	 */
 	public int getListeningCoapServerPort() {
 		return coapServer.getPort();
+	}
+
+	/**
+	 * Set the {@link HeaderMapper} to use when mapping between COAP headers and MessageHeaders.
+	 *
+	 * @param headerMapper The header mapper.
+	 */
+	public void setHeaderMapper(HeaderMapper<CoapHeaders> headerMapper) {
+		Assert.notNull(headerMapper, "headerMapper must not be null");
+		this.headerMapper = headerMapper;
 	}
 
 	@Override
@@ -259,6 +274,7 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 
 		MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<String, String>();
 
+		Map<String, Object> headers = this.headerMapper.toHeaders(request.getHeaders());
 		Object payload = null;
 
 		if (this.payloadExpression != null) {
@@ -273,13 +289,13 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 			}
 		}
 
-
 		AbstractIntegrationMessageBuilder<?> messageBuilder = null;
 
 		if (payload instanceof Message<?>) {
-			messageBuilder = this.getMessageBuilderFactory().fromMessage((Message<?>) payload);
+			messageBuilder = this.getMessageBuilderFactory().fromMessage((Message<?>) payload)
+					.copyHeadersIfAbsent(headers);
 		} else {
-			messageBuilder = this.getMessageBuilderFactory().withPayload(payload);
+			messageBuilder = this.getMessageBuilderFactory().withPayload(payload).copyHeaders(headers);
 		}
 
 		Message<?> message = messageBuilder

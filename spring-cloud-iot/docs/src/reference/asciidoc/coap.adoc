@@ -4,4 +4,24 @@
 Protocol for constrained devices.
 
 == Introduction
-xxx
+*SCIOT* provides low level support for working with _CoAP_ protocol via
+<<iot-coap-support>>, Spring Integration component with
+<<iot-coap-int>> and Binder support with <<iot-xbee-binder>>.
+
+[[iot-coap-support]]
+== CoAP Support
+Base _CoAP_ support in package `spring-cloud-iot-coap` provides
+facilities to ease working with _CoAP_ protocol.
+
+[[iot-coap-int]]
+== Spring Integration XBee
+`spring-cloud-iot-integration-coap` is a _Spring Integration_
+component providing gateways for inbound and outbound. It also have a
+inbound channel adapter.
+
+[[iot-coap-binder]]
+== Spring Cloud Stream Binder for CoAP
+`spring-cloud-iot-stream-binder-coap` is a _Spring Cloud Stream
+Binder_ implementation which work atop of <<iot-coap-int>> providing
+easy integration to bind messages via _CoAP_ protocol.
+

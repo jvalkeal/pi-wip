@@ -15,7 +15,11 @@
  */
 package org.springframework.cloud.iot.integration.coap.support;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -54,11 +58,20 @@ public class DefaultCoapHeaderMapper implements HeaderMapper<CoapHeaders>, BeanF
 	}
 
 	@Override
-	public Map<String, Object> toHeaders(CoapHeaders source) {
-		return null;
+	public Map<String, Object> toHeaders(CoapHeaders coapHeaders) {
+		Map<String, Object> target = new HashMap<String, Object>();
+		for (Entry<Integer, List<byte[]>> entry : coapHeaders.entrySet()) {
+			target.put(entry.toString(), entry.getValue());
+		}
+		return target;
 	}
 
 	public static DefaultCoapHeaderMapper outboundMapper() {
+		DefaultCoapHeaderMapper mapper = new DefaultCoapHeaderMapper();
+		return mapper;
+	}
+
+	public static DefaultCoapHeaderMapper inboundMapper() {
 		DefaultCoapHeaderMapper mapper = new DefaultCoapHeaderMapper();
 		return mapper;
 	}

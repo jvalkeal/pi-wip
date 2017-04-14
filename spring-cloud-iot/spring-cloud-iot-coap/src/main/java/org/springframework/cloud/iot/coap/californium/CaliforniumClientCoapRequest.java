@@ -129,27 +129,6 @@ public class CaliforniumClientCoapRequest implements ClientCoapRequest {
 		}
 
 		response = coapClient.advanced(request);
-
-//		if (coapMethod == CoapMethod.GET) {
-//			if (contentFormat != null) {
-//				response = coapClient.get(contentFormat);
-//			} else {
-//				response = coapClient.get();
-//			}
-//		} else if (coapMethod == CoapMethod.POST) {
-//			if (accept != null) {
-//				response = coapClient.post(requestPayload, contentFormat, accept);
-//			} else {
-//				response = coapClient.post(requestPayload, contentFormat);
-//			}
-//		} else if (coapMethod == CoapMethod.DELETE) {
-//			response = coapClient.delete();
-//		} else if (coapMethod == CoapMethod.PUT) {
-//			response = coapClient.put(requestPayload, contentFormat);
-//		} else {
-//			// well, should not actually happen
-//			throw new IllegalArgumentException("Unsupported coap method, was [" + coapMethod + "]");
-//		}
 		return new DefaultClientCoapResponse(response.getPayload(), CoapStatus.valueOf(response.advanced().getRawCode()));
 	}
 

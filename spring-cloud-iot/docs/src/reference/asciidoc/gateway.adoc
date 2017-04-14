@@ -1,0 +1,6 @@
+[[iot-gateway]]
+= Gateway
+xxx
+
+== Introduction
+xxx
