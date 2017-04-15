@@ -27,6 +27,9 @@ import org.springframework.messaging.MessageChannel;
 public interface GatewayClient {
 
 	String OUTPUT = "iotGatewayClient";
+	String OUTPUT_REQUEST = "iotGatewayClient" + "Request";
+	String OUTPUT_REPLY = "iotGatewayClient" + "Reply";
+	String OUTPUT_RESPONSE = "iotGatewayClient" + "Response";
 
 	@Output(GatewayClient.OUTPUT)
 	MessageChannel gatewayClient();

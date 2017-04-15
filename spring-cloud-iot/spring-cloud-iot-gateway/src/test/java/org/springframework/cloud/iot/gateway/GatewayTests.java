@@ -34,11 +34,20 @@ import org.springframework.integration.config.EnableIntegration;
 public class GatewayTests extends AbstractGatewayTests {
 
 	@Test
+	public void testAutowire() {
+		SpringApplication app = new SpringApplication(Config1.class, BeanConfig.class);
+		app.setWebApplicationType(WebApplicationType.NONE);
+		ConfigurableApplicationContext context = app.run(new String[] { "--spring.cloud.iot.gateway.rest.enabled=true",
+				"--spring.cloud.stream.bindings.iotGatewayClient.binder=coap" });
+		context.close();
+	}
+
+	@Test
 	public void testGateway() {
 		SpringApplication app = new SpringApplication(Config1.class);
 		app.setWebApplicationType(WebApplicationType.NONE);
 		ConfigurableApplicationContext context = app
-				.run(new String[] { "--spring.cloud.iot.coap.enabled=true",
+				.run(new String[] { "--spring.cloud.iot.gateway.rest.enabled=true",
 						"--spring.cloud.stream.bindings.iotGatewayClient.binder=coap",
 						"--spring.cloud.stream.bindings.iotGatewayClient.producer.useNativeEncoding=true" });
 
@@ -46,19 +55,12 @@ public class GatewayTests extends AbstractGatewayTests {
 //		spring.cloud.stream.bindings.iotGatewayServer.binder=coap
 //		spring.cloud.stream.bindings.iotGatewayClient.producer.useNativeEncoding=true
 
-//		RestGatewayService restGatewayService = context.getBean(RestGatewayService.class);
-//		assertThat(restGatewayService, notNullValue());
-//		String body = restGatewayService.execute(new RestGatewayServiceRequest("http://example.com")).getBody();
-//		assertThat(body, containsString("Example Domain"));
-		context.close();
-	}
-
-	@Test
-	public void testAutowire() {
-		SpringApplication app = new SpringApplication(Config1.class, BeanConfig.class);
-		app.setWebApplicationType(WebApplicationType.NONE);
-		ConfigurableApplicationContext context = app.run(new String[] { "--spring.cloud.iot.coap.enabled=true",
-				"--spring.cloud.stream.bindings.iotGatewayClient.binder=coap" });
+		RestGatewayService restGatewayService = context.getBean(RestGatewayService.class);
+		assertThat(restGatewayService, notNullValue());
+		String body = restGatewayService.execute(new RestGatewayServiceRequest("http://example.com")).getBody();
+//		String body = restGatewayService.execute(new RestGatewayServiceRequest("http://example.com"));
+		assertThat(body, containsString("Example Domain"));
+//		assertThat(body, is("Example Domain"));
 		context.close();
 	}
 

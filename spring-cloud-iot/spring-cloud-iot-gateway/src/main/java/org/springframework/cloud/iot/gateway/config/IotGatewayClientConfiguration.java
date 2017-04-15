@@ -20,14 +20,13 @@ import org.springframework.cloud.iot.coap.californium.CoapTemplate;
 import org.springframework.cloud.iot.coap.client.CoapOperations;
 import org.springframework.cloud.iot.gateway.client.GatewayClient;
 import org.springframework.cloud.iot.gateway.service.rest.RestGatewayService;
-import org.springframework.cloud.iot.integration.coap.dsl.Coap;
+import org.springframework.cloud.iot.gateway.service.rest.RestGatewayServiceResponse;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.gateway.AnnotationGatewayProxyFactoryBean;
-import org.springframework.integration.gateway.GatewayProxyFactoryBean;
 
 /**
  * Configuration for IoT gateway client.
@@ -44,19 +43,29 @@ public class IotGatewayClientConfiguration {
 		return new CoapTemplate();
 	}
 
-	@Configuration
-	@ConditionalOnProperty(prefix = "spring.cloud.iot.coap", name = "enabled", havingValue = "true", matchIfMissing = false)
-	public static class CoapClientConfiguration {
+	@Bean
+	public IntegrationFlow iotGatewayClientTmpFlow() {
+		return IntegrationFlows
+				.from(GatewayClient.OUTPUT_REQUEST)
+				.channel(GatewayClient.OUTPUT)
+				.get();
+	}
 
-//		@Bean
-//		public IntegrationFlow iotGatewayClientCoapInboundFlow() {
-//			return IntegrationFlows
-//					.from(GatewayClient.OUTPUT)
-//					.handle(Coap.outboundGateway("coap://localhost:5683/spring-integration-coap")
-//							.requiresReply(true)
-//							.expectedResponseType(String.class))
-//					.get();
-//		}
+
+	@Configuration
+	@ConditionalOnProperty(prefix = "spring.cloud.iot.gateway.rest", name = "enabled", havingValue = "true", matchIfMissing = false)
+	public static class IotRestGatewayClientConfiguration {
+
+		@Bean
+		public IntegrationFlow iotGatewayClientFlow() {
+			return IntegrationFlows
+					.from(GatewayClient.OUTPUT_REPLY)
+					.<byte[], RestGatewayServiceResponse>transform(s -> {
+							return new RestGatewayServiceResponse(new String(s));
+						})
+					.channel(GatewayClient.OUTPUT_RESPONSE)
+					.get();
+		}
 
 		@Bean
 		public AnnotationGatewayProxyFactoryBean restGatewayServiceGatewayProxyFactoryBean() {

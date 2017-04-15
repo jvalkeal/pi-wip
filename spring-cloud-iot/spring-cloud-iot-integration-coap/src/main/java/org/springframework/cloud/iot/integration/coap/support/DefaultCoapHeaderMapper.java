@@ -61,7 +61,7 @@ public class DefaultCoapHeaderMapper implements HeaderMapper<CoapHeaders>, BeanF
 	public Map<String, Object> toHeaders(CoapHeaders coapHeaders) {
 		Map<String, Object> target = new HashMap<String, Object>();
 		for (Entry<Integer, List<byte[]>> entry : coapHeaders.entrySet()) {
-			target.put(entry.toString(), entry.getValue());
+			target.put(entry.getKey().toString(), entry.getValue());
 		}
 		return target;
 	}

@@ -23,6 +23,6 @@ import org.springframework.integration.annotation.MessagingGateway;
 @MessagingGateway(defaultHeaders = @GatewayHeader(name = "gatewayService", value = "RestGatewayService"))
 public interface RestGatewayService {
 
-	@Gateway(requestChannel = GatewayClient.OUTPUT)
+	@Gateway(requestChannel = GatewayClient.OUTPUT_REQUEST, replyChannel = GatewayClient.OUTPUT_RESPONSE, headers = @GatewayHeader(name = "responseType", value = "org.springframework.cloud.iot.gateway.service.rest.RestGatewayServiceResponse"))
 	RestGatewayServiceResponse execute(RestGatewayServiceRequest request);
 }

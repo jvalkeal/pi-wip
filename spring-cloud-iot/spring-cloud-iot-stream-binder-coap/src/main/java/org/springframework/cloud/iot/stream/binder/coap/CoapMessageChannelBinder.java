@@ -72,7 +72,8 @@ public class CoapMessageChannelBinder extends
 			gateway = new CoapOutboundGateway("coap://localhost:5683/spring-integration-coap");
 			gateway.setBeanFactory(beanFactory);
 			gateway.setRequiresReply(true);
-			gateway.setExpectedResponseType(String.class);
+			gateway.setOutputChannelName("iotGatewayClientReply");
+			gateway.setExpectedResponseType(byte[].class);
 		}
 		return gateway;
 	}

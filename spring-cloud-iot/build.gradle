@@ -205,6 +205,7 @@ project('spring-cloud-iot-gateway') {
 		compile('org.slf4j:slf4j-api')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
 		testRuntime('org.springframework.boot:spring-boot-starter')
+		testRuntime('com.google.code.gson:gson')
 	}
 }
 

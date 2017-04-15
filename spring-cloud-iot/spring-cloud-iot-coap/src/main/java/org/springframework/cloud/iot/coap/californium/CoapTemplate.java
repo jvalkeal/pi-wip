@@ -27,7 +27,6 @@ import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapObserveRelation;
 import org.eclipse.californium.core.CoapResponse;
 import org.springframework.cloud.iot.coap.CoapEntity;
-import org.springframework.cloud.iot.coap.CoapHeaders;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.CoapResponseEntity;
 import org.springframework.cloud.iot.coap.client.ClientCoapRequest;
@@ -42,6 +41,7 @@ import org.springframework.cloud.iot.coap.converter.ByteArrayCoapMessageConverte
 import org.springframework.cloud.iot.coap.converter.CoapMessageConverter;
 import org.springframework.cloud.iot.coap.converter.GsonCoapMessageConverter;
 import org.springframework.cloud.iot.coap.converter.StringCoapMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.util.DefaultUriBuilderFactory;
@@ -61,6 +61,10 @@ public class CoapTemplate implements CoapOperations {
 	private final List<CoapMessageConverter<?>> messageConverters = new ArrayList<CoapMessageConverter<?>>();
 	private UriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory();
 
+	private static final boolean jackson2Present =
+			ClassUtils.isPresent("com.fasterxml.jackson.databind.ObjectMapper", CoapTemplate.class.getClassLoader()) &&
+					ClassUtils.isPresent("com.fasterxml.jackson.core.JsonGenerator", CoapTemplate.class.getClassLoader());
+
 	private static final boolean gsonPresent =
 			ClassUtils.isPresent("com.google.gson.Gson", CoapTemplate.class.getClassLoader());
 	/**
@@ -69,6 +73,11 @@ public class CoapTemplate implements CoapOperations {
 	public CoapTemplate() {
 		this.messageConverters.add(new ByteArrayCoapMessageConverter());
 		this.messageConverters.add(new StringCoapMessageConverter());
+
+//		if (jackson2Present) {
+//			this.messageConverters.add(new MappingJackson2CoapMessageConverter());
+//		}
+
 
 		if (gsonPresent) {
 			this.messageConverters.add(new GsonCoapMessageConverter());
