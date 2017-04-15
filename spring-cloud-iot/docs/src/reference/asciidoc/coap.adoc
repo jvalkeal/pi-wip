@@ -4,12 +4,12 @@
 Protocol for constrained devices.
 
 == Introduction
-*SCIOT* provides low level support for working with _CoAP_ protocol via
-<<iot-coap-support>>, Spring Integration component with
-<<iot-coap-int>> and Binder support with <<iot-coap-binder>>.
+*SCIOT* provides support for working with _CoAP_ protocol via base
+framework in <<iot-coap-framework>>, Spring Integration component in
+<<iot-coap-int>> and Binder support in <<iot-coap-binder>>.
 
-[[iot-coap-support]]
-== CoAP Support
+[[iot-coap-framework]]
+== CoAP Framework
 Base _CoAP_ support in package `spring-cloud-iot-coap` provides
 facilities to ease working with _CoAP_ protocol.
 

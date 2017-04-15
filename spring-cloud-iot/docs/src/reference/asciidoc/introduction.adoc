@@ -6,6 +6,7 @@ following features:
 
 * Component abstraction.
 * Easy configuration model.
+* Support for different communication protocols.
 
 == Background
 Xxx.
