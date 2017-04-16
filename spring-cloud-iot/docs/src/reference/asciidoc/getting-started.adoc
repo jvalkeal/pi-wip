@@ -27,8 +27,14 @@ The following modules are available for Spring Cloud Iot
 |spring-cloud-iot-coap
 |Core CoAP support
 
+|spring-cloud-iot-pi4j
+|Core support for Pi4J
+
 |spring-cloud-iot-integration-coap
 |Spring Integration CoAP support
+
+|spring-cloud-iot-stream-binder-coap
+|Spring Cloud Stream Binder for CoAP
 
 |spring-cloud-iot-gateway
 |Core IoT Gateway support
