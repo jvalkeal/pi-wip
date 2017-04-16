@@ -373,7 +373,13 @@ configure(rootProject) {
 			'spring-cloud-iot-version' : project.version,
 			'spring-version' : springVersion,
 			'spring-boot-version' : springBootVersion,
+			'spring-statemachine-version' : springStatemachineVersion,
 			'pi4j-version' : pi4jVersion,
+			'californium-version' : californiumVersion,
+			'xbee-version' : xbeeVersion,
+			'nrjavaserial-version' : nrjavaserialVersion,
+			'spring-cloud-stream-version' : springCloudStreamVersion,
+			'spring-cloud-stream-app-starter-version' : springCloudStreamAppStarterVersion,
 			revnumber : project.version
 	}
 

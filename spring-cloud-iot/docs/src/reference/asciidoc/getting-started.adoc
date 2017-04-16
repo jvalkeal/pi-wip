@@ -12,6 +12,18 @@ Spring Cloud Iot {revnumber} is built and tested with
 JDK 8, Spring Framework {spring-version}, Spring Boot
 {spring-boot-version} and Pi4J {pi4j-version}.
 
+Additionally a _CoAP_ support is based on Eclipse Californium
+{californium-version}, XBee support is based on _Digi International
+Java Library_ {xbee-version} where serial library usage is based on
+_rxtx nrjavaserial fork_  {nrjavaserial-version}.
+
+Spring Statemachine support library is based on
+{spring-statemachine-version}. Binder extensions are based on _Spring
+Cloud Stream_ {spring-cloud-stream-version}.
+
+Also some samples are based on _Spring Cloud Stream App Starters_
+version {spring-cloud-stream-app-starter-version}.
+
 == Modules
 The following modules are available for Spring Cloud Iot
 
