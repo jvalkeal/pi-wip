@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.gateway.client;
+package org.springframework.cloud.iot.gateway.service.rest;
 
-import org.springframework.cloud.stream.annotation.Output;
-import org.springframework.messaging.MessageChannel;
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.web.client.RestTemplate;
 
-/**
- * Bindable interface with one output channel.
- *
- * @author Janne Valkealahti
- *
- */
-public interface GatewayClient {
+public class RestGatewayServiceHandler {
 
-	String OUTPUT = "iotGatewayClient";
-	String OUTPUT_REQUEST = OUTPUT + "Request";
-	String OUTPUT_REPLY = OUTPUT + "Reply";
-	String OUTPUT_RESPONSE = OUTPUT + "Response";
+	private final RestTemplate restTemplate;
 
-	@Output(GatewayClient.OUTPUT)
-	MessageChannel gatewayClient();
+	public RestGatewayServiceHandler(RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
+	}
+
+	@ServiceActivator(inputChannel = "")
+	public RestGatewayServiceResponse handle(RestGatewayServiceRequest request) {
+		String body = restTemplate.getForObject(request.getUrl(), String.class);
+		return new RestGatewayServiceResponse(body);
+	}
 }

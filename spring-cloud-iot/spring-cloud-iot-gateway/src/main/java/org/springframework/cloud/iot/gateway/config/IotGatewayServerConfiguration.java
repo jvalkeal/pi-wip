@@ -18,7 +18,11 @@ package org.springframework.cloud.iot.gateway.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cloud.iot.gateway.service.rest.RestGatewayService;
+import org.springframework.cloud.iot.gateway.service.rest.RestGatewayServiceHandler;
+import org.springframework.cloud.iot.gateway.service.rest.RestGatewayServiceRequest;
 import org.springframework.cloud.iot.gateway.service.rest.RestGatewayServiceResponse;
 import org.springframework.cloud.iot.integration.coap.dsl.Coap;
 import org.springframework.cloud.iot.integration.xbee.dsl.XBee;
@@ -48,22 +52,34 @@ public class IotGatewayServerConfiguration {
 		@Bean
 		public IntegrationFlow iotGatewayServerCoapXxx() {
 			return IntegrationFlows
-					.from("RestGatewayService")
-//					.transform(new JsonToObjectTransformer())
-					.handle((p, h) -> {
-						System.out.println("XXX6 " + p);
-						System.out.println("XXX6 " + p.getClass());
-						RestTemplate t = new RestTemplate();
-						String xxx = t.getForObject("http://example.com", String.class);
-						System.out.println("XXX6 " + xxx);
-						return new RestGatewayServiceResponse(xxx);
-					})
+					.from(RestGatewayService.ID)
+					.transform(new JsonToObjectTransformer(RestGatewayServiceRequest.class))
+					.handle(restGatewayServiceHandler(null))
+//					.handle((p, h) -> {
+//						System.out.println("XXX6 " + p);
+//						System.out.println("XXX6 " + p.getClass());
+//						RestTemplate t = new RestTemplate();
+//						String xxx = t.getForObject("http://example.com", String.class);
+//						System.out.println("XXX6 " + xxx);
+//						return new RestGatewayServiceResponse(xxx);
+//					})
 					.transform(new ObjectToJsonTransformer())
 					.get();
 		}
 
+		@ConditionalOnMissingBean(RestTemplate.class)
 		@Bean
-		public IntegrationFlow iotGatewayServerCoapInboundFlow() {
+		public RestTemplate restTemplate() {
+			return new RestTemplate();
+		}
+
+		@Bean
+		public RestGatewayServiceHandler restGatewayServiceHandler(RestTemplate restTemplate) {
+			return new RestGatewayServiceHandler(restTemplate);
+		}
+
+		@Bean
+		public IntegrationFlow iotGatewayServerCoapToRouterFlow() {
 			return IntegrationFlows
 					.from(Coap.inboundGateway())
 					.route(new ServiceRouter())
