@@ -13,27 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.gateway.service.rest;
+package org.springframework.cloud.iot.gateway;
 
 /**
- * Response domain class for rest gateway service.
+ * Public global IoT gateway constants.
  *
  * @author Janne Valkealahti
  *
  */
-public class RestGatewayServiceResponse {
+public abstract class IotGatewayConstants {
 
-	private String body;
-
-	public RestGatewayServiceResponse(String body) {
-		this.body = body;
-	}
-
-	public String getBody() {
-		return body;
-	}
-
-	public void setBody(String body) {
-		this.body = body;
-	}
+	/** Message header for routing gateway requests. */
+	public final static String HEADER_GATEWAY_SERVICE_ROUTE = "iotGatewayServiceRoute";
 }

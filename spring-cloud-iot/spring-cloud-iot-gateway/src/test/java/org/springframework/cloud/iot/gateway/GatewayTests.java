@@ -16,7 +16,6 @@
 package org.springframework.cloud.iot.gateway;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
@@ -51,16 +50,10 @@ public class GatewayTests extends AbstractGatewayTests {
 						"--spring.cloud.stream.bindings.iotGatewayClient.binder=coap",
 						"--spring.cloud.stream.bindings.iotGatewayClient.producer.useNativeEncoding=true" });
 
-//		spring.cloud.stream.bindings.iotGatewayClient.binder=coap
-//		spring.cloud.stream.bindings.iotGatewayServer.binder=coap
-//		spring.cloud.stream.bindings.iotGatewayClient.producer.useNativeEncoding=true
-
 		RestGatewayService restGatewayService = context.getBean(RestGatewayService.class);
 		assertThat(restGatewayService, notNullValue());
 		String body = restGatewayService.execute(new RestGatewayServiceRequest("http://example.com")).getBody();
-//		String body = restGatewayService.execute(new RestGatewayServiceRequest("http://example.com"));
 		assertThat(body, containsString("Example Domain"));
-//		assertThat(body, is("Example Domain"));
 		context.close();
 	}
 

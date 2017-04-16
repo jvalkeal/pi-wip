@@ -15,12 +15,13 @@
  */
 package org.springframework.cloud.iot.gateway.service.rest;
 
+import org.springframework.cloud.iot.gateway.IotGatewayConstants;
 import org.springframework.cloud.iot.gateway.client.GatewayClient;
 import org.springframework.integration.annotation.Gateway;
 import org.springframework.integration.annotation.GatewayHeader;
 import org.springframework.integration.annotation.MessagingGateway;
 
-@MessagingGateway(defaultHeaders = @GatewayHeader(name = "gatewayService", value = RestGatewayService.ID))
+@MessagingGateway(defaultHeaders = @GatewayHeader(name = IotGatewayConstants.HEADER_GATEWAY_SERVICE_ROUTE, value = RestGatewayService.ID))
 public interface RestGatewayService {
 
 	public final static String ID = "RestGatewayService";

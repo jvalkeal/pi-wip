@@ -17,7 +17,6 @@ package org.springframework.cloud.iot.integration.coap.outbound;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;

@@ -18,15 +18,27 @@ package org.springframework.cloud.iot.gateway.service.rest;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * {@code ServiceActivator} which processes a {@link RestGatewayServiceRequest}
+ * reply {@link RestGatewayServiceResponse}.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class RestGatewayServiceHandler {
 
 	private final RestTemplate restTemplate;
 
+	/**
+	 * Instantiates a new rest gateway service handler.
+	 *
+	 * @param restTemplate the rest template
+	 */
 	public RestGatewayServiceHandler(RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
 	}
 
-	@ServiceActivator(inputChannel = "")
+	@ServiceActivator
 	public RestGatewayServiceResponse handle(RestGatewayServiceRequest request) {
 		String body = restTemplate.getForObject(request.getUrl(), String.class);
 		return new RestGatewayServiceResponse(body);

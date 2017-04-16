@@ -15,12 +15,14 @@
  */
 package org.springframework.cloud.iot.integration.coap.support;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -30,12 +32,16 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.integration.mapping.HeaderMapper;
 import org.springframework.integration.support.utils.IntegrationUtils;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 public class DefaultCoapHeaderMapper implements HeaderMapper<CoapHeaders>, BeanFactoryAware, InitializingBean {
 
+	private static final Log logger = LogFactory.getLog(DefaultCoapHeaderMapper.class);
 	private volatile BeanFactory beanFactory;
 	private volatile ConversionService conversionService;
+	private volatile String[] outboundHeaderNames = new String[0];
+	private volatile String[] inboundHeaderNames = new String[0];
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -51,7 +57,17 @@ public class DefaultCoapHeaderMapper implements HeaderMapper<CoapHeaders>, BeanF
 
 	@Override
 	public void fromHeaders(MessageHeaders headers, CoapHeaders coapHeaders) {
-		String gatewayService = headers.get("gatewayService", String.class);
+		if (logger.isDebugEnabled()) {
+			logger.debug(MessageFormat.format("outboundHeaderNames={0}",
+					CollectionUtils.arrayToList(this.outboundHeaderNames)));
+		}
+
+		for (Entry<String, Object> entry : headers.entrySet()) {
+			String name = entry.getKey();
+			String lowerName = name.toLowerCase();
+		}
+
+		String gatewayService = headers.get("iotGatewayServiceRoute", String.class);
 		if (StringUtils.hasText(gatewayService)) {
 			coapHeaders.add(9999, gatewayService.getBytes());
 		}

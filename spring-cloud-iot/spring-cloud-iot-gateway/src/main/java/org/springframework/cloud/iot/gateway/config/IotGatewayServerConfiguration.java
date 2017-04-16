@@ -18,24 +18,18 @@ package org.springframework.cloud.iot.gateway.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cloud.iot.gateway.service.rest.RestGatewayService;
-import org.springframework.cloud.iot.gateway.service.rest.RestGatewayServiceHandler;
-import org.springframework.cloud.iot.gateway.service.rest.RestGatewayServiceRequest;
-import org.springframework.cloud.iot.gateway.service.rest.RestGatewayServiceResponse;
+import org.springframework.cloud.iot.gateway.service.rest.RestGatewayServiceConfiguration;
 import org.springframework.cloud.iot.integration.coap.dsl.Coap;
 import org.springframework.cloud.iot.integration.xbee.dsl.XBee;
 import org.springframework.cloud.iot.xbee.XBeeReceiver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
-import org.springframework.integration.json.JsonToObjectTransformer;
-import org.springframework.integration.json.ObjectToJsonTransformer;
 import org.springframework.integration.router.AbstractMappingMessageRouter;
 import org.springframework.messaging.Message;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * Configuration for IoT gateway server.
@@ -43,48 +37,15 @@ import org.springframework.web.client.RestTemplate;
  * @author Janne Valkealahti
  */
 @Configuration
+@Import(RestGatewayServiceConfiguration.class)
 public class IotGatewayServerConfiguration {
 
-	@Configuration
-	@ConditionalOnProperty(prefix = "spring.cloud.iot.gateway.rest", name = "enabled", havingValue = "true", matchIfMissing = false)
-	public static class IotRestGatewayServerConfiguration {
-
-		@Bean
-		public IntegrationFlow iotGatewayServerCoapXxx() {
-			return IntegrationFlows
-					.from(RestGatewayService.ID)
-					.transform(new JsonToObjectTransformer(RestGatewayServiceRequest.class))
-					.handle(restGatewayServiceHandler(null))
-//					.handle((p, h) -> {
-//						System.out.println("XXX6 " + p);
-//						System.out.println("XXX6 " + p.getClass());
-//						RestTemplate t = new RestTemplate();
-//						String xxx = t.getForObject("http://example.com", String.class);
-//						System.out.println("XXX6 " + xxx);
-//						return new RestGatewayServiceResponse(xxx);
-//					})
-					.transform(new ObjectToJsonTransformer())
-					.get();
-		}
-
-		@ConditionalOnMissingBean(RestTemplate.class)
-		@Bean
-		public RestTemplate restTemplate() {
-			return new RestTemplate();
-		}
-
-		@Bean
-		public RestGatewayServiceHandler restGatewayServiceHandler(RestTemplate restTemplate) {
-			return new RestGatewayServiceHandler(restTemplate);
-		}
-
-		@Bean
-		public IntegrationFlow iotGatewayServerCoapToRouterFlow() {
-			return IntegrationFlows
-					.from(Coap.inboundGateway())
-					.route(new ServiceRouter())
-					.get();
-		}
+	@Bean
+	public IntegrationFlow iotGatewayServerCoapToRouterFlow() {
+		return IntegrationFlows
+				.from(Coap.inboundGateway())
+				.route(new ServiceRouter())
+				.get();
 	}
 
 	public static class ServiceRouter extends AbstractMappingMessageRouter {

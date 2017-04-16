@@ -15,6 +15,12 @@
  */
 package org.springframework.cloud.iot.gateway.service.rest;
 
+/**
+ * Request domain class for rest gateway service.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class RestGatewayServiceRequest {
 
 	private String url;
