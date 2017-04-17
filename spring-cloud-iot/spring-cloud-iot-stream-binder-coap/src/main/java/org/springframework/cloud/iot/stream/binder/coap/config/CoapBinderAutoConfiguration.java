@@ -57,6 +57,7 @@ public class CoapBinderAutoConfiguration {
 			ProvisioningProvider<ExtendedConsumerProperties<CoapConsumerProperties>, ExtendedProducerProperties<CoapProducerProperties>> provisioningProvider) {
 		CoapMessageChannelBinder coapMessageChannelBinder = new CoapMessageChannelBinder(provisioningProvider);
 		coapMessageChannelBinder.setExtendedBindingProperties(coapExtendedBindingProperties);
+		coapMessageChannelBinder.setBinderProperties(configurationProperties);
 		return coapMessageChannelBinder;
 	}
 }

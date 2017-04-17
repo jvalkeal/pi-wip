@@ -26,4 +26,17 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "spring.cloud.stream.coap.binder")
 public class CoapBinderConfigurationProperties {
 
+	private Mode mode;
+
+	public Mode getMode() {
+		return mode;
+	}
+
+	public void setMode(Mode mode) {
+		this.mode = mode;
+	}
+
+	public static enum Mode {
+		OUTBOUND_GATEWAY;
+	}
 }

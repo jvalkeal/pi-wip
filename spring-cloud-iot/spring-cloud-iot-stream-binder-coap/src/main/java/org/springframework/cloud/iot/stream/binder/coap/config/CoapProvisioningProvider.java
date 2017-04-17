@@ -43,12 +43,33 @@ public class CoapProvisioningProvider implements
 	@Override
 	public ProducerDestination provisionProducerDestination(String name,
 			ExtendedProducerProperties<CoapProducerProperties> properties) throws ProvisioningException {
-		return null;
+		return new CoapProducerDestination();
 	}
 
 	@Override
 	public ConsumerDestination provisionConsumerDestination(String name, String group,
 			ExtendedConsumerProperties<CoapConsumerProperties> properties) throws ProvisioningException {
-		return null;
+		return new CoapConsumerDestination();
+	}
+
+	private final static class CoapProducerDestination implements ProducerDestination {
+
+		@Override
+		public String getName() {
+			return null;
+		}
+
+		@Override
+		public String getNameForPartition(int partition) {
+			return null;
+		}
+	}
+
+	private final static class CoapConsumerDestination implements ConsumerDestination {
+
+		@Override
+		public String getName() {
+			return null;
+		}
 	}
 }

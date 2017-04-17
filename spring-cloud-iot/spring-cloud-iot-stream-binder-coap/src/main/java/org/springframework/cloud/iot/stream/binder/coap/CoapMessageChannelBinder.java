@@ -19,6 +19,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.cloud.iot.integration.coap.outbound.CoapOutboundGateway;
+import org.springframework.cloud.iot.stream.binder.coap.properties.CoapBinderConfigurationProperties;
+import org.springframework.cloud.iot.stream.binder.coap.properties.CoapBinderConfigurationProperties.Mode;
 import org.springframework.cloud.iot.stream.binder.coap.properties.CoapConsumerProperties;
 import org.springframework.cloud.iot.stream.binder.coap.properties.CoapExtendedBindingProperties;
 import org.springframework.cloud.iot.stream.binder.coap.properties.CoapProducerProperties;
@@ -46,6 +48,7 @@ public class CoapMessageChannelBinder extends
 	private BeanFactory beanFactory;
 	private CoapOutboundGateway gateway = null;
 	private CoapExtendedBindingProperties extendedBindingProperties = new CoapExtendedBindingProperties();
+	private CoapBinderConfigurationProperties configurationProperties;
 
 	/**
 	 * Instantiates a new coap message channel binder.
@@ -85,19 +88,24 @@ public class CoapMessageChannelBinder extends
 		this.beanFactory = beanFactory;
 	}
 
+	public void setBinderProperties(CoapBinderConfigurationProperties configurationProperties) {
+		this.configurationProperties = configurationProperties;
+	}
+
 	public void setExtendedBindingProperties(CoapExtendedBindingProperties coapExtendedBindingProperties) {
 		this.extendedBindingProperties = coapExtendedBindingProperties;
 	}
 
 	private CoapOutboundGateway getOrBuildGateway() {
-		if (gateway == null) {
-			gateway = new CoapOutboundGateway("coap://localhost:5683/spring-integration-coap");
-			gateway.setBeanFactory(beanFactory);
-			gateway.setRequiresReply(true);
-			gateway.setOutputChannelName("iotGatewayClientReply");
-			gateway.setExpectedResponseType(byte[].class);
+		if (configurationProperties.getMode() == Mode.OUTBOUND_GATEWAY) {
+			if (gateway == null) {
+				gateway = new CoapOutboundGateway("coap://localhost:5683/spring-integration-coap");
+				gateway.setBeanFactory(beanFactory);
+				gateway.setRequiresReply(true);
+				gateway.setOutputChannelName("iotGatewayClientReply");
+				gateway.setExpectedResponseType(byte[].class);
+			}
 		}
 		return gateway;
 	}
-
 }

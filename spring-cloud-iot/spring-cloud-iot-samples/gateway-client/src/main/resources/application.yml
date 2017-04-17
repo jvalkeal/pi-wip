@@ -12,6 +12,9 @@ spring:
   profiles: coap
   cloud:
     stream:
+      coap:
+        binder:
+          mode: OUTBOUND_GATEWAY
       bindings:
         iotGatewayClient:
           binder: coap
