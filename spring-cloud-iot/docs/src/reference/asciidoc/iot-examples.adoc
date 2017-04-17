@@ -23,7 +23,20 @@ xxx.
 
 [[iot-examples-generic-gateway]]
 === Spring Clout Iot Gateway
-xxx.
+This sample is showing concepts of a _IoT Gateway_ using server and
+client side components.
+
+*Requirements*
+
+* spring-cloud-iot-samples-gateway-server for gateway server
+* spring-cloud-iot-samples-gateway-client for gateway client
+* XBee devices(optional) if communicating over radio network
+
+*To Read*
+
+* To understand _IoT Gateway_ <<iot-gateway>>
+* More about _CoAP_ <<iot-coap>>
+* More about _XBee_ <<iot-xbee>>
 
 [[iot-examples-generic-temperaturelcd]]
 === Spring Clout Iot Temperature to LCD

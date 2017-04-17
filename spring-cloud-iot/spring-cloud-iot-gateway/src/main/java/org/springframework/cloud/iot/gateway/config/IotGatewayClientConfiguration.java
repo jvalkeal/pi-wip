@@ -44,7 +44,7 @@ public class IotGatewayClientConfiguration {
 	}
 
 	@Bean
-	public IntegrationFlow iotGatewayClientTmpFlow() {
+	public IntegrationFlow iotGatewayClientRequestFlow() {
 		return IntegrationFlows
 				.from(GatewayClient.OUTPUT_REQUEST)
 				.channel(GatewayClient.OUTPUT)

@@ -15,6 +15,7 @@
  */
 package org.springframework.cloud.iot.stream.binder.xbee.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.iot.stream.binder.xbee.XBeeMessageChannelBinder;
 import org.springframework.cloud.iot.xbee.XBeeReceiver;
@@ -28,6 +29,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConditionalOnMissingBean(Binder.class)
+@ConditionalOnBean(XBeeSender.class)
 public class XBeeBinderAutoConfiguration {
 
 	@Bean

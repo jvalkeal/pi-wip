@@ -155,6 +155,7 @@ project('spring-cloud-iot-samples-gateway-client') {
 	dependencies {
 		compile project(":spring-cloud-iot-gateway")
 		runtime('org.springframework.boot:spring-boot-starter-web')
+		runtime('com.google.code.gson:gson')
 	}
 }
 

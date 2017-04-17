@@ -22,6 +22,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.iot.gateway.EnableIotGatewayClient;
 import org.springframework.cloud.iot.gateway.service.rest.RestGatewayService;
+import org.springframework.cloud.iot.gateway.service.rest.RestGatewayServiceRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 
 @EnableIotGatewayClient
@@ -35,7 +36,8 @@ public class Application {
 
 	@Scheduled(fixedDelay = 1000)
 	public void doRestGatewayServiceCall() {
-//		log.info("Result from RestGatewayService.getUrl {}", restGatewayService.getUrl("coap://californium.eclipse.org:5683", ""));
+		RestGatewayServiceRequest request = new RestGatewayServiceRequest("http://example.com");
+		log.info("Result from RestGatewayServicel {}", restGatewayService.execute(request).getBody());
 	}
 
 	public static void main(String[] args) {

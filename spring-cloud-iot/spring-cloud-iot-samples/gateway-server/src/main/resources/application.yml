@@ -1,4 +1,18 @@
+---
+server:
+  port: 0
 spring:
+  cloud:
+    iot:
+      gateway:
+        rest:
+          enabled: true
+---
+spring:
+  profiles: coap
+---
+spring:
+  profiles: xbee
   cloud:
     iot:
       xbee:
