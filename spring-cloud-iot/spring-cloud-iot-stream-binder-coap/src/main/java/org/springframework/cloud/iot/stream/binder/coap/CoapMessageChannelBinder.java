@@ -19,52 +19,74 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.cloud.iot.integration.coap.outbound.CoapOutboundGateway;
+import org.springframework.cloud.iot.stream.binder.coap.properties.CoapConsumerProperties;
+import org.springframework.cloud.iot.stream.binder.coap.properties.CoapExtendedBindingProperties;
+import org.springframework.cloud.iot.stream.binder.coap.properties.CoapProducerProperties;
 import org.springframework.cloud.stream.binder.AbstractMessageChannelBinder;
-import org.springframework.cloud.stream.binder.ConsumerProperties;
-import org.springframework.cloud.stream.binder.ProducerProperties;
+import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
+import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
+import org.springframework.cloud.stream.binder.ExtendedPropertiesBinder;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.cloud.stream.provisioning.ProvisioningProvider;
 import org.springframework.integration.core.MessageProducer;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 
 /**
- * Binder implementation for XBee.
+ * Binder implementation for CoAP.
  *
  * @author Janne Valkealahti
  *
  */
 public class CoapMessageChannelBinder extends
-		AbstractMessageChannelBinder<ConsumerProperties, ProducerProperties, ProvisioningProvider<ConsumerProperties, ProducerProperties>>
-		implements BeanFactoryAware {
+		AbstractMessageChannelBinder<ExtendedConsumerProperties<CoapConsumerProperties>, ExtendedProducerProperties<CoapProducerProperties>, ProvisioningProvider<ExtendedConsumerProperties<CoapConsumerProperties>, ExtendedProducerProperties<CoapProducerProperties>>>
+		implements BeanFactoryAware, ExtendedPropertiesBinder<MessageChannel, CoapConsumerProperties, CoapProducerProperties> {
 
 	private BeanFactory beanFactory;
 	private CoapOutboundGateway gateway = null;
+	private CoapExtendedBindingProperties extendedBindingProperties = new CoapExtendedBindingProperties();
 
 	/**
-	 * Instantiates a new xbee message channel binder.
+	 * Instantiates a new coap message channel binder.
 	 *
 	 * @param provisioningProvider the provisioning provider
 	 */
-	public CoapMessageChannelBinder(ProvisioningProvider<ConsumerProperties, ProducerProperties> provisioningProvider) {
+	public CoapMessageChannelBinder(ProvisioningProvider<ExtendedConsumerProperties<CoapConsumerProperties>, ExtendedProducerProperties<CoapProducerProperties>> provisioningProvider) {
 		super(false, new String[0], provisioningProvider);
 	}
 
 	@Override
 	protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
-			ProducerProperties producerProperties) throws Exception {
+			ExtendedProducerProperties<CoapProducerProperties> producerProperties) throws Exception {
+		logger.info("Creating producer messagehandler for coap");
 		return getOrBuildGateway();
 	}
 
 	@Override
 	protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group,
-			ConsumerProperties properties) throws Exception {
+			ExtendedConsumerProperties<CoapConsumerProperties> consumerProperties) throws Exception {
+		logger.info("Creating consumer endpoint for coap");
 		return getOrBuildGateway();
+	}
+
+	@Override
+	public CoapProducerProperties getExtendedProducerProperties(String channelName) {
+		return this.extendedBindingProperties.getExtendedProducerProperties(channelName);
+	}
+
+	@Override
+	public CoapConsumerProperties getExtendedConsumerProperties(String channelName) {
+		return this.extendedBindingProperties.getExtendedConsumerProperties(channelName);
 	}
 
 	@Override
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
 		this.beanFactory = beanFactory;
+	}
+
+	public void setExtendedBindingProperties(CoapExtendedBindingProperties coapExtendedBindingProperties) {
+		this.extendedBindingProperties = coapExtendedBindingProperties;
 	}
 
 	private CoapOutboundGateway getOrBuildGateway() {
@@ -77,4 +99,5 @@ public class CoapMessageChannelBinder extends
 		}
 		return gateway;
 	}
+
 }

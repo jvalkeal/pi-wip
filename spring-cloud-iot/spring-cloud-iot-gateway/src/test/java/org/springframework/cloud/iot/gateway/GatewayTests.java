@@ -47,6 +47,8 @@ public class GatewayTests extends AbstractGatewayTests {
 		app.setWebApplicationType(WebApplicationType.NONE);
 		ConfigurableApplicationContext context = app
 				.run(new String[] { "--spring.cloud.iot.gateway.rest.enabled=true",
+//						"--spring.cloud.stream.bindings.iotGatewayServer.binder=coap",
+//						"--spring.cloud.stream.bindings.iotGatewayServer.producer.useNativeEncoding=true",
 						"--spring.cloud.stream.bindings.iotGatewayClient.binder=coap",
 						"--spring.cloud.stream.bindings.iotGatewayClient.producer.useNativeEncoding=true" });
 

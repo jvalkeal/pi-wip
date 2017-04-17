@@ -15,27 +15,48 @@
  */
 package org.springframework.cloud.iot.stream.binder.coap.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.iot.stream.binder.coap.CoapMessageChannelBinder;
+import org.springframework.cloud.iot.stream.binder.coap.properties.CoapBinderConfigurationProperties;
+import org.springframework.cloud.iot.stream.binder.coap.properties.CoapConsumerProperties;
+import org.springframework.cloud.iot.stream.binder.coap.properties.CoapExtendedBindingProperties;
+import org.springframework.cloud.iot.stream.binder.coap.properties.CoapProducerProperties;
 import org.springframework.cloud.stream.binder.Binder;
-import org.springframework.cloud.stream.binder.ConsumerProperties;
-import org.springframework.cloud.stream.binder.ProducerProperties;
+import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
+import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.provisioning.ProvisioningProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Auto-config for CoAP binder.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 @Configuration
 @ConditionalOnMissingBean(Binder.class)
+@EnableConfigurationProperties({CoapBinderConfigurationProperties.class, CoapExtendedBindingProperties.class})
 public class CoapBinderAutoConfiguration {
 
+	@Autowired
+	private CoapBinderConfigurationProperties configurationProperties;
+
+	@Autowired
+	private CoapExtendedBindingProperties coapExtendedBindingProperties;
+
 	@Bean
-	public CoapProvisioningProvider provisioningProvider() {
-		return new CoapProvisioningProvider();
+	public CoapProvisioningProvider coapProvisioningProvider() {
+		return new CoapProvisioningProvider(configurationProperties);
 	}
 
 	@Bean
-	public CoapMessageChannelBinder xbeeMessageChannelBinder(
-			ProvisioningProvider<ConsumerProperties, ProducerProperties> provisioningProvider) {
-		return new CoapMessageChannelBinder(provisioningProvider);
+	public CoapMessageChannelBinder coapMessageChannelBinder(
+			ProvisioningProvider<ExtendedConsumerProperties<CoapConsumerProperties>, ExtendedProducerProperties<CoapProducerProperties>> provisioningProvider) {
+		CoapMessageChannelBinder coapMessageChannelBinder = new CoapMessageChannelBinder(provisioningProvider);
+		coapMessageChannelBinder.setExtendedBindingProperties(coapExtendedBindingProperties);
+		return coapMessageChannelBinder;
 	}
 }

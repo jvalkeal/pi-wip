@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cloud.iot.gateway.server.GatewayServer;
 import org.springframework.cloud.iot.gateway.service.rest.RestGatewayServiceConfiguration;
 import org.springframework.cloud.iot.integration.coap.dsl.Coap;
 import org.springframework.cloud.iot.integration.xbee.dsl.XBee;
@@ -48,6 +49,15 @@ public class IotGatewayServerConfiguration {
 				.get();
 	}
 
+//	@Bean
+//	public IntegrationFlow iotGatewayServerCoapToRouterFlow() {
+//		return IntegrationFlows
+//				.from(GatewayServer.INPUT)
+//				.route(new ServiceRouter())
+//				.get();
+//	}
+
+
 	public static class ServiceRouter extends AbstractMappingMessageRouter {
 
 		@Override
@@ -67,16 +77,16 @@ public class IotGatewayServerConfiguration {
 		}
 	}
 
-	@Configuration
-	@ConditionalOnProperty(prefix = "spring.cloud.iot.xbee", name = "enabled", havingValue = "true", matchIfMissing = false)
-	public static class XBeeServerConfiguration {
-
-		@Bean
-		public IntegrationFlow iotGatewayServerXBeeInboundFlow(XBeeReceiver xbeeReceiver) {
-			return IntegrationFlows
-					.from(XBee.inboundGateway(xbeeReceiver))
-					.<byte[]>log(f -> new String(f.getPayload()))
-					.get();
-		}
-	}
+//	@Configuration
+//	@ConditionalOnProperty(prefix = "spring.cloud.iot.xbee", name = "enabled", havingValue = "true", matchIfMissing = false)
+//	public static class XBeeServerConfiguration {
+//
+//		@Bean
+//		public IntegrationFlow iotGatewayServerXBeeInboundFlow(XBeeReceiver xbeeReceiver) {
+//			return IntegrationFlows
+//					.from(XBee.inboundGateway(xbeeReceiver))
+//					.<byte[]>log(f -> new String(f.getPayload()))
+//					.get();
+//		}
+//	}
 }

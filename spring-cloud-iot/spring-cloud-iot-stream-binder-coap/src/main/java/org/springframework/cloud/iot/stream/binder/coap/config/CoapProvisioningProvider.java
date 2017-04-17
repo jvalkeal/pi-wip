@@ -15,25 +15,40 @@
  */
 package org.springframework.cloud.iot.stream.binder.coap.config;
 
-import org.springframework.cloud.stream.binder.ConsumerProperties;
-import org.springframework.cloud.stream.binder.ProducerProperties;
+import org.springframework.cloud.iot.stream.binder.coap.properties.CoapBinderConfigurationProperties;
+import org.springframework.cloud.iot.stream.binder.coap.properties.CoapConsumerProperties;
+import org.springframework.cloud.iot.stream.binder.coap.properties.CoapProducerProperties;
+import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
+import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.cloud.stream.provisioning.ProvisioningException;
 import org.springframework.cloud.stream.provisioning.ProvisioningProvider;
 
-public class CoapProvisioningProvider implements ProvisioningProvider<ConsumerProperties, ProducerProperties> {
+/**
+ * {@link ProvisioningProvider} for coap binder.
+ *
+ * @author Janne Valkealahti
+ *
+ */
+public class CoapProvisioningProvider implements
+		ProvisioningProvider<ExtendedConsumerProperties<CoapConsumerProperties>, ExtendedProducerProperties<CoapProducerProperties>> {
+
+	private final CoapBinderConfigurationProperties configurationProperties;
+
+	public CoapProvisioningProvider(CoapBinderConfigurationProperties configurationProperties) {
+		this.configurationProperties = configurationProperties;
+	}
 
 	@Override
-	public ProducerDestination provisionProducerDestination(String name, ProducerProperties properties)
-			throws ProvisioningException {
+	public ProducerDestination provisionProducerDestination(String name,
+			ExtendedProducerProperties<CoapProducerProperties> properties) throws ProvisioningException {
 		return null;
 	}
 
 	@Override
-	public ConsumerDestination provisionConsumerDestination(String name, String group, ConsumerProperties properties)
-			throws ProvisioningException {
+	public ConsumerDestination provisionConsumerDestination(String name, String group,
+			ExtendedConsumerProperties<CoapConsumerProperties> properties) throws ProvisioningException {
 		return null;
 	}
-
 }
