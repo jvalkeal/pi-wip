@@ -177,3 +177,28 @@ $ sudo java -jar spring-cloud-iot-samples-time-source-{revnumber}.jar
 2017-04-02 17:55:13.874  INFO 7061 --- [ool-10-thread-1] log.sink : 04/02/17 17:55:13
 2017-04-02 17:55:14.786  INFO 7061 --- [ool-12-thread-1] log.sink : 04/02/17 17:55:14
 ----
+
+[[iot-examples-tutorials]]
+== Spring Clout Iot Tutorials
+This section contains more samples and tutorials which requires
+specific hardware and generally involves more detailed understanding
+of low level workings of IoT devices.
+
+[[iot-examples-tutorials-buttons-game]]
+=== Spring Clout Iot Buttons Game Tutorial
+This button game is modeled after a famious game presented in a
+finnish game show called _Speden Pelit_. This simple game have 4
+buttons which will illuminate in a randon order. Game have two modes,
+where _speed_ mode will illuminate buttons on random order and game
+fails if player can't keep up with a speed and presses wrong button.
+On a _memory_ mode a set of buttons are illuminated and player is
+required to memorise order of buttons and game fails if player is
+unable to press buttons on correct order.
+
+Game is very addictive and simple from a hardware point of view as it
+either needs buttons and leds or buttons with led in it as presented
+in a original game device itself.
+
+In this tutorial we go through how this game is build as a harware and
+how code running a game works.
+
