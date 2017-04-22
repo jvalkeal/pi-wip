@@ -15,14 +15,20 @@
  */
 package org.springframework.cloud.iot.stream.binder.xbee.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.iot.stream.binder.xbee.XBeeMessageChannelBinder;
+import org.springframework.cloud.iot.stream.binder.xbee.properties.XBeeBinderConfigurationProperties;
+import org.springframework.cloud.iot.stream.binder.xbee.properties.XBeeConsumerProperties;
+import org.springframework.cloud.iot.stream.binder.xbee.properties.XBeeExtendedBindingProperties;
+import org.springframework.cloud.iot.stream.binder.xbee.properties.XBeeProducerProperties;
 import org.springframework.cloud.iot.xbee.XBeeReceiver;
 import org.springframework.cloud.iot.xbee.XBeeSender;
 import org.springframework.cloud.stream.binder.Binder;
-import org.springframework.cloud.stream.binder.ConsumerProperties;
-import org.springframework.cloud.stream.binder.ProducerProperties;
+import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
+import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.provisioning.ProvisioningProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,17 +36,27 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnMissingBean(Binder.class)
 @ConditionalOnBean(XBeeSender.class)
+@EnableConfigurationProperties({XBeeBinderConfigurationProperties.class, XBeeExtendedBindingProperties.class})
 public class XBeeBinderAutoConfiguration {
+
+	@Autowired
+	private XBeeBinderConfigurationProperties configurationProperties;
+
+	@Autowired
+	private XBeeExtendedBindingProperties xbeeExtendedBindingProperties;
 
 	@Bean
 	public XBeeProvisioningProvider provisioningProvider() {
-		return new XBeeProvisioningProvider();
+		return new XBeeProvisioningProvider(configurationProperties);
 	}
 
 	@Bean
 	public XBeeMessageChannelBinder xbeeMessageChannelBinder(
-			ProvisioningProvider<ConsumerProperties, ProducerProperties> provisioningProvider, XBeeSender xbeeSender,
-			XBeeReceiver xbeeReceiver) {
-		return new XBeeMessageChannelBinder(provisioningProvider, xbeeSender, xbeeReceiver);
+			ProvisioningProvider<ExtendedConsumerProperties<XBeeConsumerProperties>, ExtendedProducerProperties<XBeeProducerProperties>> provisioningProvider,
+			XBeeSender xbeeSender, XBeeReceiver xbeeReceiver) {
+		XBeeMessageChannelBinder xbeeMessageChannelBinder = new XBeeMessageChannelBinder(provisioningProvider, xbeeSender, xbeeReceiver);
+		xbeeMessageChannelBinder.setExtendedBindingProperties(xbeeExtendedBindingProperties);
+		xbeeMessageChannelBinder.setBinderProperties(configurationProperties);
+		return xbeeMessageChannelBinder;
 	}
 }

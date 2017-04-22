@@ -25,22 +25,43 @@ package org.springframework.cloud.iot.xbee.protocol;
  * bytes to 256 bytes. This protocol give freedom to send larger payloads which
  * will be disassembled on a transferring side and then reassembled on a
  * receiving side.
+ * <p>
+ * Every frame has its frame headers which consist of message type, session id, frame id and
+ * optionally a message header length if message type has {@code MESSAGE_TYPE_START} bit set.
+ * <p>
+ * Frame has a structure as:
+ * <pre>
+ * byte 0 message type (byte)
+ * byte 1 message session id (byte)
+ * bytes 2-3 message frame id (short)
+ * bytes 4-7 header length if {@code MESSAGE_TYPE_START} is set (int)
+ * </pre>
  *
  * @author Janne Valkealahti
  *
  */
 public abstract class MessageProtocol {
 
+	public final static int DEFAULT_FRAME_SIZE = 60;
 	public final static int MESSAGE_TYPE_START = 0x01;
 	public final static int MESSAGE_TYPE_END = 0x02;
-	// 0    message type
-	// 1    message session id
-	// 2-3  message order
+	private final int frameSize;
 
-	private int frameSize = 60;
+	/**
+	 * Instantiates a new message protocol.
+	 *
+	 * @param frameSize the frame size
+	 */
+	public MessageProtocol(int frameSize) {
+		this.frameSize = frameSize;
+	}
 
+	/**
+	 * Gets the frame size.
+	 *
+	 * @return the frame size
+	 */
 	public int getFrameSize() {
 		return frameSize;
 	}
-
 }

@@ -51,7 +51,6 @@ public class IotGatewayClientConfiguration {
 				.get();
 	}
 
-
 	@Configuration
 	@ConditionalOnProperty(prefix = "spring.cloud.iot.gateway.rest", name = "enabled", havingValue = "true", matchIfMissing = false)
 	public static class IotRestGatewayClientConfiguration {

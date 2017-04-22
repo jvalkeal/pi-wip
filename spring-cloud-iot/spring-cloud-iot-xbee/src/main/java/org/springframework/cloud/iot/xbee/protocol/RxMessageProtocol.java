@@ -39,20 +39,61 @@ public class RxMessageProtocol extends MessageProtocol {
 
 	private static final Logger log = LoggerFactory.getLogger(RxMessageProtocol.class);
 	private final Map<Integer, byte[]> frames = new HashMap<>();
+	private int headerLength = 0;
 
-	public boolean add (byte[] frame) {
-		log.debug("Adding frame '{}'", frame);
+	/**
+	 * Instantiates a new rx message protocol.
+	 */
+	public RxMessageProtocol() {
+		super(DEFAULT_FRAME_SIZE);
+	}
+
+	/**
+	 * Add a new frame data and return {@code true} if receiving side if fully
+	 * constructed. After full construction {@link #getHeader()} and
+	 * {@link #getPayload()} will provide valid data.
+	 *
+	 * @param frame the frame
+	 * @return true, if successful
+	 */
+	public boolean add(byte[] frame) {
+		log.debug("Adding new frame '{}'", frame);
 		short id = ByteBuffer.wrap(new byte[] { frame[2], frame[3] }).getShort();
-		frames.put((int)id, Arrays.copyOfRange(frame, 4, frame.length));
+		if (IotUtils.isBitSet(frame[0], MessageProtocol.MESSAGE_TYPE_START)) {
+			headerLength = ByteBuffer.wrap(frame, 4, 4).getInt();
+			frames.put((int)id, Arrays.copyOfRange(frame, 8, frame.length));
+		} else {
+			frames.put((int)id, Arrays.copyOfRange(frame, 4, frame.length));
+		}
 		return IotUtils.isBitSet(frame[0], MessageProtocol.MESSAGE_TYPE_END);
 	}
 
-	public byte[] getData() {
+	/**
+	 * Gets the payload
+	 *
+	 * @return the payload
+	 */
+	public byte[] getPayload() {
 		List<byte[]> dataFrames = frames.entrySet()
 				.stream()
 				.sorted(Map.Entry.<Integer, byte[]>comparingByKey()).map(e -> e.getValue())
 				.collect(Collectors.toList());
-		return concatenateByteArrays(dataFrames);
+		byte[] tmp = concatenateByteArrays(dataFrames);
+		return Arrays.copyOfRange(tmp, headerLength, tmp.length);
+	}
+
+	/**
+	 * Gets the header.
+	 *
+	 * @return the header
+	 */
+	public byte[] getHeader() {
+		List<byte[]> dataFrames = frames.entrySet()
+				.stream()
+				.sorted(Map.Entry.<Integer, byte[]>comparingByKey()).map(e -> e.getValue())
+				.collect(Collectors.toList());
+		byte[] tmp = concatenateByteArrays(dataFrames);
+		return Arrays.copyOfRange(tmp, 0, headerLength);
 	}
 
 	private static byte[] concatenateByteArrays(List<byte[]> dataFrames) {

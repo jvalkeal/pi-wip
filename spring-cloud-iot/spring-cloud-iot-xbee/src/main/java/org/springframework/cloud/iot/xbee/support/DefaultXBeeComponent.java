@@ -93,7 +93,7 @@ public class DefaultXBeeComponent implements XBeeSender, XBeeReceiver {
 			boolean completed = rxMessageSession.add(xbeeMessage.getData());
 			log.debug("Protocol completed={}", completed);
 			if (completed) {
-				byte[] full = rxMessageSession.getData();
+				byte[] full = rxMessageSession.getPayload();
 				log.debug("Full frame {}", full);
 				receiverListener.onMessage(MessageBuilder.withPayload(full).build());
 			}

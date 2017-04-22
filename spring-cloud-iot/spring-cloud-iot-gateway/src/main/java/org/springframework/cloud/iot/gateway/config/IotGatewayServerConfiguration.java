@@ -53,17 +53,18 @@ public class IotGatewayServerConfiguration {
 		}
 	}
 
-	public static class ServiceRouter extends AbstractMappingMessageRouter {
+	/**
+	 * {@link MessageRouter} implementation which routes messages based on header.
+	 */
+	private static class ServiceRouter extends AbstractMappingMessageRouter {
 
 		@Override
 		protected List<Object> getChannelKeys(Message<?> message) {
-			System.out.println("XXX2 " + message);
 			List<Object> channels = new ArrayList<>();
 			Object value = message.getHeaders().get("9999");
 			if (value instanceof List) {
 				for (Object o : ((List)value).toArray()) {
 					if (o instanceof byte[]) {
-						System.out.println("XXX3 " + new String(((byte[])o)));
 						channels.add(new String(((byte[])o)));
 					}
 				}
@@ -71,17 +72,4 @@ public class IotGatewayServerConfiguration {
 			return channels;
 		}
 	}
-
-//	@Configuration
-//	@ConditionalOnProperty(prefix = "spring.cloud.iot.xbee", name = "enabled", havingValue = "true", matchIfMissing = false)
-//	public static class XBeeServerConfiguration {
-//
-//		@Bean
-//		public IntegrationFlow iotGatewayServerXBeeInboundFlow(XBeeReceiver xbeeReceiver) {
-//			return IntegrationFlows
-//					.from(XBee.inboundGateway(xbeeReceiver))
-//					.<byte[]>log(f -> new String(f.getPayload()))
-//					.get();
-//		}
-//	}
 }

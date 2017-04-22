@@ -15,13 +15,11 @@
  */
 package org.springframework.cloud.iot.coap.californium;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.coap.Option;
-import org.eclipse.californium.core.coap.OptionSet;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.core.server.resources.Resource;
 import org.springframework.cloud.iot.coap.CoapHeaders;

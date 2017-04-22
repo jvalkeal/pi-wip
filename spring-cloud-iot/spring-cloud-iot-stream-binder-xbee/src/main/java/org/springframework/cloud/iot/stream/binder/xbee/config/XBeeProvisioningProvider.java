@@ -15,25 +15,61 @@
  */
 package org.springframework.cloud.iot.stream.binder.xbee.config;
 
-import org.springframework.cloud.stream.binder.ConsumerProperties;
-import org.springframework.cloud.stream.binder.ProducerProperties;
+import org.springframework.cloud.iot.stream.binder.xbee.properties.XBeeBinderConfigurationProperties;
+import org.springframework.cloud.iot.stream.binder.xbee.properties.XBeeConsumerProperties;
+import org.springframework.cloud.iot.stream.binder.xbee.properties.XBeeProducerProperties;
+import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
+import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.cloud.stream.provisioning.ProvisioningException;
 import org.springframework.cloud.stream.provisioning.ProvisioningProvider;
 
-public class XBeeProvisioningProvider implements ProvisioningProvider<ConsumerProperties, ProducerProperties> {
+/**
+ * {@link ProvisioningProvider} for coap binder.
+ *
+ * @author Janne Valkealahti
+ *
+ */
+public class XBeeProvisioningProvider implements
+		ProvisioningProvider<ExtendedConsumerProperties<XBeeConsumerProperties>, ExtendedProducerProperties<XBeeProducerProperties>> {
 
-	@Override
-	public ProducerDestination provisionProducerDestination(String name, ProducerProperties properties)
-			throws ProvisioningException {
-		return null;
+	private final XBeeBinderConfigurationProperties configurationProperties;
+
+	public XBeeProvisioningProvider(XBeeBinderConfigurationProperties configurationProperties) {
+		this.configurationProperties = configurationProperties;
 	}
 
 	@Override
-	public ConsumerDestination provisionConsumerDestination(String name, String group, ConsumerProperties properties)
-			throws ProvisioningException {
-		return null;
+	public ProducerDestination provisionProducerDestination(String name,
+			ExtendedProducerProperties<XBeeProducerProperties> properties) throws ProvisioningException {
+		return new XBeeProducerDestination();
 	}
 
+	@Override
+	public ConsumerDestination provisionConsumerDestination(String name, String group,
+			ExtendedConsumerProperties<XBeeConsumerProperties> properties) throws ProvisioningException {
+		return new XBeeConsumerDestination();
+	}
+
+	private final static class XBeeProducerDestination implements ProducerDestination {
+
+		@Override
+		public String getName() {
+			return null;
+		}
+
+		@Override
+		public String getNameForPartition(int partition) {
+			return null;
+		}
+	}
+
+	private final static class XBeeConsumerDestination implements ConsumerDestination {
+
+		@Override
+		public String getName() {
+			return null;
+		}
+	}
 }

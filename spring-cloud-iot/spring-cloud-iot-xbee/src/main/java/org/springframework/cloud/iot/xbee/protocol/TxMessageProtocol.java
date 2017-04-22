@@ -18,6 +18,8 @@ package org.springframework.cloud.iot.xbee.protocol;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.support.IotUtils;
 
 /**
@@ -30,17 +32,44 @@ import org.springframework.cloud.iot.support.IotUtils;
  */
 public class TxMessageProtocol extends MessageProtocol {
 
-	private final byte[] data;
+	private static final Logger log = LoggerFactory.getLogger(TxMessageProtocol.class);
+	private final byte[] header;
+	private final byte[] payload;
 	private final short sessionId;
 
-	public TxMessageProtocol(byte[] data, short sessionId) {
-		this.data = data;
+	/**
+	 * Instantiates a new tx message protocol.
+	 *
+	 * @param payload the payload data
+	 * @param sessionId the session id
+	 */
+	public TxMessageProtocol(byte[] payload, short sessionId) {
+		this(null, payload, sessionId);
+	}
+
+	/**
+	 * Instantiates a new tx message protocol.
+	 *
+	 * @param header the header data
+	 * @param payload the payload data
+	 * @param sessionId the session id
+	 */
+	public TxMessageProtocol(byte[] header, byte[] payload, short sessionId) {
+		super(DEFAULT_FRAME_SIZE);
+		this.header = header != null ? header : new byte[0];
+		this.payload = payload != null ? payload : new byte[0];
 		this.sessionId = sessionId;
 	}
 
+	/**
+	 * Build array of frames which are split by a frame size.
+	 *
+	 * @return the array of frames
+	 */
 	public byte[][] getFrames() {
 		int frameLength = getFrameSize() + 4;
-		int frameCount = (data.length / frameLength) + 1;
+		int frameCount = ((payload.length + header.length) / frameLength) + 1;
+		byte[] tmp = IotUtils.concat(header, payload);
 		byte[][] frames = new byte[frameCount][];
 		for (int i = 0; i < frameCount; i++) {
 			int messageType = 0x00;
@@ -50,17 +79,21 @@ public class TxMessageProtocol extends MessageProtocol {
 			if (i == (frameCount - 1)) {
 				messageType = IotUtils.setBit(messageType, MessageProtocol.MESSAGE_TYPE_END);
 			}
-			ByteBuffer buffer = ByteBuffer.allocate(frameLength)
+			ByteBuffer buffer = ByteBuffer.allocate(frameLength + (i == 0 ? 4 : 0))
 				.put((byte) messageType)
 				.put((byte) sessionId)
-				.putShort((short) i)
-				.put(Arrays.copyOfRange(data, i * getFrameSize(), Math.min((i+1) * getFrameSize(), data.length)));
+				.putShort((short) i);
+			if (i == 0) {
+				buffer.putInt(header.length);
+			}
+			byte[] bytes = Arrays.copyOfRange(tmp, i * getFrameSize(), Math.min((i+1) * getFrameSize(), tmp.length));
+			log.trace("Construct frame {} as {}", i, bytes);
+			buffer.put(Arrays.copyOfRange(tmp, i * getFrameSize(), Math.min((i+1) * getFrameSize(), tmp.length)));
 			byte[] b = new byte[buffer.position()];
 			buffer.flip();
 			buffer.get(b);
 			frames[i] = b;
 		}
-
 		return frames;
 	}
 }
