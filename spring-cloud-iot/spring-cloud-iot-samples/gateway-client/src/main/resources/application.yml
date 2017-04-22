@@ -29,6 +29,9 @@ spring:
         enabled: true
         serialPort: /dev/ttyUSB0
     stream:
+      xbee:
+        binder:
+          mode: OUTBOUND_GATEWAY
       bindings:
         iotGatewayClient:
           binder: xbee

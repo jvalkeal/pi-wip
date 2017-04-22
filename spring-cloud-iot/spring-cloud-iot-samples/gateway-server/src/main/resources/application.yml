@@ -10,6 +10,16 @@ spring:
 ---
 spring:
   profiles: coap
+  cloud:
+    stream:
+      coap:
+        binder:
+          mode: INBOUND_GATEWAY
+      bindings:
+        iotGatewayServer:
+          binder: coap
+          producer:
+            useNativeEncoding: true
 ---
 spring:
   profiles: xbee
@@ -18,3 +28,13 @@ spring:
       xbee:
         enabled: true
         serialPort: /dev/ttyUSB0
+    stream:
+      xbee:
+        binder:
+          mode: INBOUND_GATEWAY
+      bindings:
+        iotGatewayServer:
+          binder: xbee
+          producer:
+            useNativeEncoding: true
+        
