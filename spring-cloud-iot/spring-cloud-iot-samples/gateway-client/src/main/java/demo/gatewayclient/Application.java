@@ -34,8 +34,9 @@ public class Application {
 	@Autowired
 	private RestGatewayService restGatewayService;
 
-	@Scheduled(fixedDelay = 1000)
+	@Scheduled(fixedDelay = 5000)
 	public void doRestGatewayServiceCall() {
+		log.info("Sending request for http://example.com");
 		RestGatewayServiceRequest request = new RestGatewayServiceRequest("http://example.com");
 		log.info("Result from RestGatewayServicel {}", restGatewayService.execute(request).getBody());
 	}

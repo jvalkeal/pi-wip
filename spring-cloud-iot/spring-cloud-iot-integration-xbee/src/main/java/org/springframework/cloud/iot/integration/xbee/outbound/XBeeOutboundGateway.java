@@ -15,6 +15,8 @@
  */
 package org.springframework.cloud.iot.integration.xbee.outbound;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.xbee.XBeeSender;
 import org.springframework.integration.handler.AbstractReplyProducingMessageHandler;
 import org.springframework.messaging.Message;
@@ -29,6 +31,7 @@ import org.springframework.util.Assert;
  */
 public class XBeeOutboundGateway extends AbstractReplyProducingMessageHandler {
 
+	private static final Logger log = LoggerFactory.getLogger(XBeeOutboundGateway.class);
 	private final XBeeSender xbeeSender;
 
 	/**
@@ -44,6 +47,7 @@ public class XBeeOutboundGateway extends AbstractReplyProducingMessageHandler {
 
 	@Override
 	protected Object handleRequestMessage(Message<?> requestMessage) {
+		log.debug("handleRequestMessage {}", requestMessage);
 		byte[] data = null;
 
 		Object payload = requestMessage.getPayload();
@@ -54,7 +58,9 @@ public class XBeeOutboundGateway extends AbstractReplyProducingMessageHandler {
 		}
 
 		if (data != null && data.length > 0) {
-			xbeeSender.sendMessage(MessageBuilder.withPayload(data).build());
+			Message<byte[]> message = MessageBuilder.withPayload(data).build();
+			log.debug("Sending message {}", message);
+			xbeeSender.sendMessage(message);
 		}
 		return null;
 	}

@@ -15,6 +15,12 @@
  */
 package org.springframework.cloud.iot.xbee.support;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.xbee.XBeeReceiver;
@@ -93,9 +99,27 @@ public class DefaultXBeeComponent implements XBeeSender, XBeeReceiver {
 			boolean completed = rxMessageSession.add(xbeeMessage.getData());
 			log.debug("Protocol completed={}", completed);
 			if (completed) {
-				byte[] full = rxMessageSession.getPayload();
-				log.debug("Full frame {}", full);
-				receiverListener.onMessage(MessageBuilder.withPayload(full).build());
+				byte[] payload = rxMessageSession.getPayload();
+				byte[] header = rxMessageSession.getHeader();
+				Map<String, Object> headersToCopy = new HashMap<>();
+				log.debug("Full frame header={} payload={}", header, payload);
+				BufferedReader reader = new BufferedReader(new StringReader(new String(header)));
+
+				String line;
+				try {
+					while ((line = reader.readLine()) != null) {
+						if(log.isDebugEnabled()) {
+							log.debug("deserialize header: " + line);
+						}
+						String[] split = line.split(":");
+						if(split != null & split.length == 2) {
+							headersToCopy.put(split[0], split[1]);
+						}
+					}
+				} catch (IOException e) {
+					log.error("Error ", e);
+				}
+				receiverListener.onMessage(MessageBuilder.withPayload(payload).copyHeaders(headersToCopy).build());
 			}
 		}
 	}

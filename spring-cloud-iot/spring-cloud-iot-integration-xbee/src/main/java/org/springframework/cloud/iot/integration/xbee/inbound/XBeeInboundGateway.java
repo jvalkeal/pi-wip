@@ -15,6 +15,8 @@
  */
 package org.springframework.cloud.iot.integration.xbee.inbound;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.xbee.XBeeReceiver;
 import org.springframework.cloud.iot.xbee.listener.XBeeReceiverListener;
 import org.springframework.integration.gateway.MessagingGatewaySupport;
@@ -29,6 +31,8 @@ import org.springframework.util.Assert;
  */
 public class XBeeInboundGateway extends MessagingGatewaySupport {
 
+
+	private static final Logger log = LoggerFactory.getLogger(XBeeInboundGateway.class);
 	private final XBeeReceiver xbeeReceiver;
 
 	/**
@@ -58,6 +62,7 @@ public class XBeeInboundGateway extends MessagingGatewaySupport {
 
 			@Override
 			public void onMessage(Message<byte[]> message) {
+				log.debug("onMessage {}", message);
 				send(message);
 			}
 		});
