@@ -18,6 +18,7 @@ package org.springframework.cloud.iot.stream.binder.coap;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.cloud.iot.integration.coap.inbound.CoapInboundGateway;
 import org.springframework.cloud.iot.integration.coap.outbound.CoapOutboundGateway;
 import org.springframework.cloud.iot.stream.binder.coap.properties.CoapBinderConfigurationProperties;
 import org.springframework.cloud.iot.stream.binder.coap.properties.CoapBinderConfigurationProperties.Mode;
@@ -32,6 +33,7 @@ import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.cloud.stream.provisioning.ProvisioningProvider;
 import org.springframework.integration.core.MessageProducer;
+import org.springframework.integration.handler.BridgeHandler;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 
@@ -46,7 +48,8 @@ public class CoapMessageChannelBinder extends
 		implements BeanFactoryAware, ExtendedPropertiesBinder<MessageChannel, CoapConsumerProperties, CoapProducerProperties> {
 
 	private BeanFactory beanFactory;
-	private CoapOutboundGateway gateway = null;
+	private MessageHandler messageHandler = null;
+	private MessageProducer messageProducer = null;
 	private CoapExtendedBindingProperties extendedBindingProperties = new CoapExtendedBindingProperties();
 	private CoapBinderConfigurationProperties configurationProperties;
 
@@ -63,14 +66,16 @@ public class CoapMessageChannelBinder extends
 	protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
 			ExtendedProducerProperties<CoapProducerProperties> producerProperties) throws Exception {
 		logger.info("Creating producer messagehandler for coap");
-		return getOrBuildGateway();
+		getOrBuildGateway();
+		return messageHandler;
 	}
 
 	@Override
 	protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group,
 			ExtendedConsumerProperties<CoapConsumerProperties> consumerProperties) throws Exception {
 		logger.info("Creating consumer endpoint for coap");
-		return getOrBuildGateway();
+		getOrBuildGateway();
+		return messageProducer;
 	}
 
 	@Override
@@ -96,16 +101,26 @@ public class CoapMessageChannelBinder extends
 		this.extendedBindingProperties = coapExtendedBindingProperties;
 	}
 
-	private CoapOutboundGateway getOrBuildGateway() {
+	private void getOrBuildGateway() {
 		if (configurationProperties.getMode() == Mode.OUTBOUND_GATEWAY) {
-			if (gateway == null) {
-				gateway = new CoapOutboundGateway("coap://localhost:5683/spring-integration-coap");
-				gateway.setBeanFactory(beanFactory);
-				gateway.setRequiresReply(true);
-				gateway.setOutputChannelName("iotGatewayClientReply");
-				gateway.setExpectedResponseType(byte[].class);
-			}
+			CoapOutboundGateway coapOutboundGateway = new CoapOutboundGateway("coap://localhost:5683/spring-integration-coap");
+			coapOutboundGateway.setBeanFactory(beanFactory);
+			coapOutboundGateway.setRequiresReply(true);
+			coapOutboundGateway.setOutputChannelName("iotGatewayClientReply");
+			coapOutboundGateway.setExpectedResponseType(byte[].class);
+			messageHandler = coapOutboundGateway;
+			messageProducer = coapOutboundGateway;
+		} else if (configurationProperties.getMode() == Mode.INBOUND_GATEWAY) {
+			CoapInboundGateway coapInboundGateway = new CoapInboundGateway();
+			coapInboundGateway.setBeanFactory(beanFactory);
+			coapInboundGateway.afterPropertiesSet();
+			coapInboundGateway.start();
+			BridgeHandler delegate = new BridgeHandler();
+			delegate.setBeanFactory(beanFactory);
+			coapInboundGateway.setRequestChannelName("iotGatewayServer");
+			coapInboundGateway.setReplyChannelName("iotGatewayServer");
+			this.messageHandler = delegate;
+			this.messageProducer = delegate;
 		}
-		return gateway;
 	}
 }

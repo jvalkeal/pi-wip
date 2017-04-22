@@ -89,12 +89,10 @@ public class CaliforniumCoapServerHandlerResource extends AbstractCoapResource {
 	}
 
 	private void handleRequest(CoapResource resource, CoapExchange exchange) {
-//		System.out.println("XXXX4 " + findOtherOption(exchange.getRequestOptions(), 9999).getStringValue());
-
 		CoapHeaders coapHeaders = new CoapHeaders();
-		Option xxx = findOtherOption(exchange.getRequestOptions(), 9999);
-		if (xxx != null) {
-			coapHeaders.add(xxx.getNumber(), xxx.getStringValue().getBytes());
+		List<Option> others = exchange.getRequestOptions().getOthers();
+		for (Option option : others) {
+			coapHeaders.add(option.getNumber(), option.getStringValue().getBytes());
 		}
 
 		GenericServerCoapRequest request = new GenericServerCoapRequest(exchange.getRequestPayload(), coapHeaders);
@@ -103,17 +101,6 @@ public class CaliforniumCoapServerHandlerResource extends AbstractCoapResource {
 		ServerCoapResponse response = handler.handle(request);
 		ResponseCode responseCode = response.getStatus() != null ? ResponseCode.valueOf(response.getStatus().value) : ResponseCode.CREATED;
 		exchange.respond(responseCode, response.getBody());
-	}
-
-	private Option findOtherOption(OptionSet optionSet, int id) {
-		Iterator<Option> iterator = optionSet.asSortedList().iterator();
-		while (iterator.hasNext()) {
-			Option option = (Option) iterator.next();
-			if (option.getNumber() == id) {
-				return option;
-			}
-		}
-		return null;
 	}
 
 	private boolean isMethodAllowed(CoapExchange exchange) {

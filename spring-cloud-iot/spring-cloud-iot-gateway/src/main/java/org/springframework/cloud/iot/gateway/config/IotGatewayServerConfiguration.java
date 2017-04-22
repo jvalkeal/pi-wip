@@ -21,9 +21,7 @@ import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.iot.gateway.server.GatewayServer;
 import org.springframework.cloud.iot.gateway.service.rest.RestGatewayServiceConfiguration;
-import org.springframework.cloud.iot.integration.coap.dsl.Coap;
-import org.springframework.cloud.iot.integration.xbee.dsl.XBee;
-import org.springframework.cloud.iot.xbee.XBeeReceiver;
+import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -38,25 +36,22 @@ import org.springframework.messaging.Message;
  * @author Janne Valkealahti
  */
 @Configuration
+@EnableBinding(GatewayServer.class)
 @Import(RestGatewayServiceConfiguration.class)
 public class IotGatewayServerConfiguration {
 
-	@Bean
-	public IntegrationFlow iotGatewayServerCoapToRouterFlow() {
-		return IntegrationFlows
-				.from(Coap.inboundGateway())
-				.route(new ServiceRouter())
-				.get();
+	@Configuration
+	@ConditionalOnProperty(prefix = "spring.cloud.iot.gateway.rest", name = "enabled", havingValue = "true", matchIfMissing = false)
+	public static class IotRestGatewayServerConfiguration {
+
+		@Bean
+		public IntegrationFlow iotGatewayServerCoapToRouterFlow() {
+			return IntegrationFlows
+					.from(GatewayServer.INPUT)
+					.route(new ServiceRouter())
+					.get();
+		}
 	}
-
-//	@Bean
-//	public IntegrationFlow iotGatewayServerCoapToRouterFlow() {
-//		return IntegrationFlows
-//				.from(GatewayServer.INPUT)
-//				.route(new ServiceRouter())
-//				.get();
-//	}
-
 
 	public static class ServiceRouter extends AbstractMappingMessageRouter {
 

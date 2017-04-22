@@ -37,6 +37,7 @@ public class CoapBinderConfigurationProperties {
 	}
 
 	public static enum Mode {
-		OUTBOUND_GATEWAY;
+		OUTBOUND_GATEWAY,
+		INBOUND_GATEWAY;
 	}
 }

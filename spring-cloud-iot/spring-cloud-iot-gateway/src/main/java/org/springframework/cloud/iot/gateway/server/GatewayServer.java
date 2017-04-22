@@ -27,6 +27,8 @@ import org.springframework.messaging.SubscribableChannel;
 public interface GatewayServer {
 
 	String INPUT = "iotGatewayServer";
+	String INPUT_REQUEST = INPUT + "Request";
+	String INPUT_REPLY = INPUT + "Reply";
 
 	@Input(GatewayServer.INPUT)
 	SubscribableChannel gatewayServer();

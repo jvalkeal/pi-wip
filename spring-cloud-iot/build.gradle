@@ -4,7 +4,7 @@ buildscript {
 		springBootVersion = '2.0.0.BUILD-SNAPSHOT'
 		springStatemachineVersion = '2.0.0.BUILD-SNAPSHOT'
 		pi4jVersion = '1.2-SNAPSHOT'
-		californiumVersion = '2.0.0-M3'
+		californiumVersion = '2.0.0-SNAPSHOT'
 		xbeeVersion = '1.2.0'
 		nrjavaserialVersion = '3.12.1'
 		springCloudStreamVersion = 'Chelsea.BUILD-SNAPSHOT'
@@ -49,6 +49,8 @@ configure(allprojects) {
 		mavenCentral()
 		maven { url 'http://repo.spring.io/libs-snapshot' }
 		maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+		// for californium snapshots
+		maven { url 'https://repo.eclipse.org/content/repositories/californium' }
 	}
 
 	dependencyManagement {

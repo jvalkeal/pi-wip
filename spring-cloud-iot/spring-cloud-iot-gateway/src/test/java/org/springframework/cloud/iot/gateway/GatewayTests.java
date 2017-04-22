@@ -34,7 +34,7 @@ public class GatewayTests extends AbstractGatewayTests {
 
 	@Test
 	public void testAutowire() {
-		SpringApplication app = new SpringApplication(Config1.class, BeanConfig.class);
+		SpringApplication app = new SpringApplication(ClientConfig.class, BeanConfig.class);
 		app.setWebApplicationType(WebApplicationType.NONE);
 		ConfigurableApplicationContext context = app.run(new String[] { "--spring.cloud.iot.gateway.rest.enabled=true",
 				"--spring.cloud.stream.bindings.iotGatewayClient.binder=coap" });
@@ -43,28 +43,43 @@ public class GatewayTests extends AbstractGatewayTests {
 
 	@Test
 	public void testGateway() {
-		SpringApplication app = new SpringApplication(Config1.class);
-		app.setWebApplicationType(WebApplicationType.NONE);
-		ConfigurableApplicationContext context = app
+
+		SpringApplication serverApp = new SpringApplication(ServerConfig.class);
+		serverApp.setWebApplicationType(WebApplicationType.NONE);
+		ConfigurableApplicationContext serverContext = serverApp
+				.run(new String[] { "--spring.cloud.iot.gateway.rest.enabled=true",
+						"--spring.cloud.stream.coap.binder.mode=INBOUND_GATEWAY",
+						"--spring.cloud.stream.bindings.iotGatewayServer.binder=coap",
+						"--spring.cloud.stream.bindings.iotGatewayServer.producer.useNativeEncoding=true" });
+
+		SpringApplication clientApp = new SpringApplication(ClientConfig.class);
+		clientApp.setWebApplicationType(WebApplicationType.NONE);
+		ConfigurableApplicationContext clientContext = clientApp
 				.run(new String[] { "--spring.cloud.iot.gateway.rest.enabled=true",
 						"--spring.cloud.stream.coap.binder.mode=OUTBOUND_GATEWAY",
-//						"--spring.cloud.stream.bindings.iotGatewayServer.binder=coap",
-//						"--spring.cloud.stream.bindings.iotGatewayServer.producer.useNativeEncoding=true",
 						"--spring.cloud.stream.bindings.iotGatewayClient.binder=coap",
 						"--spring.cloud.stream.bindings.iotGatewayClient.producer.useNativeEncoding=true" });
 
-		RestGatewayService restGatewayService = context.getBean(RestGatewayService.class);
+
+
+		RestGatewayService restGatewayService = clientContext.getBean(RestGatewayService.class);
 		assertThat(restGatewayService, notNullValue());
 		String body = restGatewayService.execute(new RestGatewayServiceRequest("http://example.com")).getBody();
 		assertThat(body, containsString("Example Domain"));
-		context.close();
+		clientContext.close();
+		serverContext.close();
 	}
 
 	@Configuration
 	@EnableIotGatewayClient
+	@EnableIntegration
+	protected static class ClientConfig {
+	}
+
+	@Configuration
 	@EnableIotGatewayServer
 	@EnableIntegration
-	protected static class Config1 {
+	protected static class ServerConfig {
 	}
 
 	@Configuration
