@@ -15,6 +15,7 @@ spring:
       coap:
         binder:
           mode: OUTBOUND_GATEWAY
+          uri: coap://localhost:5683/spring-integration-coap
       bindings:
         iotGatewayClient:
           binder: coap

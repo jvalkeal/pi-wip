@@ -26,7 +26,16 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "spring.cloud.stream.coap.binder")
 public class CoapBinderConfigurationProperties {
 
+	private String uri;
 	private Mode mode;
+
+	public String getUri() {
+		return uri;
+	}
+
+	public void setUri(String uri) {
+		this.uri = uri;
+	}
 
 	public Mode getMode() {
 		return mode;

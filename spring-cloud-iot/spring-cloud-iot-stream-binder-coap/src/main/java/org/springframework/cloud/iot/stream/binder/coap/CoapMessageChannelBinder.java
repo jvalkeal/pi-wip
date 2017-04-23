@@ -103,7 +103,7 @@ public class CoapMessageChannelBinder extends
 
 	private void getOrBuildGateway() {
 		if (configurationProperties.getMode() == Mode.OUTBOUND_GATEWAY) {
-			CoapOutboundGateway coapOutboundGateway = new CoapOutboundGateway("coap://localhost:5683/spring-integration-coap");
+			CoapOutboundGateway coapOutboundGateway = new CoapOutboundGateway(configurationProperties.getUri());
 			coapOutboundGateway.setBeanFactory(beanFactory);
 			coapOutboundGateway.setRequiresReply(true);
 			coapOutboundGateway.setOutputChannelName("iotGatewayClientReply");

@@ -15,7 +15,7 @@ projects `build/libs` directory.
 
 [[iot-examples-generic]]
 == Spring Clout Iot Generic Samples
-xxx.
+This section contains generic _Spring IoT Samples_.
 
 [[iot-examples-generic-fakesensor]]
 === Spring Clout Iot Fake Sensors

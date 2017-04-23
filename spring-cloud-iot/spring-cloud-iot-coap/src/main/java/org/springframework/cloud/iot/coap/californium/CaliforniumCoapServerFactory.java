@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.californium.core.server.resources.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.coap.server.CoapServer;
 import org.springframework.cloud.iot.coap.server.CoapServerFactory;
 import org.springframework.cloud.iot.coap.server.CoapServerHandler;
@@ -35,6 +37,7 @@ import org.springframework.util.Assert;
  */
 public class CaliforniumCoapServerFactory implements ConfigurableCoapServerFactory {
 
+	private static final Logger log = LoggerFactory.getLogger(CaliforniumCoapServerFactory.class);
 	private int port = 5683;
 	private List<Resource> coapResources = new ArrayList<>();
 	private Map<String, CoapServerHandler> mappings;
@@ -46,6 +49,7 @@ public class CaliforniumCoapServerFactory implements ConfigurableCoapServerFacto
 
 	@Override
 	public CoapServer getCoapServer() {
+		log.info("Creating coap server in port {}", port);
 		org.eclipse.californium.core.CoapServer server = new org.eclipse.californium.core.CoapServer(port);
 		server.add(coapResources.toArray(new Resource[0]));
 
