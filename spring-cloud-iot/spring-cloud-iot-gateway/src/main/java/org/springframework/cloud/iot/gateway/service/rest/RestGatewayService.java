@@ -21,11 +21,27 @@ import org.springframework.integration.annotation.Gateway;
 import org.springframework.integration.annotation.GatewayHeader;
 import org.springframework.integration.annotation.MessagingGateway;
 
+/**
+ * Gateway service interface providing methods to execute restfull requests over
+ * a spring cloud iot gateway server.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 @MessagingGateway(defaultHeaders = @GatewayHeader(name = IotGatewayConstants.HEADER_GATEWAY_SERVICE_ROUTE, value = RestGatewayService.ID))
 public interface RestGatewayService {
 
 	public final static String ID = "RestGatewayService";
 
-	@Gateway(requestChannel = GatewayClient.OUTPUT_REQUEST, replyChannel = GatewayClient.OUTPUT_RESPONSE, headers = @GatewayHeader(name = "responseType", value = "org.springframework.cloud.iot.gateway.service.rest.RestGatewayServiceResponse"))
+	/**
+	 * Execute a given {@link RestGatewayServiceRequest} and get a response in a
+	 * form of a {@link RestGatewayServiceResponse}.
+	 *
+	 * @param request the rest gateway service request
+	 * @return the rest gateways service response
+	 */
+	@Gateway(requestChannel = GatewayClient.OUTPUT_REQUEST,
+			replyChannel = GatewayClient.OUTPUT_RESPONSE,
+			headers = @GatewayHeader(name = "responseType", value = "org.springframework.cloud.iot.gateway.service.rest.RestGatewayServiceResponse"))
 	RestGatewayServiceResponse execute(RestGatewayServiceRequest request);
 }

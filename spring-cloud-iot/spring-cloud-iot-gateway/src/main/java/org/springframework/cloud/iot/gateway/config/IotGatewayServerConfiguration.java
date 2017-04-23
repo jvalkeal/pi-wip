@@ -34,6 +34,7 @@ import org.springframework.messaging.Message;
  * Configuration for IoT gateway server.
  *
  * @author Janne Valkealahti
+ *
  */
 @Configuration
 @EnableBinding(GatewayServer.class)

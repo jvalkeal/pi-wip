@@ -45,6 +45,8 @@ public class IotGatewayClientConfiguration {
 
 	@Bean
 	public IntegrationFlow iotGatewayClientRequestFlow() {
+		// define flow from output request channel into output channel which
+		// is then defined in a binder and what happens then is out of sight.
 		return IntegrationFlows
 				.from(GatewayClient.OUTPUT_REQUEST)
 				.channel(GatewayClient.OUTPUT)
@@ -68,6 +70,8 @@ public class IotGatewayClientConfiguration {
 
 		@Bean
 		public AnnotationGatewayProxyFactoryBean restGatewayServiceGatewayProxyFactoryBean() {
+			// has to wire up @MessagingGateway interface via this factory bean as
+			// java dsl prevents user to auto-wire it.
 			return new AnnotationGatewayProxyFactoryBean(RestGatewayService.class);
 		}
 	}

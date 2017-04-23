@@ -22,13 +22,20 @@ import org.springframework.cloud.iot.xbee.protocol.RxMessageProtocol;
 import org.springframework.cloud.iot.xbee.protocol.TxMessageProtocol;
 import org.springframework.messaging.Message;
 
+/**
+ * Utility class tracking existing sessions for transferring and receiving sides.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class MessageProtocolSessions {
 
 	private final Map<String, RxMessageProtocol> rxSessions = new HashMap<>();
 	private final Map<String, TxMessageProtocol> txSessions = new HashMap<>();
 
 	public TxMessageProtocol createTxSession(Message<byte[]> message) {
-		TxMessageProtocol tx = new TxMessageProtocol(message.getPayload(), (short) 0);
+		String header = "iotGatewayServiceRoute:RestGatewayService";
+		TxMessageProtocol tx = new TxMessageProtocol(header.getBytes(), message.getPayload(), (short) 0);
 		return tx;
 	}
 

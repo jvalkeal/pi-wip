@@ -57,10 +57,9 @@ public class GatewayTests extends AbstractGatewayTests {
 		ConfigurableApplicationContext clientContext = clientApp
 				.run(new String[] { "--spring.cloud.iot.gateway.rest.enabled=true",
 						"--spring.cloud.stream.coap.binder.mode=OUTBOUND_GATEWAY",
+						"--spring.cloud.stream.coap.binder.uri=coap://localhost:5683/spring-integration-coap",
 						"--spring.cloud.stream.bindings.iotGatewayClient.binder=coap",
 						"--spring.cloud.stream.bindings.iotGatewayClient.producer.useNativeEncoding=true" });
-
-
 
 		RestGatewayService restGatewayService = clientContext.getBean(RestGatewayService.class);
 		assertThat(restGatewayService, notNullValue());

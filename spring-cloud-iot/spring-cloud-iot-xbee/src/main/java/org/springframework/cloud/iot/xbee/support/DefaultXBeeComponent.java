@@ -30,6 +30,7 @@ import org.springframework.cloud.iot.xbee.listener.XBeeReceiverListener;
 import org.springframework.cloud.iot.xbee.protocol.RxMessageProtocol;
 import org.springframework.cloud.iot.xbee.protocol.TxMessageProtocol;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.support.MessageBuilder;
 
 import com.digi.xbee.api.XBeeDevice;
@@ -56,6 +57,11 @@ public class DefaultXBeeComponent implements XBeeSender, XBeeReceiver {
 	private final XBeeIDataReceiveListener xbeeDataListener = new XBeeIDataReceiveListener();
 	private final MessageProtocolSessions sessions = new MessageProtocolSessions();
 
+	/**
+	 * Instantiates a new default xbee component.
+	 *
+	 * @param xbeeDevice the xbee device
+	 */
 	public DefaultXBeeComponent(XBeeDevice xbeeDevice) {
 		this.xbeeDevice = xbeeDevice;
 		this.xbeeDevice.addDataListener(xbeeDataListener);
@@ -71,9 +77,9 @@ public class DefaultXBeeComponent implements XBeeSender, XBeeReceiver {
 				xbeeDevice.sendBroadcastData(frame);
 				log.debug("Broadcasting device='{}' done", xbeeDevice);
 			} catch (TimeoutException e) {
-				e.printStackTrace();
+				throw new MessagingException(message, e);
 			} catch (XBeeException e) {
-				e.printStackTrace();
+				throw new MessagingException(message, e);
 			}
 		}
 	}
