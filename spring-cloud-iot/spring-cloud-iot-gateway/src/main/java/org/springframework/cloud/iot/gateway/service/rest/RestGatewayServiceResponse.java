@@ -25,6 +25,9 @@ public class RestGatewayServiceResponse {
 
 	private String body;
 
+	public RestGatewayServiceResponse() {
+	}
+
 	public RestGatewayServiceResponse(String body) {
 		this.body = body;
 	}

@@ -27,6 +27,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.gateway.AnnotationGatewayProxyFactoryBean;
+import org.springframework.integration.json.JsonToObjectTransformer;
 
 /**
  * Configuration for IoT gateway client.
@@ -61,9 +62,10 @@ public class IotGatewayClientConfiguration {
 		public IntegrationFlow iotGatewayClientFlow() {
 			return IntegrationFlows
 					.from(GatewayClient.OUTPUT_REPLY)
-					.<byte[], RestGatewayServiceResponse>transform(s -> {
-							return new RestGatewayServiceResponse(new String(s));
-						})
+					.<byte[], String>transform(d -> {
+						return new String(d);
+					})
+					.transform(new JsonToObjectTransformer(RestGatewayServiceResponse.class))
 					.channel(GatewayClient.OUTPUT_RESPONSE)
 					.get();
 		}
