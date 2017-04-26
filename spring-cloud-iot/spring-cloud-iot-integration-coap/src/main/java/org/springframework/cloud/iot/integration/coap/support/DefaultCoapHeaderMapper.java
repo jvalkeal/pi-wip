@@ -33,6 +33,7 @@ import org.springframework.integration.mapping.HeaderMapper;
 import org.springframework.integration.support.utils.IntegrationUtils;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 public class DefaultCoapHeaderMapper implements HeaderMapper<CoapHeaders>, BeanFactoryAware, InitializingBean {
@@ -77,7 +78,14 @@ public class DefaultCoapHeaderMapper implements HeaderMapper<CoapHeaders>, BeanF
 	public Map<String, Object> toHeaders(CoapHeaders coapHeaders) {
 		Map<String, Object> target = new HashMap<String, Object>();
 		for (Entry<Integer, List<byte[]>> entry : coapHeaders.entrySet()) {
-			target.put(entry.getKey().toString(), entry.getValue());
+			if (ObjectUtils.nullSafeEquals(entry.getKey(), 9999)) {
+				List<byte[]> values = entry.getValue();
+				if (values != null && values.size() == 1) {
+					target.put("iotGatewayServiceRoute", new String(values.get(0)));
+				}
+			} else {
+				target.put(entry.getKey().toString(), entry.getValue());
+			}
 		}
 		return target;
 	}

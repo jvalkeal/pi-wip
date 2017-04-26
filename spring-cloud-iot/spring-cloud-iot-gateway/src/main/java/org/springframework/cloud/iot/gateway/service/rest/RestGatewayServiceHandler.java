@@ -15,6 +15,8 @@
  */
 package org.springframework.cloud.iot.gateway.service.rest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.web.client.RestTemplate;
 
@@ -27,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
  */
 public class RestGatewayServiceHandler {
 
+	private static final Logger log = LoggerFactory.getLogger(RestGatewayServiceHandler.class);
 	private final RestTemplate restTemplate;
 
 	/**
@@ -40,6 +43,7 @@ public class RestGatewayServiceHandler {
 
 	@ServiceActivator
 	public RestGatewayServiceResponse handle(RestGatewayServiceRequest request) {
+		log.debug("Handling request {}", request);
 		String body = restTemplate.getForObject(request.getUrl(), String.class);
 		return new RestGatewayServiceResponse(body);
 	}

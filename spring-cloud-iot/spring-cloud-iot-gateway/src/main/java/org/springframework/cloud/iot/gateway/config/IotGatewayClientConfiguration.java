@@ -28,6 +28,7 @@ import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.gateway.AnnotationGatewayProxyFactoryBean;
 import org.springframework.integration.json.JsonToObjectTransformer;
+import org.springframework.integration.json.ObjectToJsonTransformer;
 
 /**
  * Configuration for IoT gateway client.
@@ -50,6 +51,7 @@ public class IotGatewayClientConfiguration {
 		// is then defined in a binder and what happens then is out of sight.
 		return IntegrationFlows
 				.from(GatewayClient.OUTPUT_REQUEST)
+				.transform(new ObjectToJsonTransformer())
 				.channel(GatewayClient.OUTPUT)
 				.get();
 	}

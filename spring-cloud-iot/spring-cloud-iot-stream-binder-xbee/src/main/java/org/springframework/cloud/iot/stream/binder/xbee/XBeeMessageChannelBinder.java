@@ -117,12 +117,13 @@ public class XBeeMessageChannelBinder extends
 
 	private void getOrBuildGateway() {
 		if (configurationProperties.getMode() == Mode.OUTBOUND_GATEWAY) {
-			XBeeOutboundGateway gateway = new XBeeOutboundGateway(xbeeSender);
+			XBeeOutboundGateway gateway = new XBeeOutboundGateway(xbeeSender, xbeeReceiver);
 			gateway.setBeanFactory(beanFactory);
+			gateway.setOutputChannelName("iotGatewayClientReply");
 			messageHandler = gateway;
 			messageProducer = gateway;
 		} else if (configurationProperties.getMode() == Mode.INBOUND_GATEWAY) {
-			XBeeInboundGateway xbeeInboundGateway = new XBeeInboundGateway(xbeeReceiver);
+			XBeeInboundGateway xbeeInboundGateway = new XBeeInboundGateway(xbeeReceiver, xbeeSender);
 			xbeeInboundGateway.setBeanFactory(beanFactory);
 			xbeeInboundGateway.afterPropertiesSet();
 			xbeeInboundGateway.start();

@@ -62,13 +62,15 @@ public class IotGatewayServerConfiguration {
 		@Override
 		protected List<Object> getChannelKeys(Message<?> message) {
 			List<Object> channels = new ArrayList<>();
-			Object value = message.getHeaders().get("9999");
+			Object value = message.getHeaders().get("iotGatewayServiceRoute");
 			if (value instanceof List) {
 				for (Object o : ((List)value).toArray()) {
 					if (o instanceof byte[]) {
 						channels.add(new String(((byte[])o)));
 					}
 				}
+			} else if (value instanceof String) {
+				channels.add(value);
 			}
 			return channels;
 		}

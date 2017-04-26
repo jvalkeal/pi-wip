@@ -18,10 +18,14 @@ package org.springframework.cloud.iot.integration.xbee.inbound;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.xbee.XBeeReceiver;
+import org.springframework.cloud.iot.xbee.XBeeSender;
 import org.springframework.cloud.iot.xbee.listener.XBeeReceiverListener;
 import org.springframework.integration.gateway.MessagingGatewaySupport;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessagingException;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 
 /**
  * Inbound gateway using XBee mesh network.
@@ -31,9 +35,9 @@ import org.springframework.util.Assert;
  */
 public class XBeeInboundGateway extends MessagingGatewaySupport {
 
-
 	private static final Logger log = LoggerFactory.getLogger(XBeeInboundGateway.class);
 	private final XBeeReceiver xbeeReceiver;
+	private final XBeeSender xbeeSender;
 
 	/**
 	 * Instantiates a new xbee inbound gateway.
@@ -41,9 +45,20 @@ public class XBeeInboundGateway extends MessagingGatewaySupport {
 	 * @param xbeeReceiver the xbee receiver
 	 */
 	public XBeeInboundGateway(XBeeReceiver xbeeReceiver) {
+		this(xbeeReceiver, null);
+	}
+
+	/**
+	 * Instantiates a new xbee inbound gateway.
+	 *
+	 * @param xbeeReceiver the xbee receiver
+	 * @param xbeeSender the xbee sender
+	 */
+	public XBeeInboundGateway(XBeeReceiver xbeeReceiver, XBeeSender xbeeSender) {
 		super();
 		Assert.notNull(xbeeReceiver, "'xbeeReceiver' must be set");
 		this.xbeeReceiver = xbeeReceiver;
+		this.xbeeSender = xbeeSender;
 	}
 
 	@Override
@@ -54,7 +69,27 @@ public class XBeeInboundGateway extends MessagingGatewaySupport {
 
 	@Override
 	public String getComponentType() {
-		return "xbee:inbound-gateway";
+		return xbeeSender != null ? "xbee:inbound-gateway" : "xbee:inbound-channel-adapter";
+	}
+
+	private void sendReplyMessage(Message<?> replyMessage) {
+		log.debug("sendReplyMessage {}", replyMessage);
+		byte[] data = null;
+
+		Object payload = replyMessage.getPayload();
+		if (payload instanceof String) {
+			data = ((String)payload).getBytes();
+		} else if (payload instanceof byte[]) {
+			data = (byte[])payload;
+		} else {
+			throw new MessagingException("Request payload not String or byte[], was " + ClassUtils.getUserClass(payload));
+		}
+
+		if (data != null && data.length > 0) {
+			Message<byte[]> message = MessageBuilder.withPayload(data).build();
+			log.debug("Sending message {}", message);
+			xbeeSender.sendMessage(message);
+		}
 	}
 
 	private void setupListener() {
@@ -63,7 +98,9 @@ public class XBeeInboundGateway extends MessagingGatewaySupport {
 			@Override
 			public void onMessage(Message<byte[]> message) {
 				log.debug("onMessage {}", message);
-				send(message);
+//				send(message);
+				Message<?> response = sendAndReceiveMessage(message);
+				sendReplyMessage(response);
 			}
 		});
 	}

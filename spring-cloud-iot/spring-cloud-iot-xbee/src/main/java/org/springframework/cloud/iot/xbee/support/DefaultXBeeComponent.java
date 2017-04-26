@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.iot.support.HexUtils;
 import org.springframework.cloud.iot.xbee.XBeeReceiver;
 import org.springframework.cloud.iot.xbee.XBeeSender;
 import org.springframework.cloud.iot.xbee.listener.CompositeXBeeReceiverListener;
@@ -74,6 +75,7 @@ public class DefaultXBeeComponent implements XBeeSender, XBeeReceiver {
 		for (byte[] frame : tx.getFrames()) {
 			try {
 				log.debug("Broadcasting device='{}' frame='{}'", xbeeDevice, frame);
+				log.trace("Broadcasting device='{}' \n{}", xbeeDevice, HexUtils.prettyHexDump(frame));
 				xbeeDevice.sendBroadcastData(frame);
 				log.debug("Broadcasting device='{}' done", xbeeDevice);
 			} catch (TimeoutException e) {
@@ -102,6 +104,7 @@ public class DefaultXBeeComponent implements XBeeSender, XBeeReceiver {
 					xbeeMessage.getDevice().get64BitAddress().generateDeviceID());
 
 			log.debug("Adding data {}", xbeeMessage.getData());
+			log.trace("Adding data \n{}", HexUtils.prettyHexDump(xbeeMessage.getData()));
 			boolean completed = rxMessageSession.add(xbeeMessage.getData());
 			log.debug("Protocol completed={}", completed);
 			if (completed) {

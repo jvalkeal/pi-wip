@@ -26,12 +26,23 @@ public class MessageProtocolTests {
 	private final static String HEADER1 =
 			"header";
 
+	private final static String HEADER2 =
+			"header" + "0123456789" + "0123456789" + "0123456789" + "0123456789" + "0123456789";
+
 	private final static String PAYLOAD1 =
 			"0123456789" + "0123456789" + "0123456789" + "0123456789" + "0123456789" +
 			"0123456789" + "0123456789" + "0123456789" + "0123456789" + "0123456789";
 
 	private final static String PAYLOAD2 =
 			"0123456789";
+
+	private final static String PAYLOAD3 =
+			"0123456789" + "0123456789" + "0123456789" + "0123456789" + "0123456789" +
+			"0123456789" + "0123456789" + "0123456789" + "0123456789" + "0123456789" +
+			"0123456789" + "0123456789" + "0123456789" + "0123456789" + "0123456789" +
+			"0123456789" + "0123456789" + "0123456789" + "0123456789" + "0123456789" +
+			"0123456789" + "0123456789" + "0123456789" + "0123456789" + "0123456789" +
+			"0123456789" + "0123456789" + "0123456789" + "0123456789" + "0123456789";
 
 	@Test
 	public void testEmptyPayloadAndHeader() {
@@ -64,6 +75,26 @@ public class MessageProtocolTests {
 	}
 
 	@Test
+	public void testEmptyMultiFrameNoHeader() {
+		TxMessageProtocol tx = new TxMessageProtocol(PAYLOAD3.getBytes(), (short) 0);
+		byte[][] frames = tx.getFrames();
+
+		assertThat(frames.length, is(6));
+		assertThat(IotUtils.isBitSet(frames[0][0], MessageProtocol.MESSAGE_TYPE_START), is(true));
+		assertThat(IotUtils.isBitSet(frames[5][0], MessageProtocol.MESSAGE_TYPE_END), is(true));
+
+		RxMessageProtocol rx = new RxMessageProtocol();
+		rx.add(frames[0]);
+		rx.add(frames[1]);
+		rx.add(frames[2]);
+		rx.add(frames[3]);
+		rx.add(frames[4]);
+		rx.add(frames[5]);
+
+		assertThat(new String(rx.getPayload()), is(PAYLOAD3));
+	}
+
+	@Test
 	public void testEmptySingleFrameWithHeader() {
 		TxMessageProtocol tx = new TxMessageProtocol(HEADER1.getBytes(), PAYLOAD2.getBytes(), (short) 0);
 		byte[][] frames = tx.getFrames();
@@ -76,6 +107,23 @@ public class MessageProtocolTests {
 		rx.add(frames[0]);
 
 		assertThat(new String(rx.getHeader()), is(HEADER1));
+		assertThat(new String(rx.getPayload()), is(PAYLOAD2));
+	}
+
+	@Test
+	public void testEmptySingleFrameWithLargeHeader() {
+		TxMessageProtocol tx = new TxMessageProtocol(HEADER2.getBytes(), PAYLOAD2.getBytes(), (short) 0);
+		byte[][] frames = tx.getFrames();
+
+		assertThat(frames.length, is(2));
+		assertThat(IotUtils.isBitSet(frames[0][0], MessageProtocol.MESSAGE_TYPE_START), is(true));
+		assertThat(IotUtils.isBitSet(frames[1][0], MessageProtocol.MESSAGE_TYPE_END), is(true));
+
+		RxMessageProtocol rx = new RxMessageProtocol();
+		rx.add(frames[0]);
+		rx.add(frames[1]);
+
+		assertThat(new String(rx.getHeader()), is(HEADER2));
 		assertThat(new String(rx.getPayload()), is(PAYLOAD2));
 	}
 
@@ -95,6 +143,33 @@ public class MessageProtocolTests {
 		rx.add(frames[1]);
 
 		assertThat(new String(rx.getPayload()), is(PAYLOAD1));
+	}
+
+	@Test
+	public void testLongMessageWithHeader() {
+		byte[] headerIn = getFakeData(41);
+		byte[] payloadIn = getFakeData(1348);
+		TxMessageProtocol tx = new TxMessageProtocol(headerIn, payloadIn, (short) 0);
+		byte[][] frames = tx.getFrames();
+		assertThat(frames.length, is(25));
+
+		RxMessageProtocol rx = new RxMessageProtocol();
+		for (int i = 0; i < frames.length; i++) {
+			rx.add(frames[i]);
+		}
+		byte[] headerOut = rx.getHeader();
+		byte[] payloadOut = rx.getPayload();
+
+		assertThat(headerIn.length, is(headerOut.length));
+		assertThat(payloadIn.length, is(payloadOut.length));
+	}
+
+	private static byte[] getFakeData(int size) {
+		StringBuilder buf = new StringBuilder();
+		for (int i = 0; i < size; i++) {
+			buf.append('X');
+		}
+		return buf.toString().getBytes();
 	}
 
 }

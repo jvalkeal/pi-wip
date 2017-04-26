@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.iot.support.HexUtils;
 import org.springframework.cloud.iot.support.IotUtils;
 
 /**
@@ -67,10 +68,11 @@ public class TxMessageProtocol extends MessageProtocol {
 	 * @return the array of frames
 	 */
 	public byte[][] getFrames() {
-		int frameLength = getFrameSize() + 4;
-		int frameCount = ((payload.length + header.length) / frameLength) + 1;
+		int frameLength = getFrameSize();
+		int frameCount = calculateFrameCount();
 		byte[] tmp = IotUtils.concat(header, payload);
 		byte[][] frames = new byte[frameCount][];
+		int position = 0;
 		for (int i = 0; i < frameCount; i++) {
 			int messageType = 0x00;
 			if (i == 0) {
@@ -79,21 +81,31 @@ public class TxMessageProtocol extends MessageProtocol {
 			if (i == (frameCount - 1)) {
 				messageType = IotUtils.setBit(messageType, MessageProtocol.MESSAGE_TYPE_END);
 			}
-			ByteBuffer buffer = ByteBuffer.allocate(frameLength + (i == 0 ? 4 : 0))
-				.put((byte) messageType)
-				.put((byte) sessionId)
-				.putShort((short) i);
+			ByteBuffer buffer = ByteBuffer
+					.allocate(frameLength)
+					.put((byte) messageType)
+					.put((byte) sessionId).putShort((short) i);
 			if (i == 0) {
 				buffer.putInt(header.length);
 			}
-			byte[] bytes = Arrays.copyOfRange(tmp, i * getFrameSize(), Math.min((i+1) * getFrameSize(), tmp.length));
-			log.trace("Construct frame {} as {}", i, bytes);
-			buffer.put(Arrays.copyOfRange(tmp, i * getFrameSize(), Math.min((i+1) * getFrameSize(), tmp.length)));
+			int takeLength = frameLength - (i == 0 ? 8 : 4);
+			byte[] bytes = Arrays.copyOfRange(tmp, position, Math.min(position + takeLength, tmp.length));
+			log.debug("Construct frame {} as {} \n{}", i, bytes, HexUtils.prettyHexDump(bytes));
+			buffer.put(bytes);
 			byte[] b = new byte[buffer.position()];
 			buffer.flip();
 			buffer.get(b);
 			frames[i] = b;
+			position += takeLength;
 		}
 		return frames;
+	}
+
+	private int calculateFrameCount() {
+		// first package has 8 byte header, so need to add 4
+		int total = payload.length + header.length + 4;
+		int frameCount = total / (getFrameSize() - 4);
+		frameCount += 1;
+		return frameCount;
 	}
 }
