@@ -130,7 +130,7 @@ public class XBeeMessageChannelBinder extends
 			BridgeHandler delegate = new BridgeHandler();
 			delegate.setBeanFactory(beanFactory);
 			xbeeInboundGateway.setRequestChannelName("iotGatewayServer");
-			xbeeInboundGateway.setReplyChannelName("iotGatewayServer");
+			xbeeInboundGateway.setReplyChannelName("iotGatewayServerReply");
 			this.messageHandler = delegate;
 			this.messageProducer = delegate;
 		}

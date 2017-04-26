@@ -17,6 +17,7 @@ package org.springframework.cloud.iot.gateway.service.rest;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cloud.iot.gateway.server.GatewayServer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.dsl.IntegrationFlow;
@@ -36,6 +37,7 @@ public class RestGatewayServiceConfiguration {
 				.transform(new JsonToObjectTransformer(RestGatewayServiceRequest.class))
 				.handle(restGatewayServiceHandler(null))
 				.transform(new ObjectToJsonTransformer())
+				.channel(GatewayServer.INPUT_REPLY)
 				.get();
 	}
 

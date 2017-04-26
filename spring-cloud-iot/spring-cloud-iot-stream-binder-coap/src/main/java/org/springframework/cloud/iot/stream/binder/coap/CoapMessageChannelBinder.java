@@ -118,7 +118,7 @@ public class CoapMessageChannelBinder extends
 			BridgeHandler delegate = new BridgeHandler();
 			delegate.setBeanFactory(beanFactory);
 			coapInboundGateway.setRequestChannelName("iotGatewayServer");
-			coapInboundGateway.setReplyChannelName("iotGatewayServer");
+			coapInboundGateway.setReplyChannelName("iotGatewayServerReply");
 			this.messageHandler = delegate;
 			this.messageProducer = delegate;
 		}

@@ -38,7 +38,7 @@ public class Application {
 	public void doRestGatewayServiceCall() {
 		log.info("Sending request for http://example.com");
 		RestGatewayServiceRequest request = new RestGatewayServiceRequest("http://example.com");
-		log.info("Result from RestGatewayServicel {}", restGatewayService.execute(request).getBody());
+		log.info("Result from RestGatewayService {}", restGatewayService.execute(request).getBody());
 	}
 
 	public static void main(String[] args) {

@@ -352,12 +352,14 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 
 		@Override
 		public ServerCoapResponse handle(ServerCoapRequest request) {
+			logger.debug("Received ServerCoapRequest " + request);
 			GenericServerCoapResponse response = new GenericServerCoapResponse();
 			System.out.println("XXX5 " + request.getHeaders());
 
 			Message<?> responseMessage;
 			try {
 				responseMessage = doHandleRequest(request);
+				logger.debug("Response message from doHandleRequest " + responseMessage);
 				if (responseMessage != null) {
 					convertMessage(responseMessage.getPayload(), response);
 				}

@@ -15,6 +15,8 @@
  */
 package org.springframework.cloud.iot.coap.support;
 
+import java.util.Arrays;
+
 import org.springframework.cloud.iot.coap.CoapHeaders;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.server.ServerCoapRequest;
@@ -62,5 +64,11 @@ public class GenericServerCoapRequest implements ServerCoapRequest {
 	@Override
 	public CoapHeaders getHeaders() {
 		return coapHeaders;
+	}
+
+	@Override
+	public String toString() {
+		return "GenericServerCoapRequest [body=" + Arrays.toString(body) + ", coapHeaders=" + coapHeaders + ", method="
+				+ method + ", contentFormat=" + contentFormat + "]";
 	}
 }

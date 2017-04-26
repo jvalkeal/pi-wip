@@ -28,7 +28,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.router.AbstractMappingMessageRouter;
+import org.springframework.integration.router.MessageRouter;
 import org.springframework.messaging.Message;
+import org.springframework.util.StringUtils;
 
 /**
  * Configuration for IoT gateway server.
@@ -49,8 +51,13 @@ public class IotGatewayServerConfiguration {
 		public IntegrationFlow iotGatewayServerCoapToRouterFlow() {
 			return IntegrationFlows
 					.from(GatewayServer.INPUT)
-					.route(new ServiceRouter())
+					.route(iotGatewayServerServiceRouter())
 					.get();
+		}
+
+		@Bean
+		public ServiceRouter iotGatewayServerServiceRouter() {
+			return new ServiceRouter();
 		}
 	}
 
@@ -72,6 +79,7 @@ public class IotGatewayServerConfiguration {
 			} else if (value instanceof String) {
 				channels.add(value);
 			}
+			logger.debug("ServiceRouter resolved to channels " + StringUtils.collectionToCommaDelimitedString(channels));
 			return channels;
 		}
 	}

@@ -63,8 +63,13 @@ public class GatewayTests extends AbstractGatewayTests {
 
 		RestGatewayService restGatewayService = clientContext.getBean(RestGatewayService.class);
 		assertThat(restGatewayService, notNullValue());
+
 		String body = restGatewayService.execute(new RestGatewayServiceRequest("http://example.com")).getBody();
 		assertThat(body, containsString("Example Domain"));
+
+		body = restGatewayService.execute(new RestGatewayServiceRequest("http://example.com")).getBody();
+		assertThat(body, containsString("Example Domain"));
+
 		clientContext.close();
 		serverContext.close();
 	}
