@@ -15,7 +15,9 @@
  */
 package org.springframework.cloud.iot.boot.autoconfigure;
 
-import org.springframework.boot.bind.PropertiesConfigurationFactory;
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
+//import org.springframework.boot.bind.PropertiesConfigurationFactory;
 import org.springframework.cloud.iot.boot.properties.GpioConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.RaspberryConfigurationProperties;
@@ -24,7 +26,6 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.util.Assert;
-import org.springframework.validation.BindException;
 
 /**
  * Support class for various configuration classes.
@@ -59,12 +60,9 @@ public class AbstractConfigurationSupport implements EnvironmentAware {
 	 */
 	protected IotConfigurationProperties buildIotProperties() {
 		IotConfigurationProperties properties = new IotConfigurationProperties();
-		PropertiesConfigurationFactory<Object> factory = new PropertiesConfigurationFactory<Object>(properties);
-		factory.setTargetName(IotConfigurationProperties.NAMESPACE);
-		factory.setPropertySources(environment.getPropertySources());
 		try {
-			factory.bindPropertiesToTarget();
-		} catch (BindException e) {
+			Binder.get(environment).bind(IotConfigurationProperties.NAMESPACE, Bindable.ofInstance(properties));
+		} catch (Exception e) {
 			throw new RuntimeException("Unable to bind properties", e);
 		}
 		return properties;
@@ -72,12 +70,9 @@ public class AbstractConfigurationSupport implements EnvironmentAware {
 
 	protected RaspberryConfigurationProperties buildRaspberryProperties() {
 		RaspberryConfigurationProperties properties = new RaspberryConfigurationProperties();
-		PropertiesConfigurationFactory<Object> factory = new PropertiesConfigurationFactory<Object>(properties);
-		factory.setTargetName(RaspberryConfigurationProperties.NAMESPACE);
-		factory.setPropertySources(environment.getPropertySources());
 		try {
-			factory.bindPropertiesToTarget();
-		} catch (BindException e) {
+			Binder.get(environment).bind(RaspberryConfigurationProperties.NAMESPACE, Bindable.ofInstance(properties));
+		} catch (Exception e) {
 			throw new RuntimeException("Unable to bind properties", e);
 		}
 		return properties;
@@ -90,12 +85,9 @@ public class AbstractConfigurationSupport implements EnvironmentAware {
 	 */
 	protected GpioConfigurationProperties buildGpioProperties() {
 		GpioConfigurationProperties properties = new GpioConfigurationProperties();
-		PropertiesConfigurationFactory<Object> factory = new PropertiesConfigurationFactory<Object>(properties);
-		factory.setTargetName(GpioConfigurationProperties.NAMESPACE);
-		factory.setPropertySources(environment.getPropertySources());
 		try {
-			factory.bindPropertiesToTarget();
-		} catch (BindException e) {
+			Binder.get(environment).bind(GpioConfigurationProperties.NAMESPACE, Bindable.ofInstance(properties));
+		} catch (Exception e) {
 			throw new RuntimeException("Unable to bind properties", e);
 		}
 		return properties;

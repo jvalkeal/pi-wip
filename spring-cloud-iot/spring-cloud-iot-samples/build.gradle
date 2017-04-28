@@ -3,21 +3,21 @@ description = 'Spring Cloud IOT Samples Common'
 configurations.archives.artifacts.removeAll { it.archiveTask.is jar }
 tasks.findByPath("artifactoryPublish")?.enabled = false
 
-project('spring-cloud-iot-samples-sunfounder-sensor-01') {
+project('spring-cloud-iot-samples-sunfounder-sensor-01-dualcolorled') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 1'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-sensor-04') {
+project('spring-cloud-iot-samples-sunfounder-sensor-04-relay') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 4'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-sensor-06') {
+project('spring-cloud-iot-samples-sunfounder-sensor-06-button') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 6'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -25,7 +25,7 @@ project('spring-cloud-iot-samples-sunfounder-sensor-06') {
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-sensor-10-passive') {
+project('spring-cloud-iot-samples-sunfounder-sensor-10-passivebuzzer') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 10 Passive'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -33,7 +33,7 @@ project('spring-cloud-iot-samples-sunfounder-sensor-10-passive') {
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-sensor-10-active') {
+project('spring-cloud-iot-samples-sunfounder-sensor-10-activebuzzer') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 10 Active'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -41,7 +41,7 @@ project('spring-cloud-iot-samples-sunfounder-sensor-10-active') {
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-sensor-15') {
+project('spring-cloud-iot-samples-sunfounder-sensor-15-joystick') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 15'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -49,28 +49,28 @@ project('spring-cloud-iot-samples-sunfounder-sensor-15') {
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-sensor-16') {
+project('spring-cloud-iot-samples-sunfounder-sensor-16-potentiometer') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 16'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-sensor-18') {
+project('spring-cloud-iot-samples-sunfounder-sensor-18-thermistor') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 18'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-sensor-26') {
+project('spring-cloud-iot-samples-sunfounder-sensor-26-ds18b20') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 26'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-sensor-27') {
+project('spring-cloud-iot-samples-sunfounder-sensor-27-rotaryencoder') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 27'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -78,7 +78,7 @@ project('spring-cloud-iot-samples-sunfounder-sensor-27') {
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-sensor-28') {
+project('spring-cloud-iot-samples-sunfounder-sensor-28-humidity') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 28'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -86,14 +86,14 @@ project('spring-cloud-iot-samples-sunfounder-sensor-28') {
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-sensor-30') {
+project('spring-cloud-iot-samples-sunfounder-sensor-30-irobstacle') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 30'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-super-01') {
+project('spring-cloud-iot-samples-sunfounder-super-01-led') {
 	description = 'Spring Cloud IoT Sunfounder Super Kit Sample 01'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -101,7 +101,7 @@ project('spring-cloud-iot-samples-sunfounder-super-01') {
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-super-02') {
+project('spring-cloud-iot-samples-sunfounder-super-02-buttonandled') {
 	description = 'Spring Cloud IoT Sunfounder Super Kit Sample 02'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
@@ -117,7 +117,7 @@ project('spring-cloud-iot-samples-sunfounder-super-11-segment') {
 	}
 }
 
-project('spring-cloud-iot-samples-sunfounder-super-13') {
+project('spring-cloud-iot-samples-sunfounder-super-13-dotmatrix') {
 	description = 'Spring Cloud IoT Sunfounder Super Kit Sample 13'
 	dependencies {
 		compile project(":spring-cloud-iot-samples-common")
