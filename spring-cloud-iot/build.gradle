@@ -161,6 +161,7 @@ project('spring-cloud-iot-boot') {
 		compile('org.springframework.boot:spring-boot-autoconfigure')
 		compile('org.springframework.boot:spring-boot-actuator')
 		compile('org.slf4j:slf4j-api')
+		optional project(":spring-cloud-iot-gateway")
 		optional project(":spring-cloud-iot-integration-coap")
 		optional project(":spring-cloud-iot-integration-xbee")
 		optional('org.springframework.boot:spring-boot-configuration-processor')
@@ -201,9 +202,9 @@ project('spring-cloud-iot-gateway') {
 	description = "Spring Cloud IoT Gateway"
 
 	dependencies {
-		compile project(":spring-cloud-iot-stream-binder-coap")
-		compile project(":spring-cloud-iot-stream-binder-xbee")
-		compile('org.springframework.integration:spring-integration-mqtt')
+		optional project(":spring-cloud-iot-stream-binder-coap")
+		optional project(":spring-cloud-iot-stream-binder-xbee")
+		optional('org.springframework.integration:spring-integration-mqtt')
 		compile('org.slf4j:slf4j-api')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
 		testRuntime('org.springframework.boot:spring-boot-starter')

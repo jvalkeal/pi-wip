@@ -19,14 +19,19 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.springframework.boot.actuate.autoconfigure.ExportMetricWriter;
+import org.springframework.boot.actuate.metrics.Metric;
+import org.springframework.boot.actuate.metrics.writer.Delta;
 import org.springframework.boot.actuate.metrics.writer.MessageChannelMetricWriter;
 import org.springframework.boot.actuate.metrics.writer.MetricWriter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.CoapConfigurationProperties;
 import org.springframework.cloud.iot.boot.properties.MqttConfigurationProperties;
+import org.springframework.cloud.iot.gateway.service.metric.MetricGatewayService;
+import org.springframework.cloud.iot.gateway.service.metric.MetricGatewayServiceRequest;
 import org.springframework.cloud.iot.integration.coap.dsl.Coap;
 import org.springframework.cloud.iot.integration.xbee.dsl.XBee;
 import org.springframework.cloud.iot.xbee.XBeeSender;
@@ -55,6 +60,39 @@ import org.springframework.messaging.MessageHandler;
 @Configuration
 @ConditionalOnClass(ExportMetricWriter.class)
 public class MetricExporterAutoConfiguration {
+
+	@Configuration
+	@ConditionalOnClass(MetricGatewayService.class)
+	@ConditionalOnBean(MetricGatewayService.class)
+	@ConditionalOnProperty(prefix = "spring.cloud.iot.metrics.gateway.export", name = "enabled", havingValue = "true", matchIfMissing = false)
+	public static class IotMetricExporterGatewayConfiguration {
+
+		private final MetricGatewayService metricGatewayService;
+
+		public IotMetricExporterGatewayConfiguration(MetricGatewayService metricGatewayService) {
+			this.metricGatewayService = metricGatewayService;
+		}
+
+		@Bean
+		@ExportMetricWriter
+		public MetricWriter iotGatewayMetricWriter() {
+			return new MetricWriter() {
+
+				@Override
+				public void reset(String metricName) {
+				}
+
+				@Override
+				public void increment(Delta<?> delta) {
+				}
+
+				@Override
+				public void set(Metric<?> value) {
+					metricGatewayService.publish(new MetricGatewayServiceRequest(value.getName(), value.getValue()));
+				}
+			};
+		}
+	}
 
 	@Configuration
 	@ConditionalOnClass(MqttPahoClientFactory.class)
