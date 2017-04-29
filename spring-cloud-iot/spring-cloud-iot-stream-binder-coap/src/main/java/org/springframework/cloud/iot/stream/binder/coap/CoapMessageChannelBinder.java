@@ -18,6 +18,7 @@ package org.springframework.cloud.iot.stream.binder.coap;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.cloud.iot.integration.coap.inbound.CoapInboundGateway;
 import org.springframework.cloud.iot.integration.coap.outbound.CoapOutboundGateway;
 import org.springframework.cloud.iot.stream.binder.coap.properties.CoapBinderConfigurationProperties;
@@ -32,6 +33,7 @@ import org.springframework.cloud.stream.binder.ExtendedPropertiesBinder;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.cloud.stream.provisioning.ProvisioningProvider;
+import org.springframework.context.Lifecycle;
 import org.springframework.integration.core.MessageProducer;
 import org.springframework.integration.handler.BridgeHandler;
 import org.springframework.messaging.MessageChannel;
@@ -45,13 +47,14 @@ import org.springframework.messaging.MessageHandler;
  */
 public class CoapMessageChannelBinder extends
 		AbstractMessageChannelBinder<ExtendedConsumerProperties<CoapConsumerProperties>, ExtendedProducerProperties<CoapProducerProperties>, ProvisioningProvider<ExtendedConsumerProperties<CoapConsumerProperties>, ExtendedProducerProperties<CoapProducerProperties>>>
-		implements BeanFactoryAware, ExtendedPropertiesBinder<MessageChannel, CoapConsumerProperties, CoapProducerProperties> {
+		implements DisposableBean, BeanFactoryAware, ExtendedPropertiesBinder<MessageChannel, CoapConsumerProperties, CoapProducerProperties> {
 
 	private BeanFactory beanFactory;
 	private MessageHandler messageHandler = null;
 	private MessageProducer messageProducer = null;
 	private CoapExtendedBindingProperties extendedBindingProperties = new CoapExtendedBindingProperties();
 	private CoapBinderConfigurationProperties configurationProperties;
+	private Lifecycle lifecycle;
 
 	/**
 	 * Instantiates a new coap message channel binder.
@@ -93,6 +96,13 @@ public class CoapMessageChannelBinder extends
 		this.beanFactory = beanFactory;
 	}
 
+	@Override
+	public void destroy() throws Exception {
+		if (lifecycle != null) {
+			lifecycle.stop();
+		}
+	}
+
 	public void setBinderProperties(CoapBinderConfigurationProperties configurationProperties) {
 		this.configurationProperties = configurationProperties;
 	}
@@ -110,6 +120,15 @@ public class CoapMessageChannelBinder extends
 			coapOutboundGateway.setExpectedResponseType(byte[].class);
 			messageHandler = coapOutboundGateway;
 			messageProducer = coapOutboundGateway;
+		} else if (configurationProperties.getMode() == Mode.OUTBOUND_ADAPTER) {
+			CoapOutboundGateway coapOutboundGateway = new CoapOutboundGateway(configurationProperties.getUri());
+			coapOutboundGateway.setBeanFactory(beanFactory);
+			coapOutboundGateway.setRequiresReply(false);
+			coapOutboundGateway.setExpectReply(false);
+//			coapOutboundGateway.setOutputChannelName("iotGatewayClientReply");
+//			coapOutboundGateway.setExpectedResponseType(byte[].class);
+			messageHandler = coapOutboundGateway;
+			messageProducer = coapOutboundGateway;
 		} else if (configurationProperties.getMode() == Mode.INBOUND_GATEWAY) {
 			CoapInboundGateway coapInboundGateway = new CoapInboundGateway();
 			coapInboundGateway.setBeanFactory(beanFactory);
@@ -121,6 +140,19 @@ public class CoapMessageChannelBinder extends
 			coapInboundGateway.setReplyChannelName("iotGatewayServerReply");
 			this.messageHandler = delegate;
 			this.messageProducer = delegate;
+			this.lifecycle = coapInboundGateway;
+		} else if (configurationProperties.getMode() == Mode.INBOUND_ADAPTER) {
+			CoapInboundGateway coapInboundGateway = new CoapInboundGateway(false);
+			coapInboundGateway.setBeanFactory(beanFactory);
+			coapInboundGateway.afterPropertiesSet();
+			coapInboundGateway.start();
+			BridgeHandler delegate = new BridgeHandler();
+			delegate.setBeanFactory(beanFactory);
+			coapInboundGateway.setRequestChannelName("iotGatewayServer");
+			coapInboundGateway.setReplyChannelName("iotGatewayServerReply");
+			this.messageHandler = delegate;
+			this.messageProducer = delegate;
+			this.lifecycle = coapInboundGateway;
 		}
 	}
 }

@@ -19,6 +19,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.iot.coap.californium.CoapTemplate;
 import org.springframework.cloud.iot.coap.client.CoapOperations;
 import org.springframework.cloud.iot.gateway.client.GatewayClient;
+import org.springframework.cloud.iot.gateway.service.metric.MetricGatewayService;
 import org.springframework.cloud.iot.gateway.service.rest.RestGatewayService;
 import org.springframework.cloud.iot.gateway.service.rest.RestGatewayServiceResponse;
 import org.springframework.cloud.stream.annotation.EnableBinding;
@@ -77,6 +78,18 @@ public class IotGatewayClientConfiguration {
 			// has to wire up @MessagingGateway interface via this factory bean as
 			// java dsl prevents user to auto-wire it.
 			return new AnnotationGatewayProxyFactoryBean(RestGatewayService.class);
+		}
+	}
+
+	@Configuration
+	@ConditionalOnProperty(prefix = "spring.cloud.iot.gateway.metric", name = "enabled", havingValue = "true", matchIfMissing = false)
+	public static class IotMetricGatewayClientConfiguration {
+
+		@Bean
+		public AnnotationGatewayProxyFactoryBean restGatewayServiceGatewayProxyFactoryBean() {
+			// has to wire up @MessagingGateway interface via this factory bean as
+			// java dsl prevents user to auto-wire it.
+			return new AnnotationGatewayProxyFactoryBean(MetricGatewayService.class);
 		}
 	}
 }

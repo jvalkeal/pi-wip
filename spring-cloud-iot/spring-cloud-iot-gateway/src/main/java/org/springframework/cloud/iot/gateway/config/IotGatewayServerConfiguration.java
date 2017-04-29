@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.iot.gateway.server.GatewayServer;
+import org.springframework.cloud.iot.gateway.service.metric.MetricGatewayServiceConfiguration;
 import org.springframework.cloud.iot.gateway.service.rest.RestGatewayServiceConfiguration;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.Bean;
@@ -40,7 +41,7 @@ import org.springframework.util.StringUtils;
  */
 @Configuration
 @EnableBinding(GatewayServer.class)
-@Import(RestGatewayServiceConfiguration.class)
+@Import({ RestGatewayServiceConfiguration.class, MetricGatewayServiceConfiguration.class })
 public class IotGatewayServerConfiguration {
 
 	@Configuration
@@ -48,7 +49,25 @@ public class IotGatewayServerConfiguration {
 	public static class IotRestGatewayServerConfiguration {
 
 		@Bean
-		public IntegrationFlow iotGatewayServerCoapToRouterFlow() {
+		public IntegrationFlow iotGatewayServerToRouterFlow() {
+			return IntegrationFlows
+					.from(GatewayServer.INPUT)
+					.route(iotGatewayServerServiceRouter())
+					.get();
+		}
+
+		@Bean
+		public ServiceRouter iotGatewayServerServiceRouter() {
+			return new ServiceRouter();
+		}
+	}
+
+	@Configuration
+	@ConditionalOnProperty(prefix = "spring.cloud.iot.gateway.metric", name = "enabled", havingValue = "true", matchIfMissing = false)
+	public static class IotMetricGatewayServerConfiguration {
+
+		@Bean
+		public IntegrationFlow iotGatewayServerToRouterFlow() {
 			return IntegrationFlows
 					.from(GatewayServer.INPUT)
 					.route(iotGatewayServerServiceRouter())
