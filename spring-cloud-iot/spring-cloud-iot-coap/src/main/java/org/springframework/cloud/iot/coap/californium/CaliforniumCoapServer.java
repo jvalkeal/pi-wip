@@ -16,10 +16,14 @@
 package org.springframework.cloud.iot.coap.californium;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.californium.core.network.Endpoint;
 import org.springframework.cloud.iot.coap.server.CoapServer;
 import org.springframework.cloud.iot.coap.server.CoapServerException;
+import org.springframework.cloud.iot.coap.server.CoapServerHandler;
+import org.springframework.util.Assert;
 
 /**
  * {@link CoapServer} that can be used to control a californium coap server.
@@ -31,7 +35,13 @@ public class CaliforniumCoapServer implements CoapServer {
 
 	private final org.eclipse.californium.core.CoapServer server;
 
+	/**
+	 * Instantiates a new californium coap server.
+	 *
+	 * @param server the server
+	 */
 	public CaliforniumCoapServer(org.eclipse.californium.core.CoapServer server) {
+		Assert.notNull(server, "Californium coap server instance cannot be null");
 		this.server = server;
 		initialize();
 	}
@@ -53,6 +63,13 @@ public class CaliforniumCoapServer implements CoapServer {
 			return ep.getAddress().getPort();
 		}
 		return -1;
+	}
+
+	@Override
+	public void addHandlerMappings(Map<String, CoapServerHandler> mappings) {
+		for (Entry<String,CoapServerHandler> entry : mappings.entrySet()) {
+			server.add(new CaliforniumCoapServerHandlerResource(entry.getKey(), entry.getValue()));
+		}
 	}
 
 	private void initialize() throws CoapServerException {

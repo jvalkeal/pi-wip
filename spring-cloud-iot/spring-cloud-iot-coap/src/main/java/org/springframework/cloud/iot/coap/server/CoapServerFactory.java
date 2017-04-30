@@ -15,7 +15,25 @@
  */
 package org.springframework.cloud.iot.coap.server;
 
+import org.springframework.context.ApplicationContext;
+
+/**
+ * Factory interface that can be used to create a {@link CoapServer}.
+ *
+ * @author Janne Valkealahti
+ * @see CoapServer
+ *
+ */
+@FunctionalInterface
 public interface CoapServerFactory {
 
+	/**
+	 * Gets a new fully configured but paused {@link CoapServer} instance.
+	 * Clients should not be able to connect to the returned server until
+	 * {@link CoapServer#start()} is called (which happens when the
+	 * {@link ApplicationContext} has been fully refreshed).
+	 *
+	 * @return a fully configured {@link CoapServer}
+	 */
 	CoapServer getCoapServer();
 }

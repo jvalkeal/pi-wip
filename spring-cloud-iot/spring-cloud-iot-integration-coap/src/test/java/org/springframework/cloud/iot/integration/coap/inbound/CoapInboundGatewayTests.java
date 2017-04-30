@@ -26,7 +26,9 @@ import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.junit.Test;
+import org.springframework.cloud.iot.coap.californium.CaliforniumCoapServerFactory;
 import org.springframework.cloud.iot.coap.californium.CoapTemplate;
+import org.springframework.cloud.iot.coap.server.CoapServer;
 import org.springframework.cloud.iot.integration.coap.AbstractCoapTests;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -48,6 +50,30 @@ public class CoapInboundGatewayTests extends AbstractCoapTests {
 	@Test
 	public void testSimpleExpectReply() throws Exception {
 		context.register(TestConfig1.class);
+		context.refresh();
+		CoapInboundGateway cig = context.getBean(CoapInboundGateway.class);
+		int port = cig.getListeningCoapServerPort();
+
+		DirectChannel requestChannel = context.getBean("requestChannel", DirectChannel.class);
+		final ServiceActivatingHandler handler = new ServiceActivatingHandler(new Service());
+		requestChannel.subscribe(new MessageHandler() {
+
+			@Override
+			public void handleMessage(Message<?> message) throws MessagingException {
+				handler.handleMessage(message);
+			}
+		});
+
+		URI uri = new URI("coap", null, "localhost", port, "/spring-integration-coap", null, null);
+		CoapTemplate template = new CoapTemplate();
+		String object = template.postForObject(uri, "hello", String.class);
+		assertThat(object, notNullValue());
+		assertThat(object, is("Echo:hello"));
+	}
+
+	@Test
+	public void testSimpleExpectReplyWithPassedServer() throws Exception {
+		context.register(TestConfig4.class);
 		context.refresh();
 		CoapInboundGateway cig = context.getBean(CoapInboundGateway.class);
 		int port = cig.getListeningCoapServerPort();
@@ -164,6 +190,29 @@ public class CoapInboundGatewayTests extends AbstractCoapTests {
 			gateway.setCoapServerPort(0);
 			gateway.setRequestChannel(requestChannel());
 			return gateway;
+		}
+	}
+
+	@Configuration
+	public static class TestConfig4 {
+
+		@Bean
+		public DirectChannel requestChannel() {
+			return new DirectChannel();
+		}
+
+		@Bean
+		public CoapInboundGateway coapInboundGateway() {
+			CoapInboundGateway gateway = new CoapInboundGateway(coapServer(), true);
+			gateway.setCoapServerPort(0);
+			gateway.setRequestChannel(requestChannel());
+			return gateway;
+		}
+
+		@Bean
+		public CoapServer coapServer() {
+			CaliforniumCoapServerFactory factory = new CaliforniumCoapServerFactory();
+			return factory.getCoapServer();
 		}
 	}
 

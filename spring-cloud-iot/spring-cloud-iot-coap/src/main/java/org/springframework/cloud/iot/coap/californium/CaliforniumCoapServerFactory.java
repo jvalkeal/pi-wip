@@ -52,13 +52,18 @@ public class CaliforniumCoapServerFactory implements ConfigurableCoapServerFacto
 		log.info("Creating coap server in port {}", port);
 		org.eclipse.californium.core.CoapServer server = new org.eclipse.californium.core.CoapServer(port);
 		server.add(coapResources.toArray(new Resource[0]));
-
-		for (Entry<String,CoapServerHandler> entry : mappings.entrySet()) {
-			CaliforniumCoapServerHandlerResource resource = new CaliforniumCoapServerHandlerResource(entry.getKey(), entry.getValue());
-			server.add(resource);
+		if (mappings != null) {
+			for (Entry<String,CoapServerHandler> entry : mappings.entrySet()) {
+				server.add(new CaliforniumCoapServerHandlerResource(entry.getKey(), entry.getValue()));
+			}
 		}
-
 		return new CaliforniumCoapServer(server);
+	}
+
+	@Override
+	public void setHandlerMappings(Map<String, CoapServerHandler> mappings) {
+		Assert.notNull(mappings, "mappings must not be null");
+		this.mappings = mappings;
 	}
 
 	/**
@@ -69,10 +74,5 @@ public class CaliforniumCoapServerFactory implements ConfigurableCoapServerFacto
 	public void setCoapResources(List<Resource> coapResources) {
 		Assert.notNull(coapResources, "coapResources must not be null");
 		this.coapResources = coapResources;
-	}
-
-	public void setHandlerMappings(Map<String, CoapServerHandler> mappings) {
-		Assert.notNull(mappings, "mappings must not be null");
-		this.mappings = mappings;
 	}
 }

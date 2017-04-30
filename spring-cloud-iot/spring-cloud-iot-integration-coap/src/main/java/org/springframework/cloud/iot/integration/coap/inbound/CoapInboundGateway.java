@@ -106,7 +106,24 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 	 * @see #setStatusCodeExpression(Expression)
 	 */
 	public CoapInboundGateway(boolean expectReply) {
+		this(null, expectReply);
+	}
+
+	/**
+	 * Construct a gateway. If 'expectReply' is true it will wait for the
+	 * {@link #setReplyTimeout(long) replyTimeout} for a reply; if the timeout
+	 * is exceeded a '5.00 INTERNAL_SERVER_ERROR' status code is returned. This
+	 * can be modified using the {@link #setStatusCodeExpression(Expression)
+	 * statusCodeExpression}. If 'false', a 2.01 CREATED status will be
+	 * returned; this can also be modified using
+	 * {@link #setStatusCodeExpression(Expression) statusCodeExpression}.
+	 *
+	 * @param coapServer the coap server instance
+	 * @param expectReply true if a reply is expected from the downstream flow.
+	 */
+	public CoapInboundGateway(CoapServer coapServer, boolean expectReply) {
 		super(expectReply);
+		this.coapServer = coapServer;
 		this.expectReply = expectReply;
 		this.defaultMessageConverters.add(new StringCoapMessageConverter());
 		this.defaultMessageConverters.add(new ByteArrayCoapMessageConverter());
@@ -116,12 +133,19 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 	protected void onInit() throws Exception {
 		super.onInit();
 
-		CaliforniumCoapServerFactory factory = new CaliforniumCoapServerFactory();
-
 		Map<String, CoapServerHandler> mappings = new HashMap<>();
 		mappings.put(coapResourceName, new InboundHandlingCoapServerHandler());
-		factory.setHandlerMappings(mappings);
-		coapServer = factory.getCoapServer();
+
+		// no ref to existing coap server, fall back to create a new
+		// using californium
+		if (coapServer == null) {
+			CaliforniumCoapServerFactory factory = new CaliforniumCoapServerFactory();
+			factory.setHandlerMappings(mappings);
+			coapServer = factory.getCoapServer();
+		} else {
+			coapServer.addHandlerMappings(mappings);
+		}
+
 		if (this.messageConverters.size() == 0 || (this.mergeWithDefaultConverters && !this.convertersMerged)) {
 			this.messageConverters.addAll(this.defaultMessageConverters);
 		}

@@ -15,6 +15,14 @@
  */
 package org.springframework.cloud.iot.coap.server;
 
+import java.util.Map;
+
+/**
+ * A configurable {@link CoapServerFactory}.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public interface ConfigurableCoapServerFactory extends CoapServerFactory {
 
 	/**
@@ -25,4 +33,10 @@ public interface ConfigurableCoapServerFactory extends CoapServerFactory {
 	 */
 	void setPort(int port);
 
+	/**
+	 * Sets the handler mappings.
+	 *
+	 * @param mappings the mappings
+	 */
+	void setHandlerMappings(Map<String, CoapServerHandler> mappings);
 }
