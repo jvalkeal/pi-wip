@@ -15,6 +15,7 @@
  */
 package org.springframework.cloud.iot.boot.autoconfigure;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.iot.boot.condition.ConditionalOnIot;
 import org.springframework.cloud.iot.boot.properties.IotConfigurationProperties.NumberingScheme;
@@ -34,9 +35,9 @@ import com.pi4j.io.gpio.RaspiPinNumberingScheme;
  *
  */
 @Configuration
+@ConditionalOnClass(GpioController.class)
 @ConditionalOnIot
 @EnableConfigurationProperties(RaspberryConfigurationProperties.class)
-//@EnableGpio
 public class GpioAutoConfiguration {
 
 	public static String BEAN_NAME_GPIOCONTROLLER = "gpioController";
