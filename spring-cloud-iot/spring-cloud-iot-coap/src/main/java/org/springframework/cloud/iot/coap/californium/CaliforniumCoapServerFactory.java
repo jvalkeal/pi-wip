@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import org.eclipse.californium.core.server.resources.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.iot.coap.server.CoapHandler;
 import org.springframework.cloud.iot.coap.server.CoapServer;
 import org.springframework.cloud.iot.coap.server.CoapServerFactory;
 import org.springframework.cloud.iot.coap.server.CoapServerHandler;
@@ -40,7 +41,7 @@ public class CaliforniumCoapServerFactory implements ConfigurableCoapServerFacto
 	private static final Logger log = LoggerFactory.getLogger(CaliforniumCoapServerFactory.class);
 	private int port = 5683;
 	private List<Resource> coapResources = new ArrayList<>();
-	private Map<String, CoapServerHandler> mappings;
+	private Map<String, CoapHandler> mappings;
 
 	@Override
 	public void setPort(int port) {
@@ -53,15 +54,15 @@ public class CaliforniumCoapServerFactory implements ConfigurableCoapServerFacto
 		org.eclipse.californium.core.CoapServer server = new org.eclipse.californium.core.CoapServer(port);
 		server.add(coapResources.toArray(new Resource[0]));
 		if (mappings != null) {
-			for (Entry<String,CoapServerHandler> entry : mappings.entrySet()) {
-				server.add(new CaliforniumCoapServerHandlerResource(entry.getKey(), entry.getValue()));
+			for (Entry<String,CoapHandler> entry : mappings.entrySet()) {
+				server.add(new CaliforniumCoapHandlerResource(entry.getKey(), entry.getValue()));
 			}
 		}
 		return new CaliforniumCoapServer(server);
 	}
 
 	@Override
-	public void setHandlerMappings(Map<String, CoapServerHandler> mappings) {
+	public void setHandlerMappings(Map<String, CoapHandler> mappings) {
 		Assert.notNull(mappings, "mappings must not be null");
 		this.mappings = mappings;
 	}

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,28 +15,18 @@
  */
 package org.springframework.cloud.iot.coap.server;
 
-import java.util.Map;
+import reactor.core.publisher.Mono;
 
 /**
- * A configurable {@link CoapServerFactory}.
+ * Contract that decouples the {@link DispatcherHandler} from the details of
+ * invoking a handler and makes it possible to support any handler type.
  *
  * @author Janne Valkealahti
  *
  */
-public interface ConfigurableCoapServerFactory extends CoapServerFactory {
+public interface HandlerAdapter {
 
-	/**
-	 * Sets the port that the coap server should listen on. If not specified
-	 * port '5683' will be used. Use port -1 to disable auto-start.
-	 *
-	 * @param port the port to set
-	 */
-	void setPort(int port);
+	boolean supports(Object handler);
 
-	/**
-	 * Sets the handler mappings.
-	 *
-	 * @param mappings the mappings
-	 */
-	void setHandlerMappings(Map<String, CoapHandler> mappings);
+	Mono<HandlerResult> handle(ServerCoapExchange exchange, Object handler);
 }

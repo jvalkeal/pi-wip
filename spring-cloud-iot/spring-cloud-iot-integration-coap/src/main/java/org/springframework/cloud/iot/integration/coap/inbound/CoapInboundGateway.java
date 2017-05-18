@@ -140,7 +140,7 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 		// using californium
 		if (coapServer == null) {
 			CaliforniumCoapServerFactory factory = new CaliforniumCoapServerFactory();
-			factory.setHandlerMappings(mappings);
+//			factory.setHandlerMappings(mappings);
 			coapServer = factory.getCoapServer();
 		} else {
 			coapServer.addHandlerMappings(mappings);

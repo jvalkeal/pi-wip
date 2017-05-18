@@ -36,8 +36,8 @@ public class CaliforniumCoapServerTests extends AbstractCoapTests {
 	public void testServer() throws Exception {
 		CaliforniumCoapServerFactory factory = new CaliforniumCoapServerFactory();
 
-		Map<String, CoapServerHandler> mappings = new HashMap<>();
-		mappings.put("testresource1", new TestCoapServerHandler1());
+		Map<String, CoapHandler> mappings = new HashMap<>();
+		mappings.put("testresource1", new DispatcherHandler());
 		factory.setHandlerMappings(mappings);
 
 		CoapServer coapServer = factory.getCoapServer();
@@ -55,13 +55,13 @@ public class CaliforniumCoapServerTests extends AbstractCoapTests {
 		return new AnnotationConfigApplicationContext();
 	}
 
-	private class TestCoapServerHandler1 implements CoapServerHandler {
-		@Override
-		public ServerCoapResponse handle(ServerCoapRequest request) {
-			GenericServerCoapResponse response = new GenericServerCoapResponse();
-			response.setRequestPayload("hello".getBytes());
-			return response;
-		}
-	}
+//	private class TestCoapServerHandler1 implements CoapServerHandler {
+//		@Override
+//		public ServerCoapResponse handle(ServerCoapRequest request) {
+//			GenericServerCoapResponse response = new GenericServerCoapResponse();
+//			response.setRequestPayload("hello".getBytes());
+//			return response;
+//		}
+//	}
 
 }

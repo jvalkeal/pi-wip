@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,28 +15,27 @@
  */
 package org.springframework.cloud.iot.coap.server;
 
-import java.util.Map;
-
 /**
- * A configurable {@link CoapServerFactory}.
+ * Contract for an COAP request-response interaction. Provides access to the COAP
+ * request and response and also exposes additional server-side processing
+ * related properties and features such as request attributes.
  *
  * @author Janne Valkealahti
  *
  */
-public interface ConfigurableCoapServerFactory extends CoapServerFactory {
+public interface ServerCoapExchange {
 
 	/**
-	 * Sets the port that the coap server should listen on. If not specified
-	 * port '5683' will be used. Use port -1 to disable auto-start.
+	 * Return the current COAP request.
 	 *
-	 * @param port the port to set
+	 * @return the current request
 	 */
-	void setPort(int port);
+	ServerCoapRequest getRequest();
 
 	/**
-	 * Sets the handler mappings.
+	 * Return the current COAP response.
 	 *
-	 * @param mappings the mappings
+	 * @return the current response
 	 */
-	void setHandlerMappings(Map<String, CoapHandler> mappings);
+	ServerCoapResponse getResponse();
 }
