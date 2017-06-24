@@ -17,6 +17,7 @@ package org.springframework.cloud.iot.coap.server;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.net.URI;
@@ -27,17 +28,39 @@ import org.junit.Test;
 import org.springframework.cloud.iot.coap.AbstractCoapTests;
 import org.springframework.cloud.iot.coap.californium.CaliforniumCoapServerFactory;
 import org.springframework.cloud.iot.coap.californium.CoapTemplate;
-import org.springframework.cloud.iot.coap.support.GenericServerCoapResponse;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class CaliforniumCoapServerTests extends AbstractCoapTests {
 
 	@Test
-	public void testServer() throws Exception {
+	public void testServerNoHandler() throws Exception {
+		context.refresh();
 		CaliforniumCoapServerFactory factory = new CaliforniumCoapServerFactory();
 
+		DispatcherHandler dispatcherHandler = new DispatcherHandler();
+		dispatcherHandler.setApplicationContext(context);
 		Map<String, CoapHandler> mappings = new HashMap<>();
-		mappings.put("testresource1", new DispatcherHandler());
+		mappings.put("testresource1", dispatcherHandler);
+		factory.setHandlerMappings(mappings);
+
+		CoapServer coapServer = factory.getCoapServer();
+		coapServer.start();
+
+		URI uri = new URI("coap", null, "localhost", 5683, "/testresource1", null, null);
+		CoapTemplate template = new CoapTemplate();
+		String object = template.getForObject(uri, String.class);
+		assertThat(object, nullValue());
+	}
+
+	@Test
+	public void testServer() throws Exception {
+		context.refresh();
+		CaliforniumCoapServerFactory factory = new CaliforniumCoapServerFactory();
+
+		DispatcherHandler dispatcherHandler = new DispatcherHandler();
+		dispatcherHandler.setApplicationContext(context);
+		Map<String, CoapHandler> mappings = new HashMap<>();
+		mappings.put("testresource1", dispatcherHandler);
 		factory.setHandlerMappings(mappings);
 
 		CoapServer coapServer = factory.getCoapServer();
@@ -49,7 +72,7 @@ public class CaliforniumCoapServerTests extends AbstractCoapTests {
 		assertThat(object, notNullValue());
 		assertThat(object, is("hello"));
 	}
-
+	
 	@Override
 	protected AnnotationConfigApplicationContext buildContext() {
 		return new AnnotationConfigApplicationContext();

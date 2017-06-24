@@ -7,7 +7,7 @@ buildscript {
 		californiumVersion = '2.0.0-SNAPSHOT'
 		xbeeVersion = '1.2.0'
 		nrjavaserialVersion = '3.12.1'
-		springCloudStreamVersion = 'Chelsea.BUILD-SNAPSHOT'
+		springCloudStreamVersion = 'Elmhurst.BUILD-SNAPSHOT'
 		springCloudStreamAppStarterVersion = '1.2.0.BUILD-SNAPSHOT'
 	}
 	repositories {
@@ -125,7 +125,7 @@ project('spring-cloud-iot-core') {
 		compile('org.springframework:spring-tx')
 		compile('io.projectreactor:reactor-core')
 		compile('org.slf4j:slf4j-api')
-		testCompile('io.projectreactor.addons:reactor-test')
+		testCompile('io.projectreactor:reactor-test')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
 		testRuntime('org.springframework.boot:spring-boot-starter')
 	}
@@ -136,7 +136,7 @@ project('spring-cloud-iot-test') {
 
 	dependencies {
 		compile project(":spring-cloud-iot-pi4j")
-		compile('io.projectreactor.addons:reactor-test')
+		compile('io.projectreactor:reactor-test')
 		compile('org.springframework.boot:spring-boot-starter-test')
 		testRuntime('org.springframework.boot:spring-boot-starter')
 	}

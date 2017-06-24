@@ -15,8 +15,8 @@
  */
 package org.springframework.cloud.iot.integration.coap.dsl;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import org.springframework.cloud.iot.coap.server.CoapServer;
 import org.springframework.cloud.iot.integration.coap.inbound.CoapInboundGateway;
@@ -42,8 +42,8 @@ public class CoapInboundGatewaySpec extends MessagingGatewaySpec<CoapInboundGate
 	}
 
 	@Override
-	public Collection<Object> getComponentsToRegister() {
-		return Collections.emptyList();
+	public Map<Object, String> getComponentsToRegister() {
+		return Collections.emptyMap();
 	}
 
 	@Override

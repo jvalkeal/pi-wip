@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.springframework.cloud.iot.coap.californium;
 
 import java.util.List;
@@ -17,7 +32,7 @@ import org.springframework.util.CollectionUtils;
 
 import reactor.core.publisher.Mono;
 
-public class CaliforniumCoapHandlerResource  extends AbstractCoapResource {
+public class CaliforniumCoapHandlerResource extends AbstractCoapResource {
 
 	private List<CoapMethod> allowedMethods = null;
 	private final CoapHandler handler;
@@ -80,12 +95,18 @@ public class CaliforniumCoapHandlerResource  extends AbstractCoapResource {
 
 		ServerCoapExchange serverCoapExchange = new DefaultServerCoapExchange();
 		Mono<Void> handle = handler.handle(serverCoapExchange);
-		handle.doOnSuccess(c -> {
-			ServerCoapResponse response = serverCoapExchange.getResponse();
-			ResponseCode responseCode = response.getStatus() != null ? ResponseCode.valueOf(response.getStatus().value) : ResponseCode.CREATED;
-			exchange.respond(responseCode, response.getBody());
-		}).subscribe();
-
+		handle
+			.onErrorResume(ex -> {
+					exchange.respond(ResponseCode.BAD_REQUEST);
+					return Mono.empty();
+				})
+			.doOnSuccess(c -> {
+					ServerCoapResponse response = serverCoapExchange.getResponse();
+					ResponseCode responseCode = response.getStatus() != null
+							? ResponseCode.valueOf(response.getStatus().value) : ResponseCode.CREATED;
+					exchange.respond(responseCode, response.getBody());
+				})
+			.subscribe();
 	}
 
 	private boolean isMethodAllowed(CoapExchange exchange) {
