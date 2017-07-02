@@ -29,6 +29,7 @@ import org.springframework.cloud.iot.coap.AbstractCoapTests;
 import org.springframework.cloud.iot.coap.californium.CaliforniumCoapServerFactory;
 import org.springframework.cloud.iot.coap.californium.CoapTemplate;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
 
 public class CaliforniumCoapServerTests extends AbstractCoapTests {
 
@@ -54,6 +55,7 @@ public class CaliforniumCoapServerTests extends AbstractCoapTests {
 
 	@Test
 	public void testServer() throws Exception {
+		context.register(ControllerConfig1.class, Config1.class);
 		context.refresh();
 		CaliforniumCoapServerFactory factory = new CaliforniumCoapServerFactory();
 
@@ -66,16 +68,55 @@ public class CaliforniumCoapServerTests extends AbstractCoapTests {
 		CoapServer coapServer = factory.getCoapServer();
 		coapServer.start();
 
-		URI uri = new URI("coap", null, "localhost", 5683, "/testresource1", null, null);
+		URI uri = new URI("coap", null, "localhost", 5683, "/testresource1/hello", null, null);
 		CoapTemplate template = new CoapTemplate();
 		String object = template.getForObject(uri, String.class);
 		assertThat(object, notNullValue());
 		assertThat(object, is("hello"));
 	}
-	
+
 	@Override
 	protected AnnotationConfigApplicationContext buildContext() {
 		return new AnnotationConfigApplicationContext();
+	}
+
+	private static class Config1 {
+
+//		@Bean
+//		public SimpleUrlHandlerMapping simpleUrlHandlerMapping() {
+//			return new SimpleUrlHandlerMapping();
+//		}
+//
+//		@Bean
+//		public SimpleHandlerAdapter simpleHandlerAdapter() {
+//			return new SimpleHandlerAdapter();
+//		}
+
+		@Bean
+		public ServerCoapResponseResultHandler serverCoapResponseResultHandler() {
+			return new ServerCoapResponseResultHandler();
+		}
+
+		@Bean
+		public RequestMappingHandlerMapping requestMappingHandlerMapping() {
+			return new RequestMappingHandlerMapping();
+		}
+
+		@Bean
+		public RequestMappingHandlerAdapter requestMappingHandlerAdapter() {
+			return new RequestMappingHandlerAdapter();
+		}
+
+	}
+
+	@CoapController
+	@RequestMapping(path = "/testresource1")
+	private static class ControllerConfig1 {
+
+		@RequestMapping(path = "/hello")
+		public String hello() {
+			return "hello";
+		}
 	}
 
 //	private class TestCoapServerHandler1 implements CoapServerHandler {

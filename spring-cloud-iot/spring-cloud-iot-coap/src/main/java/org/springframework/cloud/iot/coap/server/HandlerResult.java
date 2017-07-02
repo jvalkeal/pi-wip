@@ -15,7 +15,6 @@
  */
 package org.springframework.cloud.iot.coap.server;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 import org.springframework.core.MethodParameter;
@@ -52,7 +51,7 @@ public class HandlerResult {
 		return (hasExceptionHandler() ? this.exceptionHandler.apply(failure) : Mono.error(failure));
 	}
 
-	public Optional<Object> getReturnValue() {
-		return Optional.ofNullable(this.returnValue);
+	public Object getReturnValue() {
+		return this.returnValue;
 	}
 }

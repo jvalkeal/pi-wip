@@ -68,6 +68,11 @@ public class GenericServerCoapResponse implements ServerCoapResponse {
 	}
 
 	@Override
+	public void setBody(byte[] body) {
+		this.requestPayload = body;
+	}
+
+	@Override
 	public CoapHeaders getHeaders() {
 		return null;
 	}

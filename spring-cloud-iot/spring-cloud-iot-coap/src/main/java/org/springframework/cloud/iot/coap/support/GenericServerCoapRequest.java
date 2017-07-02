@@ -27,6 +27,7 @@ public class GenericServerCoapRequest implements ServerCoapRequest {
 	private final CoapHeaders coapHeaders;
 	private CoapMethod method;
 	private int contentFormat = -1;
+	private String uriPath;
 
 	public GenericServerCoapRequest(byte[] body, CoapHeaders coapHeaders) {
 		this.body = body;
@@ -49,7 +50,11 @@ public class GenericServerCoapRequest implements ServerCoapRequest {
 
 	@Override
 	public String getUriPath() {
-		return null;
+		return uriPath;
+	}
+
+	public void setUriPath(String uriPath) {
+		this.uriPath = uriPath;
 	}
 
 	public void setMethod(CoapMethod method) {

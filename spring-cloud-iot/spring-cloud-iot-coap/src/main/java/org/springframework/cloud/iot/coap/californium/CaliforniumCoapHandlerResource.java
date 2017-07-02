@@ -28,6 +28,7 @@ import org.springframework.cloud.iot.coap.server.DefaultServerCoapExchange;
 import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
 import org.springframework.cloud.iot.coap.server.ServerCoapResponse;
 import org.springframework.cloud.iot.coap.support.GenericServerCoapRequest;
+import org.springframework.cloud.iot.coap.support.GenericServerCoapResponse;
 import org.springframework.util.CollectionUtils;
 
 import reactor.core.publisher.Mono;
@@ -92,8 +93,11 @@ public class CaliforniumCoapHandlerResource extends AbstractCoapResource {
 		GenericServerCoapRequest request = new GenericServerCoapRequest(exchange.getRequestPayload(), coapHeaders);
 		request.setMethod(CoapMethod.resolve(exchange.getRequestCode().name()));
 		request.setContentFormat(exchange.getRequestOptions().getContentFormat());
+		request.setUriPath(exchange.getRequestOptions().getUriPathString());
 
-		ServerCoapExchange serverCoapExchange = new DefaultServerCoapExchange();
+		GenericServerCoapResponse responsex = new GenericServerCoapResponse();
+
+		ServerCoapExchange serverCoapExchange = new DefaultServerCoapExchange(request, responsex);
 		Mono<Void> handle = handler.handle(serverCoapExchange);
 		handle
 			.onErrorResume(ex -> {

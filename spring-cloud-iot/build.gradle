@@ -179,6 +179,7 @@ project('spring-cloud-iot-coap') {
 	dependencies {
 		compile('org.eclipse.californium:californium-core')
 		compile('org.springframework:spring-web')
+		compile('org.springframework:spring-webflux')
 		compile('org.slf4j:slf4j-api')
 		compile('io.projectreactor:reactor-core')
 		optional('com.google.code.gson:gson')

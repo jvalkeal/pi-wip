@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,13 +15,12 @@
  */
 package org.springframework.cloud.iot.coap.server;
 
-import org.springframework.cloud.iot.coap.CoapOutputMessage;
-import org.springframework.cloud.iot.coap.CoapStatus;
+public class ControllerMethodResolver {
 
-public interface ServerCoapResponse extends CoapOutputMessage {
-
-	CoapStatus getStatus();
-
-	void setBody(byte[] body);
+	public InvocableHandlerMethod getRequestMappingMethod(HandlerMethod handlerMethod) {
+		InvocableHandlerMethod invocable = new InvocableHandlerMethod(handlerMethod);
+//		invocable.setArgumentResolvers(this.requestMappingResolvers);
+		return invocable;
+	}
 
 }
