@@ -26,8 +26,12 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.springframework.cloud.iot.coap.AbstractCoapTests;
+import org.springframework.cloud.iot.coap.annotation.CoapController;
+import org.springframework.cloud.iot.coap.annotation.CoapRequestMapping;
+import org.springframework.cloud.iot.coap.annotation.CoapResponseBody;
 import org.springframework.cloud.iot.coap.californium.CaliforniumCoapServerFactory;
 import org.springframework.cloud.iot.coap.californium.CoapTemplate;
+import org.springframework.cloud.iot.coap.server.support.DispatcherHandler;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 
@@ -68,11 +72,11 @@ public class CaliforniumCoapServerTests extends AbstractCoapTests {
 		CoapServer coapServer = factory.getCoapServer();
 		coapServer.start();
 
-		URI uri = new URI("coap", null, "localhost", 5683, "/testresource1/hello", null, null);
+		URI uri = new URI("coap", null, "localhost", 5683, "/testresource1/hello1", null, null);
 		CoapTemplate template = new CoapTemplate();
 		String object = template.getForObject(uri, String.class);
 		assertThat(object, notNullValue());
-		assertThat(object, is("hello"));
+		assertThat(object, is("hello1"));
 	}
 
 	@Override
@@ -81,16 +85,6 @@ public class CaliforniumCoapServerTests extends AbstractCoapTests {
 	}
 
 	private static class Config1 {
-
-//		@Bean
-//		public SimpleUrlHandlerMapping simpleUrlHandlerMapping() {
-//			return new SimpleUrlHandlerMapping();
-//		}
-//
-//		@Bean
-//		public SimpleHandlerAdapter simpleHandlerAdapter() {
-//			return new SimpleHandlerAdapter();
-//		}
 
 		@Bean
 		public ServerCoapResponseResultHandler serverCoapResponseResultHandler() {
@@ -110,22 +104,37 @@ public class CaliforniumCoapServerTests extends AbstractCoapTests {
 	}
 
 	@CoapController
-	@RequestMapping(path = "/testresource1")
+	@CoapRequestMapping(path = "/testresource1")
 	private static class ControllerConfig1 {
 
-		@RequestMapping(path = "/hello")
-		public String hello() {
-			return "hello";
+		@CoapRequestMapping(path = "/hello1")
+		@CoapResponseBody
+		public String hello1() {
+			return "hello1";
+		}
+
+		@CoapRequestMapping(path = "/hello2")
+		@CoapResponseBody
+		public String hello2() {
+			return "hello2";
 		}
 	}
 
-//	private class TestCoapServerHandler1 implements CoapServerHandler {
-//		@Override
-//		public ServerCoapResponse handle(ServerCoapRequest request) {
-//			GenericServerCoapResponse response = new GenericServerCoapResponse();
-//			response.setRequestPayload("hello".getBytes());
-//			return response;
-//		}
-//	}
+	@CoapController
+	@CoapRequestMapping(path = "/testresource2")
+	private static class ControllerConfig2 {
+
+		@CoapRequestMapping(path = "/hello4")
+		@CoapResponseBody
+		public String hello3() {
+			return "hello3";
+		}
+
+		@CoapRequestMapping(path = "/hello4")
+		@CoapResponseBody
+		public String hello4() {
+			return "hello4";
+		}
+	}
 
 }

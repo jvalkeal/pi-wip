@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.coap.server;
+package org.springframework.cloud.iot.coap.server.support;
 
 import java.util.Map;
+
+import org.springframework.cloud.iot.coap.server.CoapHandler;
+import org.springframework.cloud.iot.coap.server.CoapServerFactory;
 
 /**
  * A configurable {@link CoapServerFactory}.

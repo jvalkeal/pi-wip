@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.coap.server;
+package org.springframework.cloud.iot.coap.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -26,7 +26,7 @@ import org.springframework.core.annotation.AliasFor;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface RequestMapping {
+public @interface CoapRequestMapping {
 
 	/**
 	 * Assign a name to this mapping.
@@ -50,5 +50,4 @@ public @interface RequestMapping {
 
 	@AliasFor("value")
 	String[] path() default {};
-
 }

@@ -23,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.cloud.iot.coap.annotation.CoapController;
+import org.springframework.cloud.iot.coap.annotation.CoapRequestMapping;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -30,6 +32,14 @@ import org.springframework.util.ClassUtils;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * An implementation of {@link HandlerMapping} that creates
+ * {@link RequestMappingInfo} instances from class-level and method-level
+ * {@link CoapRequestMapping @CoapRequestMapping} annotations.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class RequestMappingHandlerMapping extends ApplicationObjectSupport implements HandlerMapping, InitializingBean {
 
 	private static final Logger log = LoggerFactory.getLogger(RequestMappingHandlerMapping.class);
@@ -76,7 +86,7 @@ public class RequestMappingHandlerMapping extends ApplicationObjectSupport imple
 
 	protected boolean isHandler(Class<?> beanType) {
 		return (AnnotatedElementUtils.hasAnnotation(beanType, CoapController.class) ||
-				AnnotatedElementUtils.hasAnnotation(beanType, RequestMapping.class));
+				AnnotatedElementUtils.hasAnnotation(beanType, CoapRequestMapping.class));
 	}
 
 	protected void detectHandlerMethods(final Object handler) {
@@ -87,14 +97,13 @@ public class RequestMappingHandlerMapping extends ApplicationObjectSupport imple
 			final Class<?> userType = ClassUtils.getUserClass(handlerType);
 			Map<Method, ?> methods = MethodIntrospector.selectMethods(userType,
 					(MethodIntrospector.MetadataLookup<?>) method -> getMappingForMethod(method, userType));
-			if (logger.isDebugEnabled()) {
-				logger.debug(methods.size() + " request handler methods found on " + userType + ": " + methods);
+			if (log.isDebugEnabled()) {
+				log.debug(methods.size() + " request handler methods found on " + userType + ": " + methods);
 			}
 			methods.forEach((key, mapping) -> {
-				log.info("XXX {} {}", key, mapping);
 				Method invocableMethod = AopUtils.selectInvocableMethod(key, userType);
 				xxx = createHandlerMethod(handler, invocableMethod);
-//				registerHandlerMethod(handler, invocableMethod, mapping);
+				registerHandlerMethod(handler, invocableMethod, mapping);
 			});
 		}
 	}
@@ -122,8 +131,9 @@ public class RequestMappingHandlerMapping extends ApplicationObjectSupport imple
 	}
 
 	private Object createRequestMappingInfo(AnnotatedElement element) {
-		RequestMapping requestMapping = AnnotatedElementUtils.findMergedAnnotation(element, RequestMapping.class);
+		CoapRequestMapping requestMapping = AnnotatedElementUtils.findMergedAnnotation(element, CoapRequestMapping.class);
 		return requestMapping;
 	}
+
 
 }

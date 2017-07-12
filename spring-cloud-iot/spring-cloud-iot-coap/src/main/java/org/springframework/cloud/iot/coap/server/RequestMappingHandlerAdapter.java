@@ -16,6 +16,7 @@
 package org.springframework.cloud.iot.coap.server;
 
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.cloud.iot.coap.server.support.ControllerMethodResolver;
 import org.springframework.util.Assert;
 
 import reactor.core.publisher.Mono;
@@ -42,8 +43,5 @@ public class RequestMappingHandlerAdapter implements HandlerAdapter, Initializin
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		this.methodResolver = new ControllerMethodResolver();
-
 	}
-
-
 }

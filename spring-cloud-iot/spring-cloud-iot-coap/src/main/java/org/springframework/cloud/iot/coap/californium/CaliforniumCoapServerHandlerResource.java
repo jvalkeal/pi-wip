@@ -26,7 +26,7 @@ import org.springframework.cloud.iot.coap.CoapHeaders;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.server.CoapServerHandler;
 import org.springframework.cloud.iot.coap.server.ServerCoapResponse;
-import org.springframework.cloud.iot.coap.support.GenericServerCoapRequest;
+import org.springframework.cloud.iot.coap.server.support.GenericServerCoapRequest;
 import org.springframework.util.CollectionUtils;
 
 /**

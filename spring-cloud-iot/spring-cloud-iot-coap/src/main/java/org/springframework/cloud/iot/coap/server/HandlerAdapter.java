@@ -15,6 +15,8 @@
  */
 package org.springframework.cloud.iot.coap.server;
 
+import org.springframework.cloud.iot.coap.server.support.DispatcherHandler;
+
 import reactor.core.publisher.Mono;
 
 /**

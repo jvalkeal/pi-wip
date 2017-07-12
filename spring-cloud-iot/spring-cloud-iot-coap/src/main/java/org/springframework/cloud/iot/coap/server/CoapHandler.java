@@ -18,7 +18,9 @@ package org.springframework.cloud.iot.coap.server;
 import reactor.core.publisher.Mono;
 
 /**
- * Contract to handle a coap request.
+ * Contract to handle a coap request. This happens
+ * in a contract of a {@link ServerCoapExchange} which
+ * gives access to both request and response sides.
  *
  * @author Janne Valkealahti
  */

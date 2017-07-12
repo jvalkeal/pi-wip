@@ -27,7 +27,7 @@ import org.springframework.cloud.iot.coap.server.CoapHandler;
 import org.springframework.cloud.iot.coap.server.CoapServer;
 import org.springframework.cloud.iot.coap.server.CoapServerFactory;
 import org.springframework.cloud.iot.coap.server.CoapServerHandler;
-import org.springframework.cloud.iot.coap.server.ConfigurableCoapServerFactory;
+import org.springframework.cloud.iot.coap.server.support.ConfigurableCoapServerFactory;
 import org.springframework.util.Assert;
 
 /**

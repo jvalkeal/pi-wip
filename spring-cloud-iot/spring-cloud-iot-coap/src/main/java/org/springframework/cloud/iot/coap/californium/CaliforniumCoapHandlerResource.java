@@ -24,11 +24,11 @@ import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.springframework.cloud.iot.coap.CoapHeaders;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.server.CoapHandler;
-import org.springframework.cloud.iot.coap.server.DefaultServerCoapExchange;
 import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
 import org.springframework.cloud.iot.coap.server.ServerCoapResponse;
-import org.springframework.cloud.iot.coap.support.GenericServerCoapRequest;
-import org.springframework.cloud.iot.coap.support.GenericServerCoapResponse;
+import org.springframework.cloud.iot.coap.server.support.DefaultServerCoapExchange;
+import org.springframework.cloud.iot.coap.server.support.GenericServerCoapRequest;
+import org.springframework.cloud.iot.coap.server.support.GenericServerCoapResponse;
 import org.springframework.util.CollectionUtils;
 
 import reactor.core.publisher.Mono;

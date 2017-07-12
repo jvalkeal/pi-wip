@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.coap.server;
+package org.springframework.cloud.iot.coap.server.support;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,13 @@ import java.util.Map;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.cloud.iot.coap.server.CoapHandler;
+import org.springframework.cloud.iot.coap.server.CoapServerException;
+import org.springframework.cloud.iot.coap.server.HandlerAdapter;
+import org.springframework.cloud.iot.coap.server.HandlerMapping;
+import org.springframework.cloud.iot.coap.server.HandlerResult;
+import org.springframework.cloud.iot.coap.server.HandlerResultHandler;
+import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
