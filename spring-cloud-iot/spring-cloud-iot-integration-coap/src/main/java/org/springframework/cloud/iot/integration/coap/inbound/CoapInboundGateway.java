@@ -17,7 +17,6 @@ package org.springframework.cloud.iot.integration.coap.inbound;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,11 +28,11 @@ import org.springframework.cloud.iot.coap.californium.CaliforniumCoapServerFacto
 import org.springframework.cloud.iot.coap.converter.ByteArrayCoapMessageConverter;
 import org.springframework.cloud.iot.coap.converter.CoapMessageConverter;
 import org.springframework.cloud.iot.coap.converter.StringCoapMessageConverter;
+import org.springframework.cloud.iot.coap.server.CoapHandler;
 import org.springframework.cloud.iot.coap.server.CoapServer;
-import org.springframework.cloud.iot.coap.server.CoapServerHandler;
+import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
 import org.springframework.cloud.iot.coap.server.ServerCoapRequest;
 import org.springframework.cloud.iot.coap.server.ServerCoapResponse;
-import org.springframework.cloud.iot.coap.support.GenericServerCoapResponse;
 import org.springframework.cloud.iot.integration.coap.support.DefaultCoapHeaderMapper;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
@@ -49,6 +48,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import reactor.core.publisher.Mono;
 
 /**
  * Inbound gateway using Californium {@link CoapServer}.
@@ -75,7 +76,6 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 	private volatile EvaluationContext evaluationContext;
 	private CoapServer coapServer;
 	private volatile HeaderMapper<CoapHeaders> headerMapper = DefaultCoapHeaderMapper.inboundMapper();
-
 
 	/**
 	 * Construct a gateway that will wait for the {@link #setReplyTimeout(long)
@@ -106,7 +106,24 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 	 * @see #setStatusCodeExpression(Expression)
 	 */
 	public CoapInboundGateway(boolean expectReply) {
+		this(null, expectReply);
+	}
+
+	/**
+	 * Construct a gateway. If 'expectReply' is true it will wait for the
+	 * {@link #setReplyTimeout(long) replyTimeout} for a reply; if the timeout
+	 * is exceeded a '5.00 INTERNAL_SERVER_ERROR' status code is returned. This
+	 * can be modified using the {@link #setStatusCodeExpression(Expression)
+	 * statusCodeExpression}. If 'false', a 2.01 CREATED status will be
+	 * returned; this can also be modified using
+	 * {@link #setStatusCodeExpression(Expression) statusCodeExpression}.
+	 *
+	 * @param coapServer the coap server instance
+	 * @param expectReply true if a reply is expected from the downstream flow.
+	 */
+	public CoapInboundGateway(CoapServer coapServer, boolean expectReply) {
 		super(expectReply);
+		this.coapServer = coapServer;
 		this.expectReply = expectReply;
 		this.defaultMessageConverters.add(new StringCoapMessageConverter());
 		this.defaultMessageConverters.add(new ByteArrayCoapMessageConverter());
@@ -116,12 +133,22 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 	protected void onInit() throws Exception {
 		super.onInit();
 
-		CaliforniumCoapServerFactory factory = new CaliforniumCoapServerFactory();
+		InboundCoapHandler inboundCoapHandler = new InboundCoapHandler();
 
-		Map<String, CoapServerHandler> mappings = new HashMap<>();
-		mappings.put(coapResourceName, new InboundHandlingCoapServerHandler());
-		factory.setHandlerMappings(mappings);
-		coapServer = factory.getCoapServer();
+//		Map<String, CoapServerHandler> mappings = new HashMap<>();
+//		mappings.put(coapResourceName, new InboundHandlingCoapServerHandler());
+
+		// no ref to existing coap server, fall back to create a new
+		// using californium
+		if (coapServer == null) {
+			CaliforniumCoapServerFactory factory = new CaliforniumCoapServerFactory();
+			factory.setHandlerMappingRoot(inboundCoapHandler);
+//			factory.setHandlerMappings(mappings);
+			coapServer = factory.getCoapServer();
+		} else {
+//			coapServer.addHandlerMappings(mappings);
+		}
+
 		if (this.messageConverters.size() == 0 || (this.mergeWithDefaultConverters && !this.convertersMerged)) {
 			this.messageConverters.addAll(this.defaultMessageConverters);
 		}
@@ -348,14 +375,12 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 		}
 	}
 
-	private class InboundHandlingCoapServerHandler implements CoapServerHandler {
+	private class InboundCoapHandler implements CoapHandler {
 
 		@Override
-		public ServerCoapResponse handle(ServerCoapRequest request) {
-			logger.debug("Received ServerCoapRequest " + request);
-			GenericServerCoapResponse response = new GenericServerCoapResponse();
-			System.out.println("XXX5 " + request.getHeaders());
-
+		public Mono<Void> handle(ServerCoapExchange exchange) {
+			ServerCoapRequest request = exchange.getRequest();
+			ServerCoapResponse response = exchange.getResponse();
 			Message<?> responseMessage;
 			try {
 				responseMessage = doHandleRequest(request);
@@ -368,7 +393,7 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 				logger.error("Unable to handle request", e);
 				response.setStatus(CoapStatus.INTERNAL_SERVER_ERROR);
 			}
-			return response;
+			return Mono.empty();
 		}
 	}
 }

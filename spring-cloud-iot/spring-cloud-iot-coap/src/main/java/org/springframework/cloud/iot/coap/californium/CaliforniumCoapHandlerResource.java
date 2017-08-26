@@ -18,30 +18,40 @@ package org.springframework.cloud.iot.coap.californium;
 import java.util.List;
 
 import org.eclipse.californium.core.CoapResource;
-import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.coap.Option;
+import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.server.resources.CoapExchange;
-import org.eclipse.californium.core.server.resources.Resource;
 import org.springframework.cloud.iot.coap.CoapHeaders;
 import org.springframework.cloud.iot.coap.CoapMethod;
-import org.springframework.cloud.iot.coap.server.CoapServerHandler;
+import org.springframework.cloud.iot.coap.server.CoapHandler;
+import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
 import org.springframework.cloud.iot.coap.server.ServerCoapResponse;
-import org.springframework.cloud.iot.coap.support.GenericServerCoapRequest;
+import org.springframework.cloud.iot.coap.server.support.DefaultServerCoapExchange;
+import org.springframework.cloud.iot.coap.server.support.GenericServerCoapRequest;
+import org.springframework.cloud.iot.coap.server.support.GenericServerCoapResponse;
 import org.springframework.util.CollectionUtils;
 
+import reactor.core.publisher.Mono;
+
 /**
- * Californium specific {@link Resource} handling request/response logic via
- * {@link CoapServerHandler}.
+ * {@code Californium} specific {@link CoapResource} creating an integration
+ * with {@code CoapHandler} to fulfil contract with {@link ServerCoapExchange}.
  *
  * @author Janne Valkealahti
  *
  */
-public class CaliforniumCoapServerHandlerResource extends AbstractCoapResource {
+public class CaliforniumCoapHandlerResource extends AbstractCoapResource {
 
 	private List<CoapMethod> allowedMethods = null;
-	private final CoapServerHandler handler;
+	private final CoapHandler handler;
 
-	public CaliforniumCoapServerHandlerResource(String name, CoapServerHandler handler) {
+	/**
+	 * Instantiates a new californium coap handler resource.
+	 *
+	 * @param name the name
+	 * @param handler the handler
+	 */
+	public CaliforniumCoapHandlerResource(String name, CoapHandler handler) {
 		super(name);
 		this.handler = handler;
 	}
@@ -96,9 +106,23 @@ public class CaliforniumCoapServerHandlerResource extends AbstractCoapResource {
 		GenericServerCoapRequest request = new GenericServerCoapRequest(exchange.getRequestPayload(), coapHeaders);
 		request.setMethod(CoapMethod.resolve(exchange.getRequestCode().name()));
 		request.setContentFormat(exchange.getRequestOptions().getContentFormat());
-		ServerCoapResponse response = handler.handle(request);
-		ResponseCode responseCode = response.getStatus() != null ? ResponseCode.valueOf(response.getStatus().value) : ResponseCode.CREATED;
-		exchange.respond(responseCode, response.getBody());
+		request.setUriPath(exchange.getRequestOptions().getUriPathString());
+
+		GenericServerCoapResponse serverCoapResponse = new GenericServerCoapResponse();
+		ServerCoapExchange serverCoapExchange = new DefaultServerCoapExchange(request, serverCoapResponse);
+		Mono<Void> handle = handler.handle(serverCoapExchange);
+		handle
+			.onErrorResume(ex -> {
+					exchange.respond(ResponseCode.BAD_REQUEST);
+					return Mono.empty();
+				})
+			.doOnSuccess(c -> {
+					ServerCoapResponse response = serverCoapExchange.getResponse();
+					ResponseCode responseCode = response.getStatus() != null
+							? ResponseCode.valueOf(response.getStatus().value) : ResponseCode.CREATED;
+					exchange.respond(responseCode, response.getBody());
+				})
+			.subscribe();
 	}
 
 	private boolean isMethodAllowed(CoapExchange exchange) {

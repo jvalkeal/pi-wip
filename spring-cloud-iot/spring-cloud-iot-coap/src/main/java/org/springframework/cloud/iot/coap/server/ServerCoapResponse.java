@@ -22,4 +22,8 @@ public interface ServerCoapResponse extends CoapOutputMessage {
 
 	CoapStatus getStatus();
 
+	void setStatus(CoapStatus status);
+
+	void setBody(byte[] body);
+
 }

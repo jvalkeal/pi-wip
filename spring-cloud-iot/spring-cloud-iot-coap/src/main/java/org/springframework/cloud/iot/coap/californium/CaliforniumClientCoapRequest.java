@@ -17,7 +17,6 @@ package org.springframework.cloud.iot.coap.californium;
 
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResponse;

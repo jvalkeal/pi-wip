@@ -18,6 +18,7 @@ package org.springframework.cloud.iot.integration.coap.dsl;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import org.springframework.cloud.iot.integration.coap.outbound.CoapOutboundGateway;
 import org.springframework.expression.Expression;
@@ -61,8 +62,7 @@ public class CoapOutboundGatewaySpec extends MessageHandlerSpec<CoapOutboundGate
 	}
 
 	@Override
-	public Collection<Object> getComponentsToRegister() {
-		return Collections.emptyList();
+	public Map<Object, String> getComponentsToRegister() {
+		return Collections.emptyMap();
 	}
-
 }

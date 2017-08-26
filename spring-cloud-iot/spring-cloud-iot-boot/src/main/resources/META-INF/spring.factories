@@ -5,4 +5,5 @@ org.springframework.cloud.iot.boot.autoconfigure.W1AutoConfiguration,\
 org.springframework.cloud.iot.boot.autoconfigure.GpioAutoConfiguration,\
 org.springframework.cloud.iot.boot.autoconfigure.component.ComponentsAutoConfiguration,\
 org.springframework.cloud.iot.boot.autoconfigure.metrics.SensorMetricsAutoConfiguration,\
-org.springframework.cloud.iot.boot.autoconfigure.metrics.MetricExporterAutoConfiguration
+org.springframework.cloud.iot.boot.autoconfigure.metrics.MetricExporterAutoConfiguration,\
+org.springframework.cloud.iot.boot.autoconfigure.coap.CaliforniumCoapServerAutoConfiguration

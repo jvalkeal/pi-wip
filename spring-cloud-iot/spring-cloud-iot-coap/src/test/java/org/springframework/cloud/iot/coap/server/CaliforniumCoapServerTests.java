@@ -17,6 +17,7 @@ package org.springframework.cloud.iot.coap.server;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.net.URI;
@@ -25,20 +26,27 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.springframework.cloud.iot.coap.AbstractCoapTests;
+import org.springframework.cloud.iot.coap.annotation.CoapController;
+import org.springframework.cloud.iot.coap.annotation.CoapRequestMapping;
+import org.springframework.cloud.iot.coap.annotation.CoapResponseBody;
 import org.springframework.cloud.iot.coap.californium.CaliforniumCoapServerFactory;
 import org.springframework.cloud.iot.coap.californium.CoapTemplate;
-import org.springframework.cloud.iot.coap.support.GenericServerCoapResponse;
+import org.springframework.cloud.iot.coap.server.support.DispatcherHandler;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
 
 public class CaliforniumCoapServerTests extends AbstractCoapTests {
 
 	@Test
-	public void testServer() throws Exception {
+	public void testServerNoHandler() throws Exception {
+		context.refresh();
 		CaliforniumCoapServerFactory factory = new CaliforniumCoapServerFactory();
 
-		Map<String, CoapServerHandler> mappings = new HashMap<>();
-		mappings.put("testresource1", new TestCoapServerHandler1());
-		factory.setHandlerMappings(mappings);
+		DispatcherHandler dispatcherHandler = new DispatcherHandler();
+		dispatcherHandler.setApplicationContext(context);
+//		Map<String, CoapHandler> mappings = new HashMap<>();
+//		mappings.put("testresource1", dispatcherHandler);
+//		factory.setHandlerMappings(mappings);
 
 		CoapServer coapServer = factory.getCoapServer();
 		coapServer.start();
@@ -46,8 +54,54 @@ public class CaliforniumCoapServerTests extends AbstractCoapTests {
 		URI uri = new URI("coap", null, "localhost", 5683, "/testresource1", null, null);
 		CoapTemplate template = new CoapTemplate();
 		String object = template.getForObject(uri, String.class);
+		assertThat(object, nullValue());
+		coapServer.stop();
+	}
+
+	@Test
+	public void testServer() throws Exception {
+		context.register(ControllerConfig1.class, ControllerConfig2.class, ControllerConfig3.class, Config1.class);
+		context.refresh();
+		CaliforniumCoapServerFactory factory = new CaliforniumCoapServerFactory();
+
+		DispatcherHandler dispatcherHandler = new DispatcherHandler();
+		dispatcherHandler.setApplicationContext(context);
+
+//		Map<String, CoapHandler> mappings = new HashMap<>();
+//		mappings.put("testresource1", dispatcherHandler);
+//		factory.setHandlerMappings(mappings);
+		factory.setHandlerMappingRoot(dispatcherHandler);
+
+		CoapServer coapServer = factory.getCoapServer();
+		coapServer.start();
+
+		CoapTemplate template = new CoapTemplate();
+
+		URI hello1Uri = new URI("coap", null, "localhost", 5683, "/testresource1/hello1", null, null);
+		String object = template.getForObject(hello1Uri, String.class);
 		assertThat(object, notNullValue());
-		assertThat(object, is("hello"));
+		assertThat(object, is("hello1"));
+
+		URI hello2Uri = new URI("coap", null, "localhost", 5683, "/testresource1/hello2", null, null);
+		object = template.getForObject(hello2Uri, String.class);
+		assertThat(object, notNullValue());
+		assertThat(object, is("hello2"));
+
+		URI hello3Uri = new URI("coap", null, "localhost", 5683, "/testresource2/hello3", null, null);
+		object = template.getForObject(hello3Uri, String.class);
+		assertThat(object, notNullValue());
+		assertThat(object, is("hello3"));
+
+		URI hello4Uri = new URI("coap", null, "localhost", 5683, "/testresource2/hello4", null, null);
+		object = template.getForObject(hello4Uri, String.class);
+		assertThat(object, notNullValue());
+		assertThat(object, is("hello4"));
+
+		URI hello5Uri = new URI("coap", null, "localhost", 5683, "/hello5", null, null);
+		object = template.getForObject(hello5Uri, String.class);
+		assertThat(object, notNullValue());
+		assertThat(object, is("hello5"));
+		coapServer.stop();
 	}
 
 	@Override
@@ -55,12 +109,66 @@ public class CaliforniumCoapServerTests extends AbstractCoapTests {
 		return new AnnotationConfigApplicationContext();
 	}
 
-	private class TestCoapServerHandler1 implements CoapServerHandler {
-		@Override
-		public ServerCoapResponse handle(ServerCoapRequest request) {
-			GenericServerCoapResponse response = new GenericServerCoapResponse();
-			response.setRequestPayload("hello".getBytes());
-			return response;
+	private static class Config1 {
+
+		@Bean
+		public ServerCoapResponseResultHandler serverCoapResponseResultHandler() {
+			return new ServerCoapResponseResultHandler();
+		}
+
+		@Bean
+		public RequestMappingHandlerMapping requestMappingHandlerMapping() {
+			return new RequestMappingHandlerMapping();
+		}
+
+		@Bean
+		public RequestMappingHandlerAdapter requestMappingHandlerAdapter() {
+			return new RequestMappingHandlerAdapter();
+		}
+
+	}
+
+	@CoapController
+	@CoapRequestMapping(path = "/testresource1")
+	public static class ControllerConfig1 {
+
+		@CoapRequestMapping(path = "/hello1")
+		@CoapResponseBody
+		public String hello1() {
+			return "hello1";
+		}
+
+		@CoapRequestMapping(path = "/hello2")
+		@CoapResponseBody
+		public String hello2() {
+			return "hello2";
+		}
+	}
+
+	@CoapController
+	@CoapRequestMapping(path = "/testresource2")
+	public static class ControllerConfig2 {
+
+		@CoapRequestMapping(path = "/hello3")
+		@CoapResponseBody
+		public String hello3() {
+			return "hello3";
+		}
+
+		@CoapRequestMapping(path = "/hello4")
+		@CoapResponseBody
+		public String hello4() {
+			return "hello4";
+		}
+	}
+
+	@CoapController
+	public static class ControllerConfig3 {
+
+		@CoapRequestMapping(path = "/hello5")
+		@CoapResponseBody
+		public String hello5() {
+			return "hello5";
 		}
 	}
 

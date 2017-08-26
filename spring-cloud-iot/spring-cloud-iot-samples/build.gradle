@@ -6,6 +6,9 @@ tasks.findByPath("artifactoryPublish")?.enabled = false
 project('spring-cloud-iot-samples-sunfounder-sensor-01-dualcolorled') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 1'
 	dependencies {
+		compile project(":spring-cloud-iot-core")
+		compile project(":spring-cloud-iot-boot")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-samples-common")
 	}
 }
@@ -13,6 +16,9 @@ project('spring-cloud-iot-samples-sunfounder-sensor-01-dualcolorled') {
 project('spring-cloud-iot-samples-sunfounder-sensor-04-relay') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 4'
 	dependencies {
+		compile project(":spring-cloud-iot-core")
+		compile project(":spring-cloud-iot-boot")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-samples-common")
 	}
 }
@@ -20,6 +26,9 @@ project('spring-cloud-iot-samples-sunfounder-sensor-04-relay') {
 project('spring-cloud-iot-samples-sunfounder-sensor-06-button') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 6'
 	dependencies {
+		compile project(":spring-cloud-iot-core")
+		compile project(":spring-cloud-iot-boot")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-samples-common")
 		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
@@ -28,6 +37,10 @@ project('spring-cloud-iot-samples-sunfounder-sensor-06-button') {
 project('spring-cloud-iot-samples-sunfounder-sensor-10-passivebuzzer') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 10 Passive'
 	dependencies {
+		compile project(":spring-cloud-iot-core")
+		compile project(":spring-cloud-iot-boot")
+		compile project(":spring-cloud-iot-pi4j")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-samples-common")
 		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
@@ -36,6 +49,10 @@ project('spring-cloud-iot-samples-sunfounder-sensor-10-passivebuzzer') {
 project('spring-cloud-iot-samples-sunfounder-sensor-10-activebuzzer') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 10 Active'
 	dependencies {
+		compile project(":spring-cloud-iot-core")
+		compile project(":spring-cloud-iot-boot")
+		compile project(":spring-cloud-iot-pi4j")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-samples-common")
 		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
@@ -44,6 +61,10 @@ project('spring-cloud-iot-samples-sunfounder-sensor-10-activebuzzer') {
 project('spring-cloud-iot-samples-sunfounder-sensor-15-joystick') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 15'
 	dependencies {
+		compile project(":spring-cloud-iot-core")
+		compile project(":spring-cloud-iot-boot")
+		compile project(":spring-cloud-iot-pi4j")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-samples-common")
 		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
@@ -52,6 +73,9 @@ project('spring-cloud-iot-samples-sunfounder-sensor-15-joystick') {
 project('spring-cloud-iot-samples-sunfounder-sensor-16-potentiometer') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 16'
 	dependencies {
+		compile project(":spring-cloud-iot-core")
+		compile project(":spring-cloud-iot-boot")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-samples-common")
 	}
 }
@@ -59,6 +83,9 @@ project('spring-cloud-iot-samples-sunfounder-sensor-16-potentiometer') {
 project('spring-cloud-iot-samples-sunfounder-sensor-18-thermistor') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 18'
 	dependencies {
+		compile project(":spring-cloud-iot-core")
+		compile project(":spring-cloud-iot-boot")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-samples-common")
 	}
 }
@@ -66,6 +93,9 @@ project('spring-cloud-iot-samples-sunfounder-sensor-18-thermistor') {
 project('spring-cloud-iot-samples-sunfounder-sensor-26-ds18b20') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 26'
 	dependencies {
+		compile project(":spring-cloud-iot-core")
+		compile project(":spring-cloud-iot-boot")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-samples-common")
 	}
 }
@@ -73,6 +103,9 @@ project('spring-cloud-iot-samples-sunfounder-sensor-26-ds18b20') {
 project('spring-cloud-iot-samples-sunfounder-sensor-27-rotaryencoder') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 27'
 	dependencies {
+		compile project(":spring-cloud-iot-core")
+		compile project(":spring-cloud-iot-boot")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-samples-common")
 		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
@@ -81,7 +114,10 @@ project('spring-cloud-iot-samples-sunfounder-sensor-27-rotaryencoder') {
 project('spring-cloud-iot-samples-sunfounder-sensor-28-humidity') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 28'
 	dependencies {
+		compile project(":spring-cloud-iot-core")
 		compile project(":spring-cloud-iot-samples-common")
+		compile project(":spring-cloud-iot-boot")
+		compile('org.springframework.boot:spring-boot-starter')
 		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
 }
@@ -89,6 +125,9 @@ project('spring-cloud-iot-samples-sunfounder-sensor-28-humidity') {
 project('spring-cloud-iot-samples-sunfounder-sensor-30-irobstacle') {
 	description = 'Spring Cloud IoT Sunfounder Sensor Kit Sample 30'
 	dependencies {
+		compile project(":spring-cloud-iot-core")
+		compile project(":spring-cloud-iot-boot")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-samples-common")
 	}
 }
@@ -96,6 +135,9 @@ project('spring-cloud-iot-samples-sunfounder-sensor-30-irobstacle') {
 project('spring-cloud-iot-samples-sunfounder-super-01-led') {
 	description = 'Spring Cloud IoT Sunfounder Super Kit Sample 01'
 	dependencies {
+		compile project(":spring-cloud-iot-core")
+		compile project(":spring-cloud-iot-boot")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-samples-common")
 		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
@@ -104,6 +146,9 @@ project('spring-cloud-iot-samples-sunfounder-super-01-led') {
 project('spring-cloud-iot-samples-sunfounder-super-02-buttonandled') {
 	description = 'Spring Cloud IoT Sunfounder Super Kit Sample 02'
 	dependencies {
+		compile project(":spring-cloud-iot-core")
+		compile project(":spring-cloud-iot-boot")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-samples-common")
 		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
@@ -112,6 +157,9 @@ project('spring-cloud-iot-samples-sunfounder-super-02-buttonandled') {
 project('spring-cloud-iot-samples-sunfounder-super-11-segment') {
 	description = 'Spring Cloud IoT Sunfounder Super Kit Sample 11 Segment'
 	dependencies {
+		compile project(":spring-cloud-iot-core")
+		compile project(":spring-cloud-iot-boot")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-samples-common")
 		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
@@ -120,6 +168,9 @@ project('spring-cloud-iot-samples-sunfounder-super-11-segment') {
 project('spring-cloud-iot-samples-sunfounder-super-13-dotmatrix') {
 	description = 'Spring Cloud IoT Sunfounder Super Kit Sample 13'
 	dependencies {
+		compile project(":spring-cloud-iot-core")
+		compile project(":spring-cloud-iot-boot")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-samples-common")
 		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
@@ -128,7 +179,10 @@ project('spring-cloud-iot-samples-sunfounder-super-13-dotmatrix') {
 project('spring-cloud-iot-samples-environmentlcd') {
 	description = 'Spring Cloud IoT Environment on LCD Sample'
 	dependencies {
+		compile project(":spring-cloud-iot-boot")
+		compile project(":spring-cloud-iot-core")
 		compile project(":spring-cloud-iot-samples-common")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile('org.springframework.integration:spring-integration-mqtt')
 		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
@@ -137,6 +191,9 @@ project('spring-cloud-iot-samples-environmentlcd') {
 project('spring-cloud-iot-samples-segment-displays') {
 	description = 'Spring Cloud IoT Environment Segment Displays Sample'
 	dependencies {
+		compile project(":spring-cloud-iot-boot")
+		compile project(":spring-cloud-iot-pi4j")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-samples-common")
 		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
@@ -145,6 +202,8 @@ project('spring-cloud-iot-samples-segment-displays') {
 project('spring-cloud-iot-samples-gateway-server') {
 	description = 'Spring Cloud IOT Gateway Server Sample'
 	dependencies {
+		compile project(":spring-cloud-iot-boot")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-gateway")
 		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
@@ -153,6 +212,8 @@ project('spring-cloud-iot-samples-gateway-server') {
 project('spring-cloud-iot-samples-gateway-client') {
 	description = 'Spring Cloud IOT Gateway Client Sample'
 	dependencies {
+		compile project(":spring-cloud-iot-boot")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-gateway")
 		runtime('org.springframework.boot:spring-boot-starter-web')
 		runtime('com.google.code.gson:gson')
@@ -163,6 +224,7 @@ project('spring-cloud-iot-samples-dashboard') {
 	description = 'Spring Cloud IOT Dashboard Sample'
 	dependencies {
 		compile project(":spring-cloud-iot-boot")
+		compile('org.springframework.boot:spring-boot-starter')
 		compile('org.springframework.integration:spring-integration-mqtt')
 		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
@@ -171,6 +233,8 @@ project('spring-cloud-iot-samples-dashboard') {
 project('spring-cloud-iot-samples-fake-sensor') {
 	description = 'Spring Cloud IOT Fake Sensor Sample'
 	dependencies {
+		compile project(":spring-cloud-iot-boot")
+		runtime('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-test")
 		compile project(":spring-cloud-iot-boot")
 		compile project(":spring-cloud-iot-gateway")
@@ -181,6 +245,8 @@ project('spring-cloud-iot-samples-fake-sensor') {
 project('spring-cloud-iot-samples-fake-component') {
 	description = 'Spring Cloud IOT Fake Component Sample'
 	dependencies {
+		compile project(":spring-cloud-iot-boot")
+		runtime('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-test")
 		compile project(":spring-cloud-iot-boot")
 		compile project(":spring-cloud-iot-statemachine")
@@ -191,6 +257,8 @@ project('spring-cloud-iot-samples-fake-component') {
 project('spring-cloud-iot-samples-xbee-senddata') {
 	description = 'Spring Cloud IOT Xbee Send Data Sample'
 	dependencies {
+		compile project(":spring-cloud-iot-boot")
+		runtime('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-xbee")
 		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
@@ -199,6 +267,8 @@ project('spring-cloud-iot-samples-xbee-senddata') {
 project('spring-cloud-iot-samples-xbee-receivedata') {
 	description = 'Spring Cloud IOT Xbee Receive Data Sample'
 	dependencies {
+		compile project(":spring-cloud-iot-boot")
+		runtime('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-xbee")
 		runtime('org.springframework.boot:spring-boot-starter-web')
 	}
@@ -213,6 +283,8 @@ project('spring-cloud-iot-samples-time-source') {
 		}
 	}
 	dependencies {
+		compile project(":spring-cloud-iot-boot")
+		runtime('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-stream-binder-xbee")
 		compile('org.springframework.cloud.stream.app:spring-cloud-starter-stream-source-time')
 		runtime('org.springframework.boot:spring-boot-starter-web')
@@ -228,6 +300,8 @@ project('spring-cloud-iot-samples-log-sink') {
 		}
 	}
 	dependencies {
+		compile project(":spring-cloud-iot-boot")
+		runtime('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-stream-binder-xbee")
 		compile('org.springframework.cloud.stream.app:spring-cloud-starter-stream-sink-log')
 		runtime('org.springframework.boot:spring-boot-starter-web')
@@ -237,6 +311,8 @@ project('spring-cloud-iot-samples-log-sink') {
 project('spring-cloud-iot-samples-game-buttons') {
 	description = 'Spring Cloud IOT Buttons Game Sample'
 	dependencies {
+		compile project(":spring-cloud-iot-boot")
+		runtime('org.springframework.boot:spring-boot-starter')
 		compile project(":spring-cloud-iot-test")
 		compile project(":spring-cloud-iot-boot")
 		compile project(":spring-cloud-iot-statemachine")
@@ -245,3 +321,13 @@ project('spring-cloud-iot-samples-game-buttons') {
 		testCompile('org.springframework.statemachine:spring-statemachine-test')
 	}
 }
+
+project('spring-cloud-iot-samples-coap-server') {
+	description = 'Spring Cloud IOT Coap Server Sample'
+	dependencies {
+		compile project(":spring-cloud-iot-coap")
+		compile('org.springframework.boot:spring-boot-starter')
+		runtime project(":spring-cloud-iot-boot")
+	}
+}
+

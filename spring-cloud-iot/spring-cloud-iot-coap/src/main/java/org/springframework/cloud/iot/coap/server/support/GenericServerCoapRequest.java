@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.coap.support;
+package org.springframework.cloud.iot.coap.server.support;
 
 import java.util.Arrays;
 
@@ -27,6 +27,7 @@ public class GenericServerCoapRequest implements ServerCoapRequest {
 	private final CoapHeaders coapHeaders;
 	private CoapMethod method;
 	private int contentFormat = -1;
+	private String uriPath;
 
 	public GenericServerCoapRequest(byte[] body, CoapHeaders coapHeaders) {
 		this.body = body;
@@ -49,7 +50,11 @@ public class GenericServerCoapRequest implements ServerCoapRequest {
 
 	@Override
 	public String getUriPath() {
-		return null;
+		return uriPath;
+	}
+
+	public void setUriPath(String uriPath) {
+		this.uriPath = uriPath;
 	}
 
 	public void setMethod(CoapMethod method) {

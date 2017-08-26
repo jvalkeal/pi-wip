@@ -18,8 +18,19 @@ package org.springframework.cloud.iot.coap.californium;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.server.resources.Resource;
 
+/**
+ * Base implementation of a {@link CoapResource}.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public abstract class AbstractCoapResource extends CoapResource {
 
+	/**
+	 * Instantiates a new abstract coap resource.
+	 *
+	 * @param name the name of a resource
+	 */
 	public AbstractCoapResource(String name) {
 		super(name);
 	}
@@ -28,5 +39,4 @@ public abstract class AbstractCoapResource extends CoapResource {
 	public Resource getChild(String name) {
 		return this;
 	}
-
 }

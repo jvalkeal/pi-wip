@@ -7,7 +7,7 @@ buildscript {
 		californiumVersion = '2.0.0-SNAPSHOT'
 		xbeeVersion = '1.2.0'
 		nrjavaserialVersion = '3.12.1'
-		springCloudStreamVersion = 'Chelsea.BUILD-SNAPSHOT'
+		springCloudStreamVersion = 'Elmhurst.BUILD-SNAPSHOT'
 		springCloudStreamAppStarterVersion = '1.2.0.BUILD-SNAPSHOT'
 	}
 	repositories {
@@ -125,7 +125,7 @@ project('spring-cloud-iot-core') {
 		compile('org.springframework:spring-tx')
 		compile('io.projectreactor:reactor-core')
 		compile('org.slf4j:slf4j-api')
-		testCompile('io.projectreactor.addons:reactor-test')
+		testCompile('io.projectreactor:reactor-test')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
 		testRuntime('org.springframework.boot:spring-boot-starter')
 	}
@@ -136,7 +136,7 @@ project('spring-cloud-iot-test') {
 
 	dependencies {
 		compile project(":spring-cloud-iot-pi4j")
-		compile('io.projectreactor.addons:reactor-test')
+		compile('io.projectreactor:reactor-test')
 		compile('org.springframework.boot:spring-boot-starter-test')
 		testRuntime('org.springframework.boot:spring-boot-starter')
 	}
@@ -157,12 +157,13 @@ project('spring-cloud-iot-boot') {
 	description = "Spring Cloud IoT Boot"
 
 	dependencies {
-		compile project(":spring-cloud-iot-pi4j")
-		compile('org.springframework.boot:spring-boot-autoconfigure')
-		compile('org.springframework.boot:spring-boot-actuator')
 		compile('org.slf4j:slf4j-api')
+		optional project(":spring-cloud-iot-pi4j")
+		optional project(":spring-cloud-iot-gateway")
 		optional project(":spring-cloud-iot-integration-coap")
 		optional project(":spring-cloud-iot-integration-xbee")
+		optional('org.springframework.boot:spring-boot-autoconfigure')
+		optional('org.springframework.boot:spring-boot-actuator')
 		optional('org.springframework.boot:spring-boot-configuration-processor')
 		optional('org.springframework.integration:spring-integration-mqtt')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
@@ -177,7 +178,9 @@ project('spring-cloud-iot-coap') {
 
 	dependencies {
 		compile('org.eclipse.californium:californium-core')
+		compile('org.springframework:spring-context')
 		compile('org.springframework:spring-web')
+		compile('org.springframework:spring-webflux')
 		compile('org.slf4j:slf4j-api')
 		compile('io.projectreactor:reactor-core')
 		optional('com.google.code.gson:gson')
@@ -201,9 +204,9 @@ project('spring-cloud-iot-gateway') {
 	description = "Spring Cloud IoT Gateway"
 
 	dependencies {
-		compile project(":spring-cloud-iot-stream-binder-coap")
-		compile project(":spring-cloud-iot-stream-binder-xbee")
-		compile('org.springframework.integration:spring-integration-mqtt')
+		optional project(":spring-cloud-iot-stream-binder-coap")
+		optional project(":spring-cloud-iot-stream-binder-xbee")
+		optional('org.springframework.integration:spring-integration-mqtt')
 		compile('org.slf4j:slf4j-api')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
 		testRuntime('org.springframework.boot:spring-boot-starter')
@@ -330,10 +333,10 @@ project('spring-cloud-iot-bom') {
 configure(sampleProjects()) {
 	apply plugin: 'org.springframework.boot'
 	tasks.findByPath("artifactoryPublish")?.enabled = false
-	dependencies {
-		compile project(":spring-cloud-iot-boot")
-		runtime('org.springframework.boot:spring-boot-starter')
-	}
+//	dependencies {
+//		compile project(":spring-cloud-iot-boot")
+//		runtime('org.springframework.boot:spring-boot-starter')
+//	}
 	build.dependsOn bootJar
 }
 
@@ -455,6 +458,6 @@ configure(rootProject) {
 
 	task wrapper(type: Wrapper) {
 		description = 'Generates gradlew[.bat] scripts'
-		gradleVersion = '3.4.1'
+		gradleVersion = '4.1'
 	}
 }

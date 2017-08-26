@@ -17,7 +17,9 @@ package org.springframework.cloud.iot.integration.coap.dsl;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
+import org.springframework.cloud.iot.coap.server.CoapServer;
 import org.springframework.cloud.iot.integration.coap.inbound.CoapInboundGateway;
 import org.springframework.integration.dsl.ComponentsRegistration;
 import org.springframework.integration.dsl.MessageHandlerSpec;
@@ -33,6 +35,7 @@ public class CoapInboundGatewaySpec extends MessagingGatewaySpec<CoapInboundGate
 		implements ComponentsRegistration {
 
 	private final boolean expectReply;
+	private CoapServer coapServer;
 
 	public CoapInboundGatewaySpec(boolean expectReply) {
 		super(null);
@@ -40,13 +43,22 @@ public class CoapInboundGatewaySpec extends MessagingGatewaySpec<CoapInboundGate
 	}
 
 	@Override
-	public Collection<Object> getComponentsToRegister() {
-		return Collections.emptyList();
+	public Map<Object, String> getComponentsToRegister() {
+		return Collections.emptyMap();
 	}
 
 	@Override
 	protected CoapInboundGateway doGet() {
-		CoapInboundGateway gateway = new CoapInboundGateway(expectReply);
+		CoapInboundGateway gateway = new CoapInboundGateway(coapServer, expectReply);
 		return gateway;
+	}
+
+	/**
+	 * Set an instance of {@link CoapServer} to be used with gateway.
+	 *
+	 * @param coapServer the coap server
+	 */
+	public void coapServer(CoapServer coapServer) {
+		this.coapServer = coapServer;
 	}
 }

@@ -23,8 +23,8 @@ import java.net.URI;
 
 import org.junit.Test;
 import org.springframework.cloud.iot.coap.AbstractCoapTests;
+import org.springframework.cloud.iot.coap.CoapServerFactoryBean;
 import org.springframework.cloud.iot.coap.TestCoapServerConfiguration;
-import org.springframework.cloud.iot.coap.californium.CoapServerFactoryBean;
 import org.springframework.cloud.iot.coap.californium.CoapTemplate;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

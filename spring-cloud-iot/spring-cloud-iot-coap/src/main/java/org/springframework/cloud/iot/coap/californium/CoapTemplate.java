@@ -41,7 +41,6 @@ import org.springframework.cloud.iot.coap.converter.ByteArrayCoapMessageConverte
 import org.springframework.cloud.iot.coap.converter.CoapMessageConverter;
 import org.springframework.cloud.iot.coap.converter.GsonCoapMessageConverter;
 import org.springframework.cloud.iot.coap.converter.StringCoapMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.util.DefaultUriBuilderFactory;

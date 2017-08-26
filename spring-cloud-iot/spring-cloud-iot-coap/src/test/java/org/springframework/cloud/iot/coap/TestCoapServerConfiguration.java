@@ -26,7 +26,6 @@ import org.eclipse.californium.core.coap.CoAP.Type;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.core.server.resources.Resource;
 import org.springframework.cloud.iot.coap.californium.AbstractCoapResource;
-import org.springframework.cloud.iot.coap.californium.CoapServerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

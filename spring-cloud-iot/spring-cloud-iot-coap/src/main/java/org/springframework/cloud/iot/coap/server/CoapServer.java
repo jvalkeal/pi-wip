@@ -15,12 +15,14 @@
  */
 package org.springframework.cloud.iot.coap.server;
 
+import java.util.Map;
+
 /**
  * Simple interface that represents a fully configured coap server (for example
  * Californium). Allows the server to be {@link #start() started} and
  * {@link #stop() stopped}.
  *
- * @author jvalkealahti
+ * @author Janne Valkealahti
  *
  */
 public interface CoapServer {
@@ -47,4 +49,11 @@ public interface CoapServer {
 	 * @return the port (or -1 if none)
 	 */
 	int getPort();
+
+	/**
+	 * Adds the handler mappings.
+	 *
+	 * @param mappings the mappings
+	 */
+//	void addHandlerMappings(Map<String, CoapServerHandler> mappings);
 }

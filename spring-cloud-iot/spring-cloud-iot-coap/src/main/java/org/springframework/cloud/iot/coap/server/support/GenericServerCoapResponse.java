@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.coap.support;
+package org.springframework.cloud.iot.coap.server.support;
 
 import org.springframework.cloud.iot.coap.CoapHeaders;
 import org.springframework.cloud.iot.coap.CoapStatus;
@@ -65,6 +65,11 @@ public class GenericServerCoapResponse implements ServerCoapResponse {
 	@Override
 	public byte[] getBody() {
 		return requestPayload;
+	}
+
+	@Override
+	public void setBody(byte[] body) {
+		this.requestPayload = body;
 	}
 
 	@Override

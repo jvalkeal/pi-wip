@@ -29,6 +29,15 @@ public class CoapServerException extends RuntimeException {
 	 * Instantiates a new coap server exception.
 	 *
 	 * @param message the message
+	 */
+	public CoapServerException(String message) {
+		super(message);
+	}
+
+	/**
+	 * Instantiates a new coap server exception.
+	 *
+	 * @param message the message
 	 * @param cause the cause
 	 */
 	public CoapServerException(String message, Throwable cause) {
