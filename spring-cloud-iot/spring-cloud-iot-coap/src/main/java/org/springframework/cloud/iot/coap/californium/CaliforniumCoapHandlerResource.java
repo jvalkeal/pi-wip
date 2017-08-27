@@ -21,6 +21,8 @@ import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.Option;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.server.resources.CoapExchange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.coap.CoapHeaders;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.server.CoapHandler;
@@ -42,6 +44,7 @@ import reactor.core.publisher.Mono;
  */
 public class CaliforniumCoapHandlerResource extends AbstractCoapResource {
 
+	private static final Logger log = LoggerFactory.getLogger(CaliforniumCoapHandlerResource.class);
 	private List<CoapMethod> allowedMethods = null;
 	private final CoapHandler handler;
 
@@ -97,6 +100,7 @@ public class CaliforniumCoapHandlerResource extends AbstractCoapResource {
 	}
 
 	private void handleRequest(CoapResource resource, CoapExchange exchange) {
+		log.trace("Handling exchange {}", exchange);
 		CoapHeaders coapHeaders = new CoapHeaders();
 		List<Option> others = exchange.getRequestOptions().getOthers();
 		for (Option option : others) {
@@ -113,14 +117,23 @@ public class CaliforniumCoapHandlerResource extends AbstractCoapResource {
 		Mono<Void> handle = handler.handle(serverCoapExchange);
 		handle
 			.onErrorResume(ex -> {
+					if (log.isTraceEnabled()) {
+						log.trace("Error in handler", ex);
+					}
 					exchange.respond(ResponseCode.BAD_REQUEST);
 					return Mono.empty();
 				})
 			.doOnSuccess(c -> {
+					if (log.isTraceEnabled()) {
+						log.trace("About to send response");
+					}
 					ServerCoapResponse response = serverCoapExchange.getResponse();
 					ResponseCode responseCode = response.getStatus() != null
 							? ResponseCode.valueOf(response.getStatus().value) : ResponseCode.CREATED;
 					exchange.respond(responseCode, response.getBody());
+					if (log.isTraceEnabled()) {
+						log.trace("Sent response {}", response);
+					}
 				})
 			.subscribe();
 	}

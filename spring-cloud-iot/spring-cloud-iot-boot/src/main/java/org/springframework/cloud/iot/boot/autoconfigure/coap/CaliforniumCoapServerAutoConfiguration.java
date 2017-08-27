@@ -16,14 +16,26 @@
 package org.springframework.cloud.iot.boot.autoconfigure.coap;
 
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.cloud.iot.coap.californium.CaliforniumCoapServerFactory;
 import org.springframework.cloud.iot.coap.server.CoapServer;
+import org.springframework.cloud.iot.coap.server.RequestMappingHandlerAdapter;
+import org.springframework.cloud.iot.coap.server.RequestMappingHandlerMapping;
+import org.springframework.cloud.iot.coap.server.ServerCoapResponseResultHandler;
+import org.springframework.cloud.iot.coap.server.support.DispatcherHandler;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
 
+/**
+ * {@link EnableAutoConfiguration Auto-configuration} for californium coap
+ * server.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 @Configuration
 @ConditionalOnClass(org.eclipse.californium.core.CoapServer.class)
 public class CaliforniumCoapServerAutoConfiguration {
@@ -34,13 +46,35 @@ public class CaliforniumCoapServerAutoConfiguration {
 	}
 
 	@Bean
-	public CaliforniumCoapServerFactory californiumCoapServerFactory() {
-		return new CaliforniumCoapServerFactory();
+	public CaliforniumCoapServerFactory californiumCoapServerFactory(DispatcherHandler californiumDispatcherHandler) {
+		CaliforniumCoapServerFactory factory = new CaliforniumCoapServerFactory();
+		factory.setHandlerMappingRoot(californiumDispatcherHandler);
+		return factory;
 	}
 
 	@Bean
 	public CoapServerRefreshListener coapServerRefreshListener(CoapServer coapServer) {
 		return new CoapServerRefreshListener(coapServer);
+	}
+
+	@Bean
+	public DispatcherHandler californiumDispatcherHandler() {
+		return new DispatcherHandler();
+	}
+
+	@Bean
+	public ServerCoapResponseResultHandler californiumServerCoapResponseResultHandler() {
+		return new ServerCoapResponseResultHandler();
+	}
+
+	@Bean
+	public RequestMappingHandlerMapping californiumRequestMappingHandlerMapping() {
+		return new RequestMappingHandlerMapping();
+	}
+
+	@Bean
+	public RequestMappingHandlerAdapter californiumRequestMappingHandlerAdapter() {
+		return new RequestMappingHandlerAdapter();
 	}
 
 	private class CoapServerRefreshListener implements ApplicationListener<ContextRefreshedEvent>, DisposableBean {
