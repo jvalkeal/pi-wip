@@ -78,7 +78,8 @@ public class XBeeMessageChannelBinder extends
 
 	@Override
 	protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
-			ExtendedProducerProperties<XBeeProducerProperties> producerProperties) throws Exception {
+			ExtendedProducerProperties<XBeeProducerProperties> producerProperties, MessageChannel errorChannel)
+			throws Exception {
 		logger.info("Creating producer messagehandler for XBee");
 		getOrBuildGateway();
 		return messageHandler;

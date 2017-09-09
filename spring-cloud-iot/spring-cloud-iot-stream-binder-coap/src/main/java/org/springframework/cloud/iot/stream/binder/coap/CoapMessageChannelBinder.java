@@ -67,7 +67,8 @@ public class CoapMessageChannelBinder extends
 
 	@Override
 	protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
-			ExtendedProducerProperties<CoapProducerProperties> producerProperties) throws Exception {
+			ExtendedProducerProperties<CoapProducerProperties> producerProperties, MessageChannel errorChannel)
+			throws Exception {
 		logger.info("Creating producer messagehandler for coap");
 		getOrBuildGateway();
 		return messageHandler;
