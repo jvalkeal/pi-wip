@@ -46,23 +46,23 @@ public class CaliforniumCoapHandlerResource extends AbstractCoapResource {
 
 	private static final Logger log = LoggerFactory.getLogger(CaliforniumCoapHandlerResource.class);
 	private List<CoapMethod> allowedMethods = null;
-	private final CoapHandler handler;
+	private final CoapHandler coapHanlder;
 
 	/**
 	 * Instantiates a new californium coap handler resource.
 	 *
 	 * @param name the name
-	 * @param handler the handler
+	 * @param coapHandler the coap handler
 	 */
-	public CaliforniumCoapHandlerResource(String name, CoapHandler handler) {
+	public CaliforniumCoapHandlerResource(String name, CoapHandler coapHandler) {
 		super(name);
-		this.handler = handler;
+		this.coapHanlder = coapHandler;
 	}
 
 	@Override
 	public void handleGET(CoapExchange exchange) {
 		if (isMethodAllowed(exchange)) {
-			handleRequest(this, exchange);
+			handleRequest(exchange);
 		} else {
 			super.handleGET(exchange);
 		}
@@ -71,7 +71,7 @@ public class CaliforniumCoapHandlerResource extends AbstractCoapResource {
 	@Override
 	public void handlePOST(CoapExchange exchange) {
 		if (isMethodAllowed(exchange)) {
-			handleRequest(this, exchange);
+			handleRequest(exchange);
 		} else {
 			super.handlePOST(exchange);
 		}
@@ -80,7 +80,7 @@ public class CaliforniumCoapHandlerResource extends AbstractCoapResource {
 	@Override
 	public void handlePUT(CoapExchange exchange) {
 		if (isMethodAllowed(exchange)) {
-			handleRequest(this, exchange);
+			handleRequest(exchange);
 		} else {
 			super.handlePUT(exchange);
 		}
@@ -89,7 +89,7 @@ public class CaliforniumCoapHandlerResource extends AbstractCoapResource {
 	@Override
 	public void handleDELETE(CoapExchange exchange) {
 		if (isMethodAllowed(exchange)) {
-			handleRequest(this, exchange);
+			handleRequest(exchange);
 		} else {
 			super.handleDELETE(exchange);
 		}
@@ -99,7 +99,7 @@ public class CaliforniumCoapHandlerResource extends AbstractCoapResource {
 		this.allowedMethods = allowedMethods;
 	}
 
-	private void handleRequest(CoapResource resource, CoapExchange exchange) {
+	private void handleRequest(CoapExchange exchange) {
 		log.trace("Handling exchange {}", exchange);
 		CoapHeaders coapHeaders = new CoapHeaders();
 		List<Option> others = exchange.getRequestOptions().getOthers();
@@ -114,7 +114,7 @@ public class CaliforniumCoapHandlerResource extends AbstractCoapResource {
 
 		GenericServerCoapResponse serverCoapResponse = new GenericServerCoapResponse();
 		ServerCoapExchange serverCoapExchange = new DefaultServerCoapExchange(request, serverCoapResponse);
-		Mono<Void> handle = handler.handle(serverCoapExchange);
+		Mono<Void> handle = coapHanlder.handle(serverCoapExchange);
 		handle
 			.onErrorResume(ex -> {
 					if (log.isTraceEnabled()) {
