@@ -34,9 +34,9 @@ import org.springframework.cloud.iot.coap.annotation.CoapRequestMapping;
 import org.springframework.cloud.iot.coap.annotation.CoapResponseBody;
 import org.springframework.cloud.iot.coap.californium.CaliforniumCoapServerFactory;
 import org.springframework.cloud.iot.coap.californium.CoapTemplate;
+import org.springframework.cloud.iot.coap.server.result.method.annotation.CoapResponseBodyResultHandler;
 import org.springframework.cloud.iot.coap.server.result.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.cloud.iot.coap.server.result.method.annotation.RequestMappingHandlerMapping;
-import org.springframework.cloud.iot.coap.server.result.method.annotation.ServerCoapResponseResultHandler;
 import org.springframework.cloud.iot.coap.server.support.DispatcherHandler;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -52,9 +52,6 @@ public class CaliforniumCoapServerTests extends AbstractCoapTests {
 
 		DispatcherHandler dispatcherHandler = new DispatcherHandler();
 		dispatcherHandler.setApplicationContext(context);
-//		Map<String, CoapHandler> mappings = new HashMap<>();
-//		mappings.put("testresource1", dispatcherHandler);
-//		factory.setHandlerMappings(mappings);
 
 		CoapServer coapServer = factory.getCoapServer();
 		coapServer.start();
@@ -75,9 +72,6 @@ public class CaliforniumCoapServerTests extends AbstractCoapTests {
 		DispatcherHandler dispatcherHandler = new DispatcherHandler();
 		dispatcherHandler.setApplicationContext(context);
 
-//		Map<String, CoapHandler> mappings = new HashMap<>();
-//		mappings.put("testresource1", dispatcherHandler);
-//		factory.setHandlerMappings(mappings);
 		factory.setHandlerMappingRoot(dispatcherHandler);
 
 		CoapServer coapServer = factory.getCoapServer();
@@ -120,8 +114,8 @@ public class CaliforniumCoapServerTests extends AbstractCoapTests {
 	private static class Config1 {
 
 		@Bean
-		public ServerCoapResponseResultHandler serverCoapResponseResultHandler() {
-			return new ServerCoapResponseResultHandler();
+		public CoapResponseBodyResultHandler coapResponseBodyResultHandler() {
+			return new CoapResponseBodyResultHandler();
 		}
 
 		@Bean

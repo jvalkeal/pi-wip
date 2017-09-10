@@ -40,6 +40,22 @@ configure(allprojects) {
 
 	group = 'org.springframework.cloud.iot'
 
+/*
+	def commonCompilerArgs = [
+			"-Xlint:serial", "-Xlint:cast", "-Xlint:classfile", "-Xlint:dep-ann",
+			"-Xlint:divzero", "-Xlint:empty", "-Xlint:finally", "-Xlint:overrides",
+			"-Xlint:path", "-Xlint:processing", "-Xlint:static", "-Xlint:try", "-Xlint:-options"
+			]
+
+	compileJava.options*.compilerArgs = commonCompilerArgs +
+			["-Xlint:varargs", "-Xlint:fallthrough", "-Xlint:rawtypes",
+			 "-Xlint:deprecation", "-Xlint:unchecked", "-Werror"]
+
+	compileTestJava.options*.compilerArgs = commonCompilerArgs +
+			["-Xlint:-varargs", "-Xlint:-fallthrough","-Xlint:-rawtypes",
+			 "-Xlint:-deprecation", "-Xlint:-unchecked"]
+*/
+
 	compileJava {
 		sourceCompatibility = 1.8
 		targetCompatibility = 1.8

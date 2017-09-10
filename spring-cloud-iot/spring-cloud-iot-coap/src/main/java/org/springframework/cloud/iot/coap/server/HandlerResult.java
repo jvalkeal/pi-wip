@@ -23,6 +23,12 @@ import org.springframework.util.Assert;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * Represent the result of the invocation of a handler or a handler method.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class HandlerResult {
 
 	private final Object handler;
@@ -41,6 +47,28 @@ public class HandlerResult {
 	public HandlerResult setExceptionHandler(Function<Throwable, Mono<HandlerResult>> function) {
 		this.exceptionHandler = function;
 		return this;
+	}
+
+	/**
+	 * Return the type of the value returned from the handler -- e.g. the return
+	 * type declared on a controller method's signature. Also see
+	 * {@link #getReturnTypeSource()} to obtain the underlying
+	 * {@link MethodParameter} for the return type.
+	 *
+	 * @return the resolvable type
+	 */
+	public ResolvableType getReturnType() {
+		return this.returnType;
+	}
+
+	/**
+	 * Return the {@link MethodParameter} from which {@link #getReturnType()
+	 * returnType} was created.
+	 *
+	 * @return the method parameter
+	 */
+	public MethodParameter getReturnTypeSource() {
+		return (MethodParameter) this.returnType.getSource();
 	}
 
 	public boolean hasExceptionHandler() {

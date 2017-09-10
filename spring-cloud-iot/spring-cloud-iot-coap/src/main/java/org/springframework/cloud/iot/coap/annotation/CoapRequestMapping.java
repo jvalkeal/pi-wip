@@ -23,6 +23,13 @@ import java.lang.annotation.Target;
 
 import org.springframework.core.annotation.AliasFor;
 
+/**
+ * Annotation for mapping coap requests onto specific handler classes and/or
+ * handler methods.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

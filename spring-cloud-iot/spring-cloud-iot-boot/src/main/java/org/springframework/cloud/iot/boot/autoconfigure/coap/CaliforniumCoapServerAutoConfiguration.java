@@ -20,9 +20,9 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.cloud.iot.coap.californium.CaliforniumCoapServerFactory;
 import org.springframework.cloud.iot.coap.server.CoapServer;
+import org.springframework.cloud.iot.coap.server.result.method.annotation.CoapResponseBodyResultHandler;
 import org.springframework.cloud.iot.coap.server.result.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.cloud.iot.coap.server.result.method.annotation.RequestMappingHandlerMapping;
-import org.springframework.cloud.iot.coap.server.result.method.annotation.ServerCoapResponseResultHandler;
 import org.springframework.cloud.iot.coap.server.support.DispatcherHandler;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
@@ -63,8 +63,8 @@ public class CaliforniumCoapServerAutoConfiguration {
 	}
 
 	@Bean
-	public ServerCoapResponseResultHandler californiumServerCoapResponseResultHandler() {
-		return new ServerCoapResponseResultHandler();
+	public CoapResponseBodyResultHandler califormiumCoapResponseBodyResultHandler() {
+		return new CoapResponseBodyResultHandler();
 	}
 
 	@Bean

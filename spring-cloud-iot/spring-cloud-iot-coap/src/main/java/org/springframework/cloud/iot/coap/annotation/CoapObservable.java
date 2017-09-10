@@ -23,6 +23,13 @@ import java.lang.annotation.Target;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * Annotation for mapping coap observable requests onto specific handler classes
+ * and/or handler methods.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

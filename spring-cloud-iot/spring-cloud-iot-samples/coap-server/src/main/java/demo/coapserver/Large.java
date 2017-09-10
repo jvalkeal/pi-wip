@@ -17,6 +17,7 @@ package demo.coapserver;
 
 import org.springframework.cloud.iot.coap.annotation.CoapController;
 import org.springframework.cloud.iot.coap.annotation.CoapRequestMapping;
+import org.springframework.cloud.iot.coap.annotation.CoapResponseBody;
 
 /**
  * {@link CoapController} implementing californium plugtest {@code large}
@@ -29,6 +30,7 @@ import org.springframework.cloud.iot.coap.annotation.CoapRequestMapping;
 public class Large {
 
 	@CoapRequestMapping(path = "/large")
+	@CoapResponseBody
 	public String large() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("/-------------------------------------------------------------\\\n");
