@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.coap.server.support;
+package org.springframework.cloud.iot.coap.annotation;
 
-import org.springframework.cloud.iot.coap.server.HandlerMethod;
-import org.springframework.cloud.iot.coap.server.result.method.InvocableHandlerMethod;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class ControllerMethodResolver {
+import org.springframework.stereotype.Component;
 
-	public InvocableHandlerMethod getRequestMappingMethod(HandlerMethod handlerMethod) {
-		InvocableHandlerMethod invocable = new InvocableHandlerMethod(handlerMethod);
-//		invocable.setArgumentResolvers(this.requestMappingResolvers);
-		return invocable;
-	}
-
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Component
+public @interface CoapObservable {
 }

@@ -20,6 +20,8 @@ import java.util.List;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.Option;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
+import org.eclipse.californium.core.coap.CoAP.Type;
+import org.eclipse.californium.core.observe.ObserveRelation;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +58,18 @@ public class CaliforniumCoapHandlerResource extends AbstractCoapResource {
 	 */
 	public CaliforniumCoapHandlerResource(String name, CoapHandler coapHandler) {
 		super(name);
+
+		// XXX
+		setObservable(true);
+		setObserveType(Type.CON);
+
 		this.coapHanlder = coapHandler;
+	}
+
+	@Override
+	public void addObserveRelation(ObserveRelation relation) {
+		log.info("XXX addObserveRelation {}", relation);
+		super.addObserveRelation(relation);
 	}
 
 	@Override

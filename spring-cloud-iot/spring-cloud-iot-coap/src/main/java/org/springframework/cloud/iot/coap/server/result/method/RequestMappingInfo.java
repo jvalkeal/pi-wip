@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.coap.server;
+package org.springframework.cloud.iot.coap.server.result.method;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.cloud.iot.coap.server.RequestCondition;
+import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
 
 public class RequestMappingInfo implements RequestCondition<RequestMappingInfo>{
 

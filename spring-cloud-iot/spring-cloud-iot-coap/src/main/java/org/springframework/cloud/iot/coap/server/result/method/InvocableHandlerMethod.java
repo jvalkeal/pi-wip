@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.coap.server;
+package org.springframework.cloud.iot.coap.server.result.method;
 
 
 import java.lang.reflect.InvocationTargetException;
@@ -22,6 +22,9 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.springframework.cloud.iot.coap.server.HandlerMethod;
+import org.springframework.cloud.iot.coap.server.HandlerResult;
+import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 

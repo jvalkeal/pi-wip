@@ -21,19 +21,27 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.util.Date;
 
 import org.junit.Test;
 import org.springframework.cloud.iot.coap.AbstractCoapTests;
 import org.springframework.cloud.iot.coap.annotation.CoapController;
+import org.springframework.cloud.iot.coap.annotation.CoapObservable;
 import org.springframework.cloud.iot.coap.annotation.CoapRequestMapping;
 import org.springframework.cloud.iot.coap.annotation.CoapResponseBody;
 import org.springframework.cloud.iot.coap.californium.CaliforniumCoapServerFactory;
 import org.springframework.cloud.iot.coap.californium.CoapTemplate;
+import org.springframework.cloud.iot.coap.server.result.method.annotation.RequestMappingHandlerAdapter;
+import org.springframework.cloud.iot.coap.server.result.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.cloud.iot.coap.server.result.method.annotation.ServerCoapResponseResultHandler;
 import org.springframework.cloud.iot.coap.server.support.DispatcherHandler;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
+
+import reactor.core.publisher.Flux;
 
 public class CaliforniumCoapServerTests extends AbstractCoapTests {
 
@@ -172,4 +180,18 @@ public class CaliforniumCoapServerTests extends AbstractCoapTests {
 		}
 	}
 
+	@CoapController
+	@CoapRequestMapping(path = "/testresource4")
+	public static class ControllerConfig4 {
+
+		private static DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+
+		@CoapRequestMapping(path = "/obs1")
+		@CoapObservable
+		public Flux<String> obs1() {
+			return Flux.interval(Duration.ofSeconds(1)).map(i -> {
+				return dateFormat.format(new Date());
+			});
+		}
+	}
 }

@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.coap.server;
+package org.springframework.cloud.iot.coap.server.result.method.annotation;
 
+import org.springframework.cloud.iot.coap.server.HandlerResult;
+import org.springframework.cloud.iot.coap.server.HandlerResultHandler;
+import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
+import org.springframework.cloud.iot.coap.server.ServerCoapResponse;
 import org.springframework.util.Assert;
 
 import reactor.core.publisher.Mono;

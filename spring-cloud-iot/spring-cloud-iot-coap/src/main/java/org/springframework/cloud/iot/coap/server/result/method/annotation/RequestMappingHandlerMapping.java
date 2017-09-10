@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.cloud.iot.coap.server;
+package org.springframework.cloud.iot.coap.server.result.method.annotation;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
@@ -28,6 +28,11 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cloud.iot.coap.annotation.CoapController;
 import org.springframework.cloud.iot.coap.annotation.CoapRequestMapping;
+import org.springframework.cloud.iot.coap.server.HandlerMapping;
+import org.springframework.cloud.iot.coap.server.HandlerMethod;
+import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
+import org.springframework.cloud.iot.coap.server.ServerCoapRequest;
+import org.springframework.cloud.iot.coap.server.result.method.RequestMappingInfo;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.annotation.AnnotatedElementUtils;
