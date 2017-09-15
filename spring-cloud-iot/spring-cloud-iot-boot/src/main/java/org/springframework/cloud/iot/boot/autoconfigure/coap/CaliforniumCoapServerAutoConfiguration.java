@@ -21,8 +21,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.cloud.iot.coap.californium.CaliforniumCoapServerFactory;
 import org.springframework.cloud.iot.coap.server.CoapServer;
 import org.springframework.cloud.iot.coap.server.result.method.annotation.CoapResponseBodyResultHandler;
-import org.springframework.cloud.iot.coap.server.result.method.annotation.RequestMappingHandlerAdapter;
-import org.springframework.cloud.iot.coap.server.result.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.cloud.iot.coap.server.result.method.annotation.CoapRequestMappingHandlerAdapter;
+import org.springframework.cloud.iot.coap.server.result.method.annotation.CoapRequestMappingHandlerMapping;
 import org.springframework.cloud.iot.coap.server.support.DispatcherHandler;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
@@ -68,13 +68,13 @@ public class CaliforniumCoapServerAutoConfiguration {
 	}
 
 	@Bean
-	public RequestMappingHandlerMapping californiumRequestMappingHandlerMapping() {
-		return new RequestMappingHandlerMapping();
+	public CoapRequestMappingHandlerMapping californiumRequestMappingHandlerMapping() {
+		return new CoapRequestMappingHandlerMapping();
 	}
 
 	@Bean
-	public RequestMappingHandlerAdapter californiumRequestMappingHandlerAdapter() {
-		return new RequestMappingHandlerAdapter();
+	public CoapRequestMappingHandlerAdapter californiumRequestMappingHandlerAdapter() {
+		return new CoapRequestMappingHandlerAdapter();
 	}
 
 	private class CoapServerRefreshListener implements ApplicationListener<ContextRefreshedEvent>, DisposableBean {

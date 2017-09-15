@@ -7,6 +7,8 @@ import org.springframework.cloud.iot.coap.annotation.CoapResponseBody;
 @CoapController
 public class LargeCreate {
 
+	private int counter = 0;
+
 	@CoapRequestMapping(path = "/large-create")
 	@CoapResponseBody
 	public String large() {

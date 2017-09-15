@@ -28,7 +28,22 @@ import reactor.core.publisher.Mono;
  */
 public interface HandlerAdapter {
 
+	/**
+	 * Whether this {@code HandlerAdapter} supports the given {@code handler}.
+	 *
+	 * @param handler handler object to check
+	 * @return whether or not the handler is supported
+	 */
 	boolean supports(Object handler);
 
+	/**
+	 * Handle the request with the given handler.
+	 *
+	 * @param exchange current server coap exchange
+	 * @param handler the selected handler which must have been previously
+	 * checked via {@link #supports(Object)}
+	 * @return {@link Mono} that emits a single {@code HandlerResult} or none if
+	 * the request has been fully handled and doesn't require further handling.
+	 */
 	Mono<HandlerResult> handle(ServerCoapExchange exchange, Object handler);
 }

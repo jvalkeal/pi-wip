@@ -35,8 +35,8 @@ import org.springframework.cloud.iot.coap.annotation.CoapResponseBody;
 import org.springframework.cloud.iot.coap.californium.CaliforniumCoapServerFactory;
 import org.springframework.cloud.iot.coap.californium.CoapTemplate;
 import org.springframework.cloud.iot.coap.server.result.method.annotation.CoapResponseBodyResultHandler;
-import org.springframework.cloud.iot.coap.server.result.method.annotation.RequestMappingHandlerAdapter;
-import org.springframework.cloud.iot.coap.server.result.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.cloud.iot.coap.server.result.method.annotation.CoapRequestMappingHandlerAdapter;
+import org.springframework.cloud.iot.coap.server.result.method.annotation.CoapRequestMappingHandlerMapping;
 import org.springframework.cloud.iot.coap.server.support.DispatcherHandler;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -119,13 +119,13 @@ public class CaliforniumCoapServerTests extends AbstractCoapTests {
 		}
 
 		@Bean
-		public RequestMappingHandlerMapping requestMappingHandlerMapping() {
-			return new RequestMappingHandlerMapping();
+		public CoapRequestMappingHandlerMapping requestMappingHandlerMapping() {
+			return new CoapRequestMappingHandlerMapping();
 		}
 
 		@Bean
-		public RequestMappingHandlerAdapter requestMappingHandlerAdapter() {
-			return new RequestMappingHandlerAdapter();
+		public CoapRequestMappingHandlerAdapter requestMappingHandlerAdapter() {
+			return new CoapRequestMappingHandlerAdapter();
 		}
 
 	}

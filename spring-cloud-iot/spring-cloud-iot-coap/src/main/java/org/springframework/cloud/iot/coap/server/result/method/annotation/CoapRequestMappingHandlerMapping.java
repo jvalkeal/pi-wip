@@ -48,9 +48,9 @@ import reactor.core.publisher.Mono;
  * @author Janne Valkealahti
  *
  */
-public class RequestMappingHandlerMapping extends ApplicationObjectSupport implements HandlerMapping, InitializingBean {
+public class CoapRequestMappingHandlerMapping extends ApplicationObjectSupport implements HandlerMapping, InitializingBean {
 
-	private static final Logger log = LoggerFactory.getLogger(RequestMappingHandlerMapping.class);
+	private static final Logger log = LoggerFactory.getLogger(CoapRequestMappingHandlerMapping.class);
 
 	private static final String SCOPED_TARGET_NAME_PREFIX = "scopedTarget.";
 

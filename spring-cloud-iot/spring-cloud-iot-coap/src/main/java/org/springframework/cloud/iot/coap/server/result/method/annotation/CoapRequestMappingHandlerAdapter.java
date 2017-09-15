@@ -31,7 +31,7 @@ import reactor.core.publisher.Mono;
  * @author Janne Valkealahti
  *
  */
-public class RequestMappingHandlerAdapter implements HandlerAdapter, InitializingBean {
+public class CoapRequestMappingHandlerAdapter implements HandlerAdapter, InitializingBean {
 
 	private ControllerMethodResolver methodResolver;
 
