@@ -178,13 +178,11 @@ public class CaliforniumCoapServerTests extends AbstractCoapTests {
 	@CoapRequestMapping(path = "/testresource4")
 	public static class ControllerConfig4 {
 
-		private static DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-
 		@CoapRequestMapping(path = "/obs1")
 		@CoapObservable
 		public Flux<String> obs1() {
 			return Flux.interval(Duration.ofSeconds(1)).map(i -> {
-				return dateFormat.format(new Date());
+				return Long.toString(i);
 			});
 		}
 	}
