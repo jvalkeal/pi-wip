@@ -25,7 +25,7 @@ import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.coap.CoAP.Type;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.core.server.resources.Resource;
-import org.springframework.cloud.iot.coap.californium.AbstractCoapResource;
+import org.springframework.cloud.iot.coap.californium.AbstractCaliforniumCoapResource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -62,7 +62,7 @@ public class TestCoapServerConfiguration {
 		}
 	}
 
-	private class TestResource2 extends AbstractCoapResource {
+	private class TestResource2 extends AbstractCaliforniumCoapResource {
 
 		public TestResource2() {
 			super("testresource2");
@@ -79,7 +79,7 @@ public class TestCoapServerConfiguration {
 		}
 	}
 
-	private class TestResource3 extends AbstractCoapResource {
+	private class TestResource3 extends AbstractCaliforniumCoapResource {
 
 		public TestResource3() {
 			super("testresource3");
@@ -102,7 +102,7 @@ public class TestCoapServerConfiguration {
 		}
 	}
 
-	private class TestResource4 extends AbstractCoapResource {
+	private class TestResource4 extends AbstractCaliforniumCoapResource {
 
 		public TestResource4() {
 			super("testresource4");
@@ -120,7 +120,7 @@ public class TestCoapServerConfiguration {
 		}
 	}
 
-	private class TestResourceEcho extends AbstractCoapResource {
+	private class TestResourceEcho extends AbstractCaliforniumCoapResource {
 
 		public TestResourceEcho() {
 			super("echo");

@@ -175,11 +175,11 @@ public class CaliforniumCoapServerTests extends AbstractCoapTests {
 	}
 
 	@CoapController
-	@CoapRequestMapping(path = "/testresource4")
+//	@CoapRequestMapping(path = "/testresource4")
 	public static class ControllerConfig4 {
 
-		@CoapRequestMapping(path = "/obs1")
-		@CoapObservable
+//		@CoapRequestMapping(path = "/obs1")
+		@CoapObservable(path = "/obs1")
 		public Flux<String> obs1() {
 			return Flux.interval(Duration.ofSeconds(1)).map(i -> {
 				return Long.toString(i);

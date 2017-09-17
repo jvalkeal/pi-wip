@@ -1,3 +1,4 @@
 logging:
   level:
     org.springframework.cloud.iot: trace
+    org.eclipse.californium: info

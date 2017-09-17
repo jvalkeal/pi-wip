@@ -16,6 +16,7 @@
 package org.springframework.cloud.iot.coap.server.support;
 
 import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
+import org.springframework.cloud.iot.coap.server.ServerCoapObservableContext;
 import org.springframework.cloud.iot.coap.server.ServerCoapRequest;
 import org.springframework.cloud.iot.coap.server.ServerCoapResponse;
 
@@ -23,10 +24,18 @@ public class DefaultServerCoapExchange implements ServerCoapExchange {
 
 	private final ServerCoapRequest request;
 	private final ServerCoapResponse response;
+	private ServerCoapObservableContext context;
 
 	public DefaultServerCoapExchange(ServerCoapRequest request, ServerCoapResponse response) {
 		this.request = request;
 		this.response = response;
+	}
+
+	public DefaultServerCoapExchange(ServerCoapRequest request, ServerCoapResponse response,
+			ServerCoapObservableContext context) {
+		this.request = request;
+		this.response = response;
+		this.context = context;
 	}
 
 	@Override
@@ -39,4 +48,8 @@ public class DefaultServerCoapExchange implements ServerCoapExchange {
 		return response;
 	}
 
+	@Override
+	public ServerCoapObservableContext getObservableContext() {
+		return context;
+	}
 }

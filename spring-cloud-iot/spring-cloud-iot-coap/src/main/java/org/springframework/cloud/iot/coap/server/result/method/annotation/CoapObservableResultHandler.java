@@ -15,37 +15,48 @@
  */
 package org.springframework.cloud.iot.coap.server.result.method.annotation;
 
-import org.springframework.cloud.iot.coap.annotation.CoapResponseBody;
+import org.springframework.cloud.iot.coap.annotation.CoapObservable;
 import org.springframework.cloud.iot.coap.server.HandlerResult;
 import org.springframework.cloud.iot.coap.server.HandlerResultHandler;
 import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
+import org.springframework.cloud.iot.coap.server.ServerCoapObservableContext;
 import org.springframework.cloud.iot.coap.server.ServerCoapResponse;
 import org.springframework.core.MethodParameter;
-import org.springframework.core.annotation.AnnotationUtils;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
  * {@code HandlerResultHandler} that handles return values from methods annotated
- * with {@code @CoapResponseBody} writing to the body of the request or response.
+ * with {@code @CoapObservable} writing to the body of the request or response.
  *
  * @author Janne Valkealahti
  *
  */
-public class CoapResponseBodyResultHandler implements HandlerResultHandler {
+public class CoapObservableResultHandler implements HandlerResultHandler {
 
 	@Override
 	public boolean supports(HandlerResult result) {
 		MethodParameter parameter = result.getReturnTypeSource();
-		Class<?> containingClass = parameter.getContainingClass();
-		return (AnnotationUtils.findAnnotation(containingClass, CoapResponseBody.class) != null ||
-				parameter.getMethodAnnotation(CoapResponseBody.class) != null);
+		return parameter.getMethodAnnotation(CoapObservable.class) != null;
 	}
 
 	@Override
 	public Mono<Void> handleResult(ServerCoapExchange exchange, HandlerResult result) {
+
+		ServerCoapObservableContext observableContext = exchange.getObservableContext();
+		Flux<?> f = (Flux<?>)result.getReturnValue();
+
+		if (observableContext != null) {
+			observableContext.setObservableSource(Flux.from(f));
+		}
+
 		ServerCoapResponse response = exchange.getResponse();
-		response.setBody(((String)result.getReturnValue()).getBytes());
-		return Mono.empty();
+
+		Flux<?> ddd = f.take(1).doOnNext(c -> {
+			response.setBody(c.toString().getBytes());
+		});
+
+		return Mono.from(ddd).then();
 	}
 }

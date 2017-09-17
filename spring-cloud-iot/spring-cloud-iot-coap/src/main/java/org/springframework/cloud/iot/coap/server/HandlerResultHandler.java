@@ -17,9 +17,28 @@ package org.springframework.cloud.iot.coap.server;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * Process the {@link HandlerResult}, usually returned by an {@link HandlerAdapter}.
+ *
+ * @author Janne Valkealahti
+ */
 public interface HandlerResultHandler {
 
+	/**
+	 * Whether this handler supports the given {@link HandlerResult}.
+	 *
+	 * @param result result object to check
+	 * @return whether or not this object can use the given result
+	 */
 	boolean supports(HandlerResult result);
 
+	/**
+	 * Process the given result modifying response headers and/or writing data
+	 * to the response.
+	 *
+	 * @param exchange current server coap exchange
+	 * @param result the result from the handling
+	 * @return {@code Mono<Void>} to indicate when request handling is complete.
+	 */
 	Mono<Void> handleResult(ServerCoapExchange exchange, HandlerResult result);
 }

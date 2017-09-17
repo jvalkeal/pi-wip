@@ -48,8 +48,8 @@ public @interface CoapRequestMapping {
 	/**
 	 * The primary mapping expressed by this annotation.
 	 * <p>This is an alias for {@link #path}. For example
-	 * {@code @RequestMapping("/foo")} is equivalent to
-	 * {@code @RequestMapping(path="/foo")}.
+	 * {@code @CoapRequestMapping("/foo")} is equivalent to
+	 * {@code @CoapRequestMapping(path="/foo")}.
 	 * <p><b>Supported at the type level as well as at the method level!</b>
 	 * When used at the type level, all method-level mappings inherit
 	 * this primary mapping, narrowing it for a specific handler method.

@@ -24,14 +24,14 @@ import org.eclipse.californium.core.server.resources.Resource;
  * @author Janne Valkealahti
  *
  */
-public abstract class AbstractCoapResource extends CoapResource {
+public abstract class AbstractCaliforniumCoapResource extends CoapResource {
 
 	/**
 	 * Instantiates a new abstract coap resource.
 	 *
 	 * @param name the name of a resource
 	 */
-	public AbstractCoapResource(String name) {
+	public AbstractCaliforniumCoapResource(String name) {
 		super(name);
 	}
 

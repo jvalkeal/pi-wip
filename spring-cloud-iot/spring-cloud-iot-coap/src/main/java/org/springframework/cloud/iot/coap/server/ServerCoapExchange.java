@@ -38,4 +38,11 @@ public interface ServerCoapExchange {
 	 * @return the current response
 	 */
 	ServerCoapResponse getResponse();
+
+	/**
+	 * Return the current COAP observable context.
+	 *
+	 * @return the current observable context
+	 */
+	ServerCoapObservableContext getObservableContext();
 }

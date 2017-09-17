@@ -21,6 +21,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Component;
 
 /**
@@ -35,4 +36,27 @@ import org.springframework.stereotype.Component;
 @Documented
 @Component
 public @interface CoapObservable {
+
+	/**
+	 * The primary mapping expressed by this annotation.
+	 * <p>This is an alias for {@link #path}. For example
+	 * {@code @CoapObservable("/foo")} is equivalent to
+	 * {@code @CoapObservable(path="/foo")}.
+	 * <p><b>Supported at the type level as well as at the method level!</b>
+	 * When used at the type level, all method-level mappings inherit
+	 * this primary mapping, narrowing it for a specific handler method.
+	 *
+	 * @return the values
+	 */
+	@AliasFor("path")
+	String[] value() default {};
+
+	/**
+	 * Alias for {@link #value()}.
+	 *
+	 * @see #value()
+	 * @return the paths
+	 */
+	@AliasFor("value")
+	String[] path() default {};
 }

@@ -15,6 +15,7 @@
  */
 package org.springframework.cloud.iot.coap.californium;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.californium.core.CoapResource;
@@ -29,12 +30,14 @@ import org.springframework.cloud.iot.coap.CoapHeaders;
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.server.CoapHandler;
 import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
+import org.springframework.cloud.iot.coap.server.ServerCoapObservableContext;
 import org.springframework.cloud.iot.coap.server.ServerCoapResponse;
 import org.springframework.cloud.iot.coap.server.support.DefaultServerCoapExchange;
 import org.springframework.cloud.iot.coap.server.support.GenericServerCoapRequest;
 import org.springframework.cloud.iot.coap.server.support.GenericServerCoapResponse;
 import org.springframework.util.CollectionUtils;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -44,11 +47,12 @@ import reactor.core.publisher.Mono;
  * @author Janne Valkealahti
  *
  */
-public class CaliforniumCoapHandlerResource extends AbstractCoapResource {
+public class CaliforniumCoapHandlerResource extends AbstractCaliforniumCoapResource {
 
 	private static final Logger log = LoggerFactory.getLogger(CaliforniumCoapHandlerResource.class);
 	private List<CoapMethod> allowedMethods = null;
-	private final CoapHandler coapHanlder;
+	private final CoapHandler coapHandler;
+	private HashSet<Object> ddd = new HashSet<>();
 
 	/**
 	 * Instantiates a new californium coap handler resource.
@@ -63,13 +67,21 @@ public class CaliforniumCoapHandlerResource extends AbstractCoapResource {
 		setObservable(true);
 		setObserveType(Type.CON);
 
-		this.coapHanlder = coapHandler;
-	}
+		this.coapHandler = coapHandler;
 
-	@Override
-	public void addObserveRelation(ObserveRelation relation) {
-		log.info("XXX addObserveRelation {}", relation);
-		super.addObserveRelation(relation);
+		addObserver(new CaliforniumResourceObserverAdapter() {
+			@Override
+			public void addedObserveRelation(ObserveRelation relation) {
+				log.info("addedObserveRelation {} {}", relation, relation.getExchange());
+				ddd.add(relation.getExchange());
+			}
+
+			@Override
+			public void removedObserveRelation(ObserveRelation relation) {
+				log.info("removedObserveRelation {}", relation);
+				ddd.remove(relation.getExchange());
+			}
+		});
 	}
 
 	@Override
@@ -112,22 +124,30 @@ public class CaliforniumCoapHandlerResource extends AbstractCoapResource {
 		this.allowedMethods = allowedMethods;
 	}
 
-	private void handleRequest(CoapExchange exchange) {
-		log.trace("Handling exchange {}", exchange);
-		CoapHeaders coapHeaders = new CoapHeaders();
-		List<Option> others = exchange.getRequestOptions().getOthers();
-		for (Option option : others) {
-			coapHeaders.add(option.getNumber(), option.getStringValue().getBytes());
+	private class DummyServerCoapObservableContext implements ServerCoapObservableContext {
+
+		private Flux<Object> source;
+
+		@Override
+		public void setObservableSource(Flux<Object> source) {
+			this.source = source;
 		}
 
-		GenericServerCoapRequest request = new GenericServerCoapRequest(exchange.getRequestPayload(), coapHeaders);
-		request.setMethod(CoapMethod.resolve(exchange.getRequestCode().name()));
-		request.setContentFormat(exchange.getRequestOptions().getContentFormat());
-		request.setUriPath(exchange.getRequestOptions().getUriPathString());
+		@Override
+		public Flux<Object> getObservableSource() {
+			return source;
+		}
 
-		GenericServerCoapResponse serverCoapResponse = new GenericServerCoapResponse();
-		ServerCoapExchange serverCoapExchange = new DefaultServerCoapExchange(request, serverCoapResponse);
-		Mono<Void> handle = coapHanlder.handle(serverCoapExchange);
+	}
+
+	DummyServerCoapObservableContext xxx = new DummyServerCoapObservableContext();
+
+	private void handleRequest(CoapExchange exchange) {
+		log.trace("Handling exchange {} {} {}", exchange, exchange.getRequestOptions(), exchange.advanced());
+
+		ServerCoapExchange serverCoapExchange = createServerCoapExchange(exchange);
+
+		Mono<Void> handle = coapHandler.handle(serverCoapExchange);
 		handle
 			.onErrorResume(ex -> {
 					if (log.isTraceEnabled()) {
@@ -147,8 +167,36 @@ public class CaliforniumCoapHandlerResource extends AbstractCoapResource {
 					if (log.isTraceEnabled()) {
 						log.trace("Sent response {}", response);
 					}
+
+					ServerCoapObservableContext observableContext = serverCoapExchange.getObservableContext();
+					if (observableContext != null) {
+						Flux<Object> observableSource = observableContext.getObservableSource();
+						if (observableSource != null) {
+							observableSource.doOnNext(c2 -> {
+								changed();
+							}).log().subscribe();
+						}
+					}
+
 				})
 			.subscribe();
+	}
+
+	private ServerCoapExchange createServerCoapExchange(CoapExchange exchange) {
+		CoapHeaders coapHeaders = new CoapHeaders();
+		List<Option> others = exchange.getRequestOptions().getOthers();
+		for (Option option : others) {
+			coapHeaders.add(option.getNumber(), option.getStringValue().getBytes());
+		}
+
+		GenericServerCoapRequest request = new GenericServerCoapRequest(exchange.getRequestPayload(), coapHeaders);
+		request.setMethod(CoapMethod.resolve(exchange.getRequestCode().name()));
+		request.setContentFormat(exchange.getRequestOptions().getContentFormat());
+		request.setUriPath(exchange.getRequestOptions().getUriPathString());
+
+		GenericServerCoapResponse serverCoapResponse = new GenericServerCoapResponse();
+		boolean contains = ddd.contains(exchange.advanced());
+		return new DefaultServerCoapExchange(request, serverCoapResponse, contains ? null : xxx);
 	}
 
 	private boolean isMethodAllowed(CoapExchange exchange) {
