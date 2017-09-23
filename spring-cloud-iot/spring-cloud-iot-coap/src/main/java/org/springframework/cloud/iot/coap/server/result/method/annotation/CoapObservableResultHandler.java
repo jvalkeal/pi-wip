@@ -15,6 +15,8 @@
  */
 package org.springframework.cloud.iot.coap.server.result.method.annotation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.coap.annotation.CoapObservable;
 import org.springframework.cloud.iot.coap.server.HandlerResult;
 import org.springframework.cloud.iot.coap.server.HandlerResultHandler;
@@ -35,6 +37,8 @@ import reactor.core.publisher.Mono;
  */
 public class CoapObservableResultHandler implements HandlerResultHandler {
 
+	private static final Logger log = LoggerFactory.getLogger(CoapObservableResultHandler.class);
+
 	@Override
 	public boolean supports(HandlerResult result) {
 		MethodParameter parameter = result.getReturnTypeSource();
@@ -43,20 +47,26 @@ public class CoapObservableResultHandler implements HandlerResultHandler {
 
 	@Override
 	public Mono<Void> handleResult(ServerCoapExchange exchange, HandlerResult result) {
-
-		ServerCoapObservableContext observableContext = exchange.getObservableContext();
 		Flux<?> f = (Flux<?>)result.getReturnValue();
+		ServerCoapResponse response = exchange.getResponse();
+		ServerCoapObservableContext context = exchange.getObservableContext();
 
-		if (observableContext != null) {
-			observableContext.setObservableSource(Flux.from(f));
+		log.info("XXX context {}", context);
+
+		if (context != null) {
+			log.info("XXX context result {}", context.getResult());
+			if (context.getResult() != null) {
+				response.setBody(context.getResult().toString().getBytes());
+				log.info("XXX return result to response");
+				return Mono.empty();
+			} else {
+				context.setObservableSource(Flux.from(f));
+			}
 		}
 
-		ServerCoapResponse response = exchange.getResponse();
-
-		Flux<?> ddd = f.take(1).doOnNext(c -> {
+		log.info("XXX return default take 1");
+		return Mono.from(f.take(1).doOnNext(c -> {
 			response.setBody(c.toString().getBytes());
-		});
-
-		return Mono.from(ddd).then();
+		})).then();
 	}
 }

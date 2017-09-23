@@ -15,13 +15,14 @@
  */
 package org.springframework.cloud.iot.coap.californium;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.californium.core.CoapResource;
-import org.eclipse.californium.core.coap.Option;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.coap.CoAP.Type;
+import org.eclipse.californium.core.coap.Option;
+import org.eclipse.californium.core.network.Exchange;
 import org.eclipse.californium.core.observe.ObserveRelation;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.slf4j.Logger;
@@ -33,10 +34,13 @@ import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
 import org.springframework.cloud.iot.coap.server.ServerCoapObservableContext;
 import org.springframework.cloud.iot.coap.server.ServerCoapResponse;
 import org.springframework.cloud.iot.coap.server.support.DefaultServerCoapExchange;
+import org.springframework.cloud.iot.coap.server.support.DefaultServerCoapObservableContext;
 import org.springframework.cloud.iot.coap.server.support.GenericServerCoapRequest;
 import org.springframework.cloud.iot.coap.server.support.GenericServerCoapResponse;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
+import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -52,7 +56,7 @@ public class CaliforniumCoapHandlerResource extends AbstractCaliforniumCoapResou
 	private static final Logger log = LoggerFactory.getLogger(CaliforniumCoapHandlerResource.class);
 	private List<CoapMethod> allowedMethods = null;
 	private final CoapHandler coapHandler;
-	private HashSet<Object> ddd = new HashSet<>();
+	private HashMap<Exchange, ServerCoapObservableContext> contexts = new HashMap<>();
 
 	/**
 	 * Instantiates a new californium coap handler resource.
@@ -63,7 +67,6 @@ public class CaliforniumCoapHandlerResource extends AbstractCaliforniumCoapResou
 	public CaliforniumCoapHandlerResource(String name, CoapHandler coapHandler) {
 		super(name);
 
-		// XXX
 		setObservable(true);
 		setObserveType(Type.CON);
 
@@ -73,13 +76,29 @@ public class CaliforniumCoapHandlerResource extends AbstractCaliforniumCoapResou
 			@Override
 			public void addedObserveRelation(ObserveRelation relation) {
 				log.info("addedObserveRelation {} {}", relation, relation.getExchange());
-				ddd.add(relation.getExchange());
+				ServerCoapObservableContext context = contexts.get(relation.getExchange());
+				if (context != null && context.getObservableSource() != null) {
+					Flux<Object> observableSource = context.getObservableSource();
+					if (observableSource != null) {
+						Disposable disposable = observableSource.doOnNext(c -> {
+							context.setResult(c);
+							changed(r -> {
+								return ObjectUtils.nullSafeEquals(relation, r);
+							});
+						}).subscribe();
+						context.setDisposable(disposable);
+					}
+				}
 			}
 
 			@Override
 			public void removedObserveRelation(ObserveRelation relation) {
 				log.info("removedObserveRelation {}", relation);
-				ddd.remove(relation.getExchange());
+				ServerCoapObservableContext context = contexts.get(relation.getExchange());
+				if (context != null && context.getDisposable() != null) {
+					context.getDisposable().dispose();
+				}
+				contexts.remove(context);
 			}
 		});
 	}
@@ -124,28 +143,16 @@ public class CaliforniumCoapHandlerResource extends AbstractCaliforniumCoapResou
 		this.allowedMethods = allowedMethods;
 	}
 
-	private class DummyServerCoapObservableContext implements ServerCoapObservableContext {
-
-		private Flux<Object> source;
-
-		@Override
-		public void setObservableSource(Flux<Object> source) {
-			this.source = source;
-		}
-
-		@Override
-		public Flux<Object> getObservableSource() {
-			return source;
-		}
-
-	}
-
-	DummyServerCoapObservableContext xxx = new DummyServerCoapObservableContext();
-
 	private void handleRequest(CoapExchange exchange) {
 		log.trace("Handling exchange {} {} {}", exchange, exchange.getRequestOptions(), exchange.advanced());
-
-		ServerCoapExchange serverCoapExchange = createServerCoapExchange(exchange);
+		ServerCoapObservableContext context = contexts.get(exchange.advanced());
+		if (exchange.getRequestOptions().hasObserve()) {
+			if (context == null) {
+				context = new DefaultServerCoapObservableContext(null);
+				contexts.put(exchange.advanced(), context);
+			}
+		}
+		ServerCoapExchange serverCoapExchange = createServerCoapExchange(exchange, context);
 
 		Mono<Void> handle = coapHandler.handle(serverCoapExchange);
 		handle
@@ -167,22 +174,11 @@ public class CaliforniumCoapHandlerResource extends AbstractCaliforniumCoapResou
 					if (log.isTraceEnabled()) {
 						log.trace("Sent response {}", response);
 					}
-
-					ServerCoapObservableContext observableContext = serverCoapExchange.getObservableContext();
-					if (observableContext != null) {
-						Flux<Object> observableSource = observableContext.getObservableSource();
-						if (observableSource != null) {
-							observableSource.doOnNext(c2 -> {
-								changed();
-							}).log().subscribe();
-						}
-					}
-
 				})
 			.subscribe();
 	}
 
-	private ServerCoapExchange createServerCoapExchange(CoapExchange exchange) {
+	private ServerCoapExchange createServerCoapExchange(CoapExchange exchange, ServerCoapObservableContext context) {
 		CoapHeaders coapHeaders = new CoapHeaders();
 		List<Option> others = exchange.getRequestOptions().getOthers();
 		for (Option option : others) {
@@ -195,8 +191,7 @@ public class CaliforniumCoapHandlerResource extends AbstractCaliforniumCoapResou
 		request.setUriPath(exchange.getRequestOptions().getUriPathString());
 
 		GenericServerCoapResponse serverCoapResponse = new GenericServerCoapResponse();
-		boolean contains = ddd.contains(exchange.advanced());
-		return new DefaultServerCoapExchange(request, serverCoapResponse, contains ? null : xxx);
+		return new DefaultServerCoapExchange(request, serverCoapResponse, context);
 	}
 
 	private boolean isMethodAllowed(CoapExchange exchange) {

@@ -2,3 +2,8 @@ logging:
   level:
     org.springframework.cloud.iot: trace
     org.eclipse.californium: info
+spring:
+  coap:
+    californium:
+      config:
+        MAX_PEER_INACTIVITY_PERIOD: 60

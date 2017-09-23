@@ -15,6 +15,7 @@
  */
 package org.springframework.cloud.iot.coap.server;
 
+import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 
 /**
@@ -28,5 +29,13 @@ public interface ServerCoapObservableContext {
 	void setObservableSource(Flux<Object> source);
 
 	Flux<Object> getObservableSource();
+
+	void setResult(Object result);
+
+	Object getResult();
+
+	void setDisposable(Disposable disposable);
+
+	Disposable getDisposable();
 
 }
