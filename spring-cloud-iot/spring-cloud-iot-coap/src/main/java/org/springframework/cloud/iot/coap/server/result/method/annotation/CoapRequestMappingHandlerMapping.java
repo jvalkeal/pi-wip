@@ -54,7 +54,7 @@ public class CoapRequestMappingHandlerMapping extends ApplicationObjectSupport i
 
 	private static final String SCOPED_TARGET_NAME_PREFIX = "scopedTarget.";
 
-	private Map<Object, HandlerMethod> registry = new HashMap<>();
+	private Map<CoapRequestMappingInfo, HandlerMethod> registry = new HashMap<>();
 
 	@Override
 	public Mono<Object> getHandler(ServerCoapExchange exchange) {
@@ -68,8 +68,8 @@ public class CoapRequestMappingHandlerMapping extends ApplicationObjectSupport i
 
 		ServerCoapRequest request = exchange.getRequest();
 		String uriPath = "/" + request.getUriPath();
-		for (Entry<Object,HandlerMethod> entry : registry.entrySet()) {
-			for (String pathToTest : ((CoapRequestMappingInfo)entry.getKey()).getPaths()) {
+		for (Entry<CoapRequestMappingInfo,HandlerMethod> entry : registry.entrySet()) {
+			for (String pathToTest : entry.getKey().getPaths()) {
 				if (uriPath.equals(pathToTest)) {
 					handlerMethod = entry.getValue();
 					break;
@@ -123,8 +123,10 @@ public class CoapRequestMappingHandlerMapping extends ApplicationObjectSupport i
 
 		if (handlerType != null) {
 			final Class<?> userType = ClassUtils.getUserClass(handlerType);
-			Map<Method, ?> methods = MethodIntrospector.selectMethods(userType,
-					(MethodIntrospector.MetadataLookup<?>) method -> getMappingForMethod(method, userType));
+//			Map<Method, ?> methods = MethodIntrospector.selectMethods(userType,
+//					(MethodIntrospector.MetadataLookup<?>) method -> getMappingForMethod(method, userType));
+			Map<Method, CoapRequestMappingInfo> methods = MethodIntrospector.selectMethods(userType,
+					(MethodIntrospector.MetadataLookup<CoapRequestMappingInfo>) method -> getMappingForMethod(method, userType));
 			if (log.isDebugEnabled()) {
 				log.debug(methods.size() + " request handler methods found on " + userType + ": " + methods);
 			}
@@ -135,7 +137,7 @@ public class CoapRequestMappingHandlerMapping extends ApplicationObjectSupport i
 		}
 	}
 
-	protected void registerHandlerMethod(Object handler, Method method, Object mapping) {
+	protected void registerHandlerMethod(Object handler, Method method, CoapRequestMappingInfo mapping) {
 		HandlerMethod handlerMethod = createHandlerMethod(handler, method);
 		registry.put(mapping, handlerMethod);
 	}
@@ -154,7 +156,7 @@ public class CoapRequestMappingHandlerMapping extends ApplicationObjectSupport i
 	}
 
 
-	protected Object getMappingForMethod(Method method, Class<?> handlerType) {
+	protected CoapRequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
 		CoapRequestMappingInfo info = createRequestMappingInfo(method);
 		if (info != null) {
 			CoapRequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);
@@ -167,13 +169,21 @@ public class CoapRequestMappingHandlerMapping extends ApplicationObjectSupport i
 
 	private CoapRequestMappingInfo createRequestMappingInfo(AnnotatedElement element) {
 		CoapRequestMapping requestMapping = AnnotatedElementUtils.findMergedAnnotation(element, CoapRequestMapping.class);
-		return createRequestMappingInfo(requestMapping);
+		return requestMapping != null ? createRequestMappingInfo(requestMapping) : null;
+//		return createRequestMappingInfo(requestMapping);
 	}
 
 	private CoapRequestMappingInfo createRequestMappingInfo(CoapRequestMapping requestMapping) {
-		if (requestMapping == null) {
-			return null;
-		}
-		return new CoapRequestMappingInfo(Arrays.asList(requestMapping.path()));
+//		if (requestMapping == null) {
+//			return null;
+//		}
+
+		CoapRequestMappingInfo.Builder builder = CoapRequestMappingInfo
+				.paths(requestMapping.path())
+				.methods(requestMapping.method());
+
+		return builder.build();
+
+//		return new CoapRequestMappingInfo(Arrays.asList(requestMapping.path()));
 	}
 }

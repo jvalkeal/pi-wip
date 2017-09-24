@@ -58,6 +58,7 @@ public class CoapRequestMappingInfo implements CoapRequestCondition<CoapRequestM
 
 	@Override
 	public CoapRequestMappingInfo getMatchingCondition(ServerCoapExchange exchange) {
+		CoapRequestMethodsRequestCondition methods = methodsCondition.getMatchingCondition(exchange);
 		return null;
 	}
 

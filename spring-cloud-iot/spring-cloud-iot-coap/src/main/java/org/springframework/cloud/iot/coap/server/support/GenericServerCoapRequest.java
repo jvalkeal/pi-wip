@@ -49,6 +49,11 @@ public class GenericServerCoapRequest implements ServerCoapRequest {
 	}
 
 	@Override
+	public RequestPath getPath() {
+		return null;
+	}
+
+	@Override
 	public String getUriPath() {
 		return uriPath;
 	}

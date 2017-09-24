@@ -17,8 +17,18 @@ package org.springframework.cloud.iot.coap.server;
 
 import org.springframework.cloud.iot.coap.CoapInputMessage;
 import org.springframework.cloud.iot.coap.CoapMethod;
+import org.springframework.cloud.iot.coap.server.support.RequestPath;
 
 public interface ServerCoapRequest extends CoapInputMessage {
+
+	/**
+	 * Returns a structured representation of the request path including the
+	 * context path + path within application portions, path segments with
+	 * encoded and decoded values, and path parameters.
+	 *
+	 * @return the request path
+	 */
+	RequestPath getPath();
 
 	int getContentFormat();
 
