@@ -32,7 +32,7 @@ import org.springframework.cloud.iot.coap.server.HandlerMapping;
 import org.springframework.cloud.iot.coap.server.HandlerMethod;
 import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
 import org.springframework.cloud.iot.coap.server.ServerCoapRequest;
-import org.springframework.cloud.iot.coap.server.result.method.RequestMappingInfo;
+import org.springframework.cloud.iot.coap.server.result.method.CoapRequestMappingInfo;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -61,7 +61,7 @@ public class CoapObservableHandlerMapping extends ApplicationObjectSupport imple
 		ServerCoapRequest request = exchange.getRequest();
 		String uriPath = "/" + request.getUriPath();
 		for (Entry<Object,HandlerMethod> entry : registry.entrySet()) {
-			for (String pathToTest : ((RequestMappingInfo)entry.getKey()).getPaths()) {
+			for (String pathToTest : ((CoapRequestMappingInfo)entry.getKey()).getPaths()) {
 				if (uriPath.equals(pathToTest)) {
 					handlerMethod = entry.getValue();
 					break;
@@ -147,9 +147,9 @@ public class CoapObservableHandlerMapping extends ApplicationObjectSupport imple
 	}
 
 	protected Object getMappingForMethod(Method method, Class<?> handlerType) {
-		RequestMappingInfo info = createRequestMappingInfo(method);
+		CoapRequestMappingInfo info = createRequestMappingInfo(method);
 		if (info != null) {
-			RequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);
+			CoapRequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);
 			if (typeInfo != null) {
 				info = typeInfo.combine(info);
 			}
@@ -157,16 +157,16 @@ public class CoapObservableHandlerMapping extends ApplicationObjectSupport imple
 		return info;
 	}
 
-	private RequestMappingInfo createRequestMappingInfo(AnnotatedElement element) {
+	private CoapRequestMappingInfo createRequestMappingInfo(AnnotatedElement element) {
 		CoapObservable coapObservable = AnnotatedElementUtils.findMergedAnnotation(element, CoapObservable.class);
 		return createRequestMappingInfo(coapObservable);
 	}
 
-	private RequestMappingInfo createRequestMappingInfo(CoapObservable requestMapping) {
+	private CoapRequestMappingInfo createRequestMappingInfo(CoapObservable requestMapping) {
 		if (requestMapping == null) {
 			return null;
 		}
-		return new RequestMappingInfo(Arrays.asList(requestMapping.path()));
+		return new CoapRequestMappingInfo(Arrays.asList(requestMapping.path()));
 	}
 
 }

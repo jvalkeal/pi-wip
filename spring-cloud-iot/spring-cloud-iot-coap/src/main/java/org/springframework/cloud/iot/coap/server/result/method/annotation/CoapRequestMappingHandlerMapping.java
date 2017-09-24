@@ -32,7 +32,7 @@ import org.springframework.cloud.iot.coap.server.HandlerMapping;
 import org.springframework.cloud.iot.coap.server.HandlerMethod;
 import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
 import org.springframework.cloud.iot.coap.server.ServerCoapRequest;
-import org.springframework.cloud.iot.coap.server.result.method.RequestMappingInfo;
+import org.springframework.cloud.iot.coap.server.result.method.CoapRequestMappingInfo;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -42,7 +42,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * An implementation of {@link HandlerMapping} that creates
- * {@link RequestMappingInfo} instances from class-level and method-level
+ * {@link CoapRequestMappingInfo} instances from class-level and method-level
  * {@link CoapRequestMapping @CoapRequestMapping} annotations.
  *
  * @author Janne Valkealahti
@@ -69,7 +69,7 @@ public class CoapRequestMappingHandlerMapping extends ApplicationObjectSupport i
 		ServerCoapRequest request = exchange.getRequest();
 		String uriPath = "/" + request.getUriPath();
 		for (Entry<Object,HandlerMethod> entry : registry.entrySet()) {
-			for (String pathToTest : ((RequestMappingInfo)entry.getKey()).getPaths()) {
+			for (String pathToTest : ((CoapRequestMappingInfo)entry.getKey()).getPaths()) {
 				if (uriPath.equals(pathToTest)) {
 					handlerMethod = entry.getValue();
 					break;
@@ -135,6 +135,11 @@ public class CoapRequestMappingHandlerMapping extends ApplicationObjectSupport i
 		}
 	}
 
+	protected void registerHandlerMethod(Object handler, Method method, Object mapping) {
+		HandlerMethod handlerMethod = createHandlerMethod(handler, method);
+		registry.put(mapping, handlerMethod);
+	}
+
 	protected HandlerMethod createHandlerMethod(Object handler, Method method) {
 		HandlerMethod handlerMethod;
 		if (handler instanceof String) {
@@ -149,15 +154,10 @@ public class CoapRequestMappingHandlerMapping extends ApplicationObjectSupport i
 	}
 
 
-	protected void registerHandlerMethod(Object handler, Method method, Object mapping) {
-		HandlerMethod handlerMethod = createHandlerMethod(handler, method);
-		registry.put(mapping, handlerMethod);
-	}
-
 	protected Object getMappingForMethod(Method method, Class<?> handlerType) {
-		RequestMappingInfo info = createRequestMappingInfo(method);
+		CoapRequestMappingInfo info = createRequestMappingInfo(method);
 		if (info != null) {
-			RequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);
+			CoapRequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);
 			if (typeInfo != null) {
 				info = typeInfo.combine(info);
 			}
@@ -165,15 +165,15 @@ public class CoapRequestMappingHandlerMapping extends ApplicationObjectSupport i
 		return info;
 	}
 
-	private RequestMappingInfo createRequestMappingInfo(AnnotatedElement element) {
+	private CoapRequestMappingInfo createRequestMappingInfo(AnnotatedElement element) {
 		CoapRequestMapping requestMapping = AnnotatedElementUtils.findMergedAnnotation(element, CoapRequestMapping.class);
 		return createRequestMappingInfo(requestMapping);
 	}
 
-	private RequestMappingInfo createRequestMappingInfo(CoapRequestMapping requestMapping) {
+	private CoapRequestMappingInfo createRequestMappingInfo(CoapRequestMapping requestMapping) {
 		if (requestMapping == null) {
 			return null;
 		}
-		return new RequestMappingInfo(Arrays.asList(requestMapping.path()));
+		return new CoapRequestMappingInfo(Arrays.asList(requestMapping.path()));
 	}
 }

@@ -16,7 +16,7 @@
 package demo.coapserver;
 
 import org.springframework.cloud.iot.coap.annotation.CoapController;
-import org.springframework.cloud.iot.coap.annotation.CoapRequestMapping;
+import org.springframework.cloud.iot.coap.annotation.CoapGetMapping;
 import org.springframework.cloud.iot.coap.annotation.CoapResponseBody;
 
 /**
@@ -29,7 +29,7 @@ import org.springframework.cloud.iot.coap.annotation.CoapResponseBody;
 @CoapController
 public class Large {
 
-	@CoapRequestMapping(path = "/large")
+	@CoapGetMapping(path = "/large")
 	@CoapResponseBody
 	public String large() {
 		StringBuilder builder = new StringBuilder();
