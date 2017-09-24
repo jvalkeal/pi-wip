@@ -9,6 +9,7 @@ buildscript {
 		nrjavaserialVersion = '3.12.1'
 		springCloudStreamVersion = 'Elmhurst.BUILD-SNAPSHOT'
 		springCloudStreamAppStarterVersion = '1.2.0.BUILD-SNAPSHOT'
+		jsr305Version = '3.0.2'
 	}
 	repositories {
 		mavenCentral()
@@ -87,6 +88,7 @@ configure(allprojects) {
 				exclude 'com.digi:android-sdk'
 				exclude 'com.digi:android-sdk-addon'
 			}
+			dependency "com.google.code.findbugs:jsr305:${jsr305Version}"
 		}
 	}
 
@@ -114,6 +116,10 @@ configure(subprojects) { subproject ->
 		}
 	}
 
+	dependencies {
+		compileOnly("com.google.code.findbugs:jsr305")
+		testCompileOnly("com.google.code.findbugs:jsr305")
+	}
 
 	task sourcesJar(type: Jar, dependsOn:classes) {
 		classifier = 'sources'
