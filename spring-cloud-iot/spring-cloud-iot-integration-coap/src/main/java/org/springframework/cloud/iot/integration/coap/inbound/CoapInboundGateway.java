@@ -326,7 +326,8 @@ public class CoapInboundGateway extends MessagingGatewaySupport {
 		}
 
 		Message<?> message = messageBuilder
-				.setHeader("uri-path", request.getUriPath())
+//				.setHeader("uri-path", request.getUriPath())
+				.setHeader("uri-path", request.getPath().pathWithinApplication().value())
 				.build();
 
 		Message<?> reply = null;

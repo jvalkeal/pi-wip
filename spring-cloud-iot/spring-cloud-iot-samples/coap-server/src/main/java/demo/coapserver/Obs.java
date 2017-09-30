@@ -30,12 +30,12 @@ public class Obs {
 
 	private final Flux<String> timestamps1 = Flux.interval(Duration.ofSeconds(2)).map(i -> {
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-		return "XXX1 " + dateFormat.format(new Date());
+		return "OBS1 " + dateFormat.format(new Date());
 	});
 
 	private final Flux<String> timestamps2 = Flux.interval(Duration.ofSeconds(6)).map(i -> {
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-		return "XXX2 " + dateFormat.format(new Date());
+		return "OBS2 " + dateFormat.format(new Date());
 	});
 
 	@CoapObservable(path = "/obs1")

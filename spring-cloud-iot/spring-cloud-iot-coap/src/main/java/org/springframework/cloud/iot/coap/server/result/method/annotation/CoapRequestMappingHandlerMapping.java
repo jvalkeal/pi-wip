@@ -16,29 +16,14 @@
 package org.springframework.cloud.iot.coap.server.result.method.annotation;
 
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.support.AopUtils;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cloud.iot.coap.annotation.CoapController;
 import org.springframework.cloud.iot.coap.annotation.CoapRequestMapping;
 import org.springframework.cloud.iot.coap.server.HandlerMapping;
-import org.springframework.cloud.iot.coap.server.HandlerMethod;
-import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
-import org.springframework.cloud.iot.coap.server.ServerCoapRequest;
 import org.springframework.cloud.iot.coap.server.result.method.CoapRequestMappingInfo;
-import org.springframework.context.support.ApplicationObjectSupport;
-import org.springframework.core.MethodIntrospector;
 import org.springframework.core.annotation.AnnotatedElementUtils;
-import org.springframework.util.ClassUtils;
-
-import reactor.core.publisher.Mono;
 
 /**
  * An implementation of {@link HandlerMapping} that creates
@@ -48,142 +33,27 @@ import reactor.core.publisher.Mono;
  * @author Janne Valkealahti
  *
  */
-public class CoapRequestMappingHandlerMapping extends ApplicationObjectSupport implements HandlerMapping, InitializingBean {
+public class CoapRequestMappingHandlerMapping extends AbstractHandlerMethodMapping {
 
 	private static final Logger log = LoggerFactory.getLogger(CoapRequestMappingHandlerMapping.class);
 
-	private static final String SCOPED_TARGET_NAME_PREFIX = "scopedTarget.";
-
-	private Map<CoapRequestMappingInfo, HandlerMethod> registry = new HashMap<>();
-
 	@Override
-	public Mono<Object> getHandler(ServerCoapExchange exchange) {
-		return getHandlerInternal(exchange).map(handler -> {
-			return handler;
-		});
-	}
-
-	public Mono<HandlerMethod> getHandlerInternal(ServerCoapExchange exchange) {
-		HandlerMethod handlerMethod = null;
-
-		ServerCoapRequest request = exchange.getRequest();
-		String uriPath = "/" + request.getUriPath();
-		for (Entry<CoapRequestMappingInfo,HandlerMethod> entry : registry.entrySet()) {
-			for (String pathToTest : entry.getKey().getPaths()) {
-				if (uriPath.equals(pathToTest)) {
-					handlerMethod = entry.getValue();
-					break;
-				}
-			}
-			if (handlerMethod != null) {
-				break;
-			}
-		}
-		if (handlerMethod != null) {
-			handlerMethod = handlerMethod.createWithResolvedBean();
-		}
-		return Mono.justOrEmpty(handlerMethod);
-	}
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		initHandlerMethods();
-	}
-
-	protected void initHandlerMethods() {
-		String[] beanNames = obtainApplicationContext().getBeanNamesForType(Object.class);
-
-		for (String beanName : beanNames) {
-			if (!beanName.startsWith(SCOPED_TARGET_NAME_PREFIX)) {
-				Class<?> beanType = null;
-				try {
-					beanType = obtainApplicationContext().getType(beanName);
-				}
-				catch (Throwable ex) {
-					// An unresolvable bean type, probably from a lazy bean - let's ignore it.
-					if (logger.isDebugEnabled()) {
-						logger.debug("Could not resolve target class for bean with name '" + beanName + "'", ex);
-					}
-				}
-				if (beanType != null && isHandler(beanType)) {
-					detectHandlerMethods(beanName);
-				}
-			}
-		}
-	}
-
 	protected boolean isHandler(Class<?> beanType) {
 		return (AnnotatedElementUtils.hasAnnotation(beanType, CoapController.class) ||
 				AnnotatedElementUtils.hasAnnotation(beanType, CoapRequestMapping.class));
 	}
 
-	protected void detectHandlerMethods(final Object handler) {
-		Class<?> handlerType = (handler instanceof String ?
-				obtainApplicationContext().getType((String) handler) : handler.getClass());
-
-		if (handlerType != null) {
-			final Class<?> userType = ClassUtils.getUserClass(handlerType);
-//			Map<Method, ?> methods = MethodIntrospector.selectMethods(userType,
-//					(MethodIntrospector.MetadataLookup<?>) method -> getMappingForMethod(method, userType));
-			Map<Method, CoapRequestMappingInfo> methods = MethodIntrospector.selectMethods(userType,
-					(MethodIntrospector.MetadataLookup<CoapRequestMappingInfo>) method -> getMappingForMethod(method, userType));
-			if (log.isDebugEnabled()) {
-				log.debug(methods.size() + " request handler methods found on " + userType + ": " + methods);
-			}
-			methods.forEach((key, mapping) -> {
-				Method invocableMethod = AopUtils.selectInvocableMethod(key, userType);
-				registerHandlerMethod(handler, invocableMethod, mapping);
-			});
-		}
-	}
-
-	protected void registerHandlerMethod(Object handler, Method method, CoapRequestMappingInfo mapping) {
-		HandlerMethod handlerMethod = createHandlerMethod(handler, method);
-		registry.put(mapping, handlerMethod);
-	}
-
-	protected HandlerMethod createHandlerMethod(Object handler, Method method) {
-		HandlerMethod handlerMethod;
-		if (handler instanceof String) {
-			String beanName = (String) handler;
-			handlerMethod = new HandlerMethod(beanName,
-					obtainApplicationContext().getAutowireCapableBeanFactory(), method);
-		}
-		else {
-			handlerMethod = new HandlerMethod(handler, method);
-		}
-		return handlerMethod;
-	}
-
-
-	protected CoapRequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
-		CoapRequestMappingInfo info = createRequestMappingInfo(method);
-		if (info != null) {
-			CoapRequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);
-			if (typeInfo != null) {
-				info = typeInfo.combine(info);
-			}
-		}
-		return info;
-	}
-
-	private CoapRequestMappingInfo createRequestMappingInfo(AnnotatedElement element) {
+	@Override
+	protected CoapRequestMappingInfo createRequestMappingInfo(AnnotatedElement element) {
 		CoapRequestMapping requestMapping = AnnotatedElementUtils.findMergedAnnotation(element, CoapRequestMapping.class);
 		return requestMapping != null ? createRequestMappingInfo(requestMapping) : null;
-//		return createRequestMappingInfo(requestMapping);
 	}
 
 	private CoapRequestMappingInfo createRequestMappingInfo(CoapRequestMapping requestMapping) {
-//		if (requestMapping == null) {
-//			return null;
-//		}
-
 		CoapRequestMappingInfo.Builder builder = CoapRequestMappingInfo
 				.paths(requestMapping.path())
 				.methods(requestMapping.method());
-
 		return builder.build();
-
-//		return new CoapRequestMappingInfo(Arrays.asList(requestMapping.path()));
 	}
+
 }

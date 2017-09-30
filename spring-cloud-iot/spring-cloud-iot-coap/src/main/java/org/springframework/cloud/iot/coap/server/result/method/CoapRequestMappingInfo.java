@@ -15,15 +15,19 @@
  */
 package org.springframework.cloud.iot.coap.server.result.method;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.cloud.iot.coap.CoapMethod;
 import org.springframework.cloud.iot.coap.server.CoapRequestCondition;
 import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
 import org.springframework.cloud.iot.coap.server.result.condition.CoapRequestMethodsRequestCondition;
+import org.springframework.cloud.iot.coap.server.result.condition.CoapRequestPatternsRequestCondition;
+import org.springframework.cloud.iot.coap.server.support.util.pattern.PathPattern;
+import org.springframework.cloud.iot.coap.server.support.util.pattern.PathPatternParser;
 import org.springframework.lang.Nullable;
+import org.springframework.util.StringUtils;
 
 /**
  * Encapsulates the following request mapping conditions:
@@ -33,33 +37,38 @@ import org.springframework.lang.Nullable;
  */
 public class CoapRequestMappingInfo implements CoapRequestCondition<CoapRequestMappingInfo>{
 
-	private List<String> paths;
+	private final CoapRequestPatternsRequestCondition patternsCondition;
 	private final CoapRequestMethodsRequestCondition methodsCondition;
 
-	public CoapRequestMappingInfo(List<String> paths) {
-		this(paths, null);
-	}
-
-	public CoapRequestMappingInfo(List<String> paths, CoapRequestMethodsRequestCondition methods) {
-		this.paths = paths;
+	/**
+	 * Instantiates a new coap request mapping info.
+	 *
+	 * @param patterns the patterns
+	 * @param methods the methods
+	 */
+	public CoapRequestMappingInfo(CoapRequestPatternsRequestCondition patterns, CoapRequestMethodsRequestCondition methods) {
+		this.patternsCondition = patterns != null ? patterns : new CoapRequestPatternsRequestCondition();
 		this.methodsCondition = (methods != null ? methods : new CoapRequestMethodsRequestCondition());
 	}
 
 	@Override
 	public CoapRequestMappingInfo combine(CoapRequestMappingInfo other) {
-		ArrayList<String> newPaths = new ArrayList<>();
-		for (String path1 : other.getPaths()) {
-			for (String path2 : getPaths()) {
-				newPaths.add(path2 + path1);
-			}
-		}
-		return new CoapRequestMappingInfo(newPaths);
+		CoapRequestPatternsRequestCondition patterns = this.patternsCondition.combine(other.patternsCondition);
+		CoapRequestMethodsRequestCondition methods = this.methodsCondition.combine(other.methodsCondition);
+		return new CoapRequestMappingInfo(patterns, methods);
 	}
 
 	@Override
 	public CoapRequestMappingInfo getMatchingCondition(ServerCoapExchange exchange) {
 		CoapRequestMethodsRequestCondition methods = methodsCondition.getMatchingCondition(exchange);
-		return null;
+		if (methods == null) {
+			return null;
+		}
+		CoapRequestPatternsRequestCondition patterns = patternsCondition.getMatchingCondition(exchange);
+		if (patterns == null) {
+			return null;
+		}
+		return new CoapRequestMappingInfo(patterns, methods);
 	}
 
 	@Override
@@ -67,8 +76,12 @@ public class CoapRequestMappingInfo implements CoapRequestCondition<CoapRequestM
 		return 0;
 	}
 
-	public List<String> getPaths() {
-		return paths;
+	public CoapRequestPatternsRequestCondition getPatternsCondition() {
+		return patternsCondition;
+	}
+
+	public CoapRequestMethodsRequestCondition getMethodsCondition() {
+		return methodsCondition;
 	}
 
 	/**
@@ -136,9 +149,18 @@ public class CoapRequestMappingInfo implements CoapRequestCondition<CoapRequestM
 
 		@Override
 		public CoapRequestMappingInfo build() {
-			return new CoapRequestMappingInfo(Arrays.asList(paths), new CoapRequestMethodsRequestCondition(methods));
+			PathPatternParser parser = new PathPatternParser();
+			CoapRequestPatternsRequestCondition patternsCondition = new CoapRequestPatternsRequestCondition(parse(this.paths, parser));
+			return new CoapRequestMappingInfo(patternsCondition, new CoapRequestMethodsRequestCondition(methods));
 		}
 
+		private static List<PathPattern> parse(String[] paths, PathPatternParser parser) {
+			return Arrays.stream(paths).map(path -> {
+				if (StringUtils.hasText(path) && !path.startsWith("/")) {
+					path = "/" + path;
+				}
+				return parser.parse(path);
+			}).collect(Collectors.toList());
+		}
 	}
-
 }

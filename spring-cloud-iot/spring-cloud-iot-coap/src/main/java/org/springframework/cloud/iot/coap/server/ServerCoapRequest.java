@@ -32,7 +32,5 @@ public interface ServerCoapRequest extends CoapInputMessage {
 
 	int getContentFormat();
 
-	String getUriPath();
-
 	CoapMethod getMethod();
 }

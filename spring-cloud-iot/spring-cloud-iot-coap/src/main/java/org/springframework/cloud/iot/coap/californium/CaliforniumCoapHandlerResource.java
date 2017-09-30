@@ -15,6 +15,8 @@
  */
 package org.springframework.cloud.iot.coap.californium;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,6 +39,7 @@ import org.springframework.cloud.iot.coap.server.support.DefaultServerCoapExchan
 import org.springframework.cloud.iot.coap.server.support.DefaultServerCoapObservableContext;
 import org.springframework.cloud.iot.coap.server.support.GenericServerCoapRequest;
 import org.springframework.cloud.iot.coap.server.support.GenericServerCoapResponse;
+import org.springframework.cloud.iot.coap.server.support.RequestPath;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
@@ -188,7 +191,13 @@ public class CaliforniumCoapHandlerResource extends AbstractCaliforniumCoapResou
 		GenericServerCoapRequest request = new GenericServerCoapRequest(exchange.getRequestPayload(), coapHeaders);
 		request.setMethod(CoapMethod.resolve(exchange.getRequestCode().name()));
 		request.setContentFormat(exchange.getRequestOptions().getContentFormat());
-		request.setUriPath(exchange.getRequestOptions().getUriPathString());
+		URI uri;
+		try {
+			uri = new URI(exchange.advanced().getRequest().getURI());
+		} catch (URISyntaxException e) {
+			throw new IllegalStateException("Invalid URI path: \"" + exchange.getRequestOptions().getUriPathString() + "\"");
+		}
+		request.setPath(RequestPath.parse(uri, ""));
 
 		GenericServerCoapResponse serverCoapResponse = new GenericServerCoapResponse();
 		return new DefaultServerCoapExchange(request, serverCoapResponse, context);

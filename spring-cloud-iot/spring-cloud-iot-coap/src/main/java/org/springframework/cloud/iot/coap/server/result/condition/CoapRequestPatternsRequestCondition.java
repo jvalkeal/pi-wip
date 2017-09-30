@@ -34,7 +34,6 @@ public class CoapRequestPatternsRequestCondition extends AbstractRequestConditio
 
 	private final SortedSet<PathPattern> patterns;
 
-
 	/**
 	 * Creates a new instance with the given URL patterns.
 	 * @param patterns 0 or more URL patterns; if 0 the condition will match to every request.
