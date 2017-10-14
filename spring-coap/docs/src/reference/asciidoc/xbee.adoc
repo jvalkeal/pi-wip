@@ -1,0 +1,27 @@
+[[iot-xbee]]
+= XBee
+*Digi XBee* is the brand name of a family of form factor compatible
+radio modules from Digi International.
+
+== Introduction
+*SCIOT* provides low level support for working with _XBee_ devices via
+<<iot-xbee-support>>, Spring Integration component with
+<<iot-xbee-int>> and Binder support with <<iot-xbee-binder>>.
+
+[[iot-xbee-support]]
+== XBee Support
+Base _XBee_ support in package `spring-cloud-iot-xbee` provides
+facilities to ease working with _XBee_ devices.
+
+[[iot-xbee-int]]
+== Spring Integration XBee
+`spring-cloud-iot-integration-xbee` is a _Spring Integration_
+component providing gateways for inbound and outbound. It also have a
+inbound channel adapter.
+
+[[iot-xbee-binder]]
+== Spring Cloud Stream Binder for XBee
+`spring-cloud-iot-stream-binder-xbee` is a _Spring Cloud Stream
+Binder_ implementation which work atop of <<iot-xbee-int>> providing
+easy integration to bind messages via _XBee_ radio network.
+

@@ -1,0 +1,18 @@
+spring:
+  cloud:
+    iot:
+      platform: RASPBERRY
+      gpio:
+        pins: 
+          17:
+            dimmedLed:
+              enabled: false
+          18:
+            dimmedLed:
+              enabled: true
+          19:
+            relay:
+              enabled: true
+          20:
+            button:
+              enabled: true

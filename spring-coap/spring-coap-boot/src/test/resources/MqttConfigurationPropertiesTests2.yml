@@ -1,0 +1,6 @@
+spring:
+  cloud:
+    iot:
+      mqtt:
+        username: john
+        password: doe

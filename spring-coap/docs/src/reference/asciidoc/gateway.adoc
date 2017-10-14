@@ -1,0 +1,30 @@
+[[iot-gateway]]
+= Gateway
+_IoT Gateway_ is an arbitrary concept to connect constraint devices to
+outside world. The most constraint example where _IoT Gateway_ comes
+in to play is when device is totally isolated from a normal IP
+network or in some other ways it is unable to communicate using device
+raw level communication channels supported in a network.
+_IoT Gateway_ can provide services to a device which are either too
+heavy to process in a device itself or in some other way it is more
+appropriate to process in a _gateway_ service itself.
+
+Device acting as a client into a _IoT Gateway_ needs to a some sort of
+a communication channel which can i.e. be based on a radio network or
+more constration IP networking like _UDP_. Though nothing limits
+device to be in a normal IP network and still using _IoT Gateway_ to
+communicate via it to access arbitry services.
+
+== Introduction
+_Spring Cloud Iot_ provides services towards clients to provide common
+services like accessint _REST_ services while also providing framework
+to create custom services.
+
+_Spring Cloud Iot Gateway_ framework is build atop of _Spring
+Integration_ utilising its channels and services.
+
+=== REST Gateway Service
+_RestGatewayService_ is a built-in service framework for device to
+access normal _HTTP_ services without having access to outside world
+or access to _IP_ network.
+

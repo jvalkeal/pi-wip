@@ -1,0 +1,5 @@
+spring:
+  cloud:
+    iot:
+      mqtt:
+        addresses: 'user1:pass1@host1,user2:pass2@host2'

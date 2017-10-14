@@ -1,0 +1,70 @@
+spring:
+  cloud:
+    iot:
+      components:
+        myLed:
+          led:
+            enabled: true
+            illuminateOnStart: true
+            illuminateOnExit: false
+            gpio:
+              pin: 17
+        myButton:
+          button:
+            enabled: true
+            tags: [foo,bar]
+            gpio:
+              pin: 27
+              reference: GND
+        myRotary:
+          incrementalRotary:
+            enabled: true
+            incrementSteps: 20
+            gpio:
+              leftPin: 17
+              rightPin: 18
+              clickPin: 27
+        myShiftRegister:
+          shiftRegister:
+            enabled: true
+            gpio:
+              sdiPin: 17
+              rclkPin: 18
+              srclkPin: 27
+        myPotentiometer:
+          potentiometer:
+            enabled: true
+            min: 0
+            max: 255
+            i2c:
+              bus: 1
+              address: 0x48
+        myLcd:
+          lcd:
+            enabled: true
+            rows: 2
+            columns: 20
+            i2c:
+              bus: 1
+              address: 0x48
+            pcf8574:
+              bus: 1
+              address: 0x48
+            hd44780:
+              rsPin: 17
+              ePin: 27
+              d4Pin: 25
+              d5Pin: 24
+              d6Pin: 23
+              d7Pin: 18
+        myTermistor:
+          termistor:
+            enabled: true
+            resistance: 10000
+            supplyVoltage: 5.0
+            referenceTemp: 25.0
+            dacBits: 8
+            beta: 3950
+            i2c:
+              bus: 1
+              address: 0x48

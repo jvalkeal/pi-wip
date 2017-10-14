@@ -1,0 +1,33 @@
+[preface]
+== Preface
+World is changing and every year more smaller and powerful little
+devices are introduced which are capable of running JVM's. All this
+will introduce new world to developers wanting to take their part of
+_Internet of Things(IoT)_.
+
+This reference documentation contains the following parts.
+
+<<introduction>> introduction to this reference documentation
+
+<<iot-getting-started>> Getting started
+
+<<iot>> Spring Cloud Iot documentation
+
+<<iot-components>> Spring Cloud Iot built-in component support
+
+<<iot-metrics>> Introduction working with metrics
+
+<<iot-security>> Spring Cloud Iot Security documentation
+
+<<iot-coap>> Spring Cloud Iot built-in CoAP support
+
+<<iot-xbee>> Spring Cloud Iot built-in XBee support
+
+<<iot-statemachine>> Spring Cloud Iot built-in Statemachine support
+
+<<iot-examples>> Spring Cloud Iot Samples
+
+<<iot-faq>> Frequently asked questions
+
+<<appendices>> generic info about used material and IoT
+

@@ -1,0 +1,242 @@
+[[iot-getting-started]]
+= Getting started
+If you’re just getting started with Spring Cloud IoT,
+this is the section for you! Here we answer the basic
+“what?”, “how?” and “why?” questions. You’ll find a gentle
+introduction to Spring Cloud Iot. We’ll then build our
+first Spring Cloud Iot application, discussing some
+core principles as we go.
+
+== System Requirements
+Spring Cloud Iot {revnumber} is built and tested with
+JDK 8, Spring Framework {spring-version}, Spring Boot
+{spring-boot-version} and Pi4J {pi4j-version}.
+
+Additionally a _CoAP_ support is based on Eclipse Californium
+{californium-version}, XBee support is based on _Digi International
+Java Library_ {xbee-version} where serial library usage is based on
+_rxtx nrjavaserial fork_  {nrjavaserial-version}.
+
+Spring Statemachine support library is based on
+{spring-statemachine-version}. Binder extensions are based on _Spring
+Cloud Stream_ {spring-cloud-stream-version}.
+
+Also some samples are based on _Spring Cloud Stream App Starters_
+version {spring-cloud-stream-app-starter-version}.
+
+== Modules
+The following modules are available for Spring Cloud Iot
+
+|===
+|Module |Description
+
+|spring-cloud-iot-core
+|Core system of a Spring Cloud Iot
+
+|spring-cloud-iot-boot
+|Core system of a Spring Cloud Iot Boot
+
+|spring-cloud-iot-coap
+|Core CoAP support
+
+|spring-cloud-iot-pi4j
+|Core support for Pi4J
+
+|spring-cloud-iot-integration-coap
+|Spring Integration CoAP support
+
+|spring-cloud-iot-stream-binder-coap
+|Spring Cloud Stream Binder for CoAP
+
+|spring-cloud-iot-gateway
+|Core IoT Gateway support
+
+|spring-cloud-iot-xbee
+|Spring Cloud IoT XBEE support
+
+|spring-cloud-iot-integration-xbee
+|Spring Integration XBEE support
+
+|spring-cloud-iot-stream-binder-xbee
+|Spring Cloud Stream Binder for XBEE
+
+|spring-cloud-iot-statemachine
+|Core Spring StateMachine support
+
+|spring-cloud-iot-test
+|Utilities for testing
+
+|===
+
+== Using Gradle
+Here is a typical `build.gradle` file:
+
+[source,groovy,indent=0]
+----
+buildscript {
+	ext {
+		springBootVersion = '2.0.0.BUILD-SNAPSHOT'
+	}
+	repositories {
+		mavenCentral()
+		maven { url "https://repo.spring.io/snapshot" }
+		maven { url "https://repo.spring.io/milestone" }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+jar {
+	baseName = 'demo'
+	version = '0.0.1-SNAPSHOT'
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+	maven { url "https://repo.spring.io/snapshot" }
+	maven { url "https://repo.spring.io/milestone" }
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud.iot:spring-cloud-iot-bom:1.0.0.BUILD-SNAPSHOT"
+	}
+}
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.cloud.iot:spring-cloud-iot-boot')
+	compile('org.springframework.cloud.iot:spring-cloud-iot-test')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+----
+
+[NOTE]
+====
+Replace `1.0.0.BUILD-SNAPSHOT` with a version you want to use.
+====
+
+Having a normal project structure you'd build this with command:
+[source,text,indent=0]
+----
+# ./gradlew clean build
+----
+
+Expected Spring Boot packaged fat-jar would be
+`build/libs/demo-0.0.1-SNAPSHOT.jar`.
+
+[NOTE]
+====
+You don't need repos `libs-milestone` and `libs-snapshot` for
+production development.
+====
+
+== Using Maven
+Here is a typical `pom.xml` file:
+
+[source,xml,indent=0]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.example</groupId>
+	<artifactId>demo</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>demo</name>
+	<description>Demo project for Spring Boot</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.0.BUILD-SNAPSHOT</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud.iot</groupId>
+				<artifactId>spring-cloud-iot-bom</artifactId>
+				<version>1.0.0.BUILD-SNAPSHOT</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud.iot</groupId>
+			<artifactId>spring-cloud-iot-boot</artifactId>
+		</dependency>
+
+		<dependency>
+	</dependencies>
+
+</project>
+----
+
+[NOTE]
+====
+Replace `1.0.0.BUILD-SNAPSHOT` with a version you want to use.
+====
+
+Having a normal project structure you'd build this with command:
+[source,text,indent=0]
+----
+# mvn clean package
+----
+
+Expected Spring Boot packaged fat-jar would be
+`target/demo-0.0.1-SNAPSHOT.jar`.
+
+[NOTE]
+====
+You don't need repos `libs-milestone` and `libs-snapshot` for
+production development.
+====
+
+==  Developing your first Spring Cloud IoT application
+Let's start by creating a simple Spring Boot `Application` class.
+
+[source,java,indent=0]
+----
+package com.example;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.iot.test.fake.EnableIotFakeSensors;
+
+@EnableIotFakeSensors
+@SpringBootApplication
+public class DemoApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(DemoApplication.class, args);
+	}
+}
+----
+

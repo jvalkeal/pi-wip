@@ -1,0 +1,18 @@
+rootProject.name = 'spring-coap'
+
+include 'spring-coap-core'
+include 'spring-coap-boot'
+include 'spring-coap-bom'
+
+include 'spring-coap-samples'
+include 'spring-coap-samples:coap-server'
+
+rootProject.children.find {
+	if (it.name == 'spring-coap-samples') {
+		it.name = 'spring-coap-samples-common'
+		it.children.each {
+			it.name = 'spring-coap-samples-' + it.name
+		}
+	}
+}
+

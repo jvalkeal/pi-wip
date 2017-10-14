@@ -1,0 +1,11 @@
+[[iot-statemachine]]
+= Statemachine Support
+When working with low level devices which naturally have constraints
+of parallel access and communication limitations, _StateMachine_
+itself is a good choice to control access and furhermore orchestrate
+logic how devices work together.
+
+== Introduction
+`spring-cloud-iot-statemachine` builds atop of _Spring StateMachine_
+providing higher level features to ease creating and use of
+statemachine concepts with IoT devices.

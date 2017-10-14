@@ -1,0 +1,12 @@
+spring:
+  cloud:
+    iot:
+      platform: RASPBERRY
+      raspberry:
+        numberingScheme: BROADCOM
+        pins:
+          GPIO_17:
+            type: colorled
+          GPIO_18:
+            type: colorled
+            

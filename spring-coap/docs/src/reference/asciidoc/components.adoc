@@ -1,0 +1,31 @@
+[[iot-components]]
+= Components
+This section contains documentation of built-in components.
+
+== Buttons
+xxx.
+
+[source,java,indent=0]
+----
+include::samples/org/springframework/cloud/iot/docs/DocsConfigurationSample1Tests.java[tags=snippetA1]
+----
+
+[source,java,indent=0]
+----
+include::samples/org/springframework/cloud/iot/boot/docs/DocsConfigurationSample1Tests.java[tags=snippetA1]
+----
+
+[source,yaml,indent=0]
+----
+include::samples/org/springframework/cloud/iot/boot/docs/DocsConfigurationSample1Tests.yml[tags=snippetA1]
+----
+
+== Displays
+xxx.
+
+=== LCD
+xxx.
+
+==== HD44780
+xxx.
+

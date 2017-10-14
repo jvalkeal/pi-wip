@@ -1,0 +1,317 @@
+buildscript {
+	ext {
+		springVersion = '5.0.0.BUILD-SNAPSHOT'
+		springBootVersion = '2.0.0.BUILD-SNAPSHOT'
+		californiumVersion = '2.0.0-SNAPSHOT'
+		jsr305Version = '3.0.2'
+	}
+	repositories {
+		mavenCentral()
+		maven { url 'http://repo.spring.io/plugins-release' }
+		maven { url 'http://repo.spring.io/plugins-snapshot' }
+	}
+	dependencies {
+		classpath("io.spring.gradle:propdeps-plugin:0.0.8")
+		classpath('org.asciidoctor:asciidoctor-gradle-plugin:1.5.3')
+		classpath("io.spring.gradle:docbook-reference-plugin:0.3.1")
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+def sampleProjects() {
+	subprojects.findAll { project ->
+		project.name.contains('spring-coap-samples') && project.name != 'spring-coap-samples-common'
+	}
+}
+
+configure(allprojects) {
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	apply plugin: 'io.spring.dependency-management'
+	apply plugin: 'propdeps'
+	apply plugin: 'propdeps-maven'
+	apply plugin: 'propdeps-idea'
+	apply plugin: 'propdeps-eclipse'
+
+	group = 'org.springframework.coap'
+
+/*
+	def commonCompilerArgs = [
+			"-Xlint:serial", "-Xlint:cast", "-Xlint:classfile", "-Xlint:dep-ann",
+			"-Xlint:divzero", "-Xlint:empty", "-Xlint:finally", "-Xlint:overrides",
+			"-Xlint:path", "-Xlint:processing", "-Xlint:static", "-Xlint:try", "-Xlint:-options"
+			]
+
+	compileJava.options*.compilerArgs = commonCompilerArgs +
+			["-Xlint:varargs", "-Xlint:fallthrough", "-Xlint:rawtypes",
+			 "-Xlint:deprecation", "-Xlint:unchecked", "-Werror"]
+
+	compileTestJava.options*.compilerArgs = commonCompilerArgs +
+			["-Xlint:-varargs", "-Xlint:-fallthrough","-Xlint:-rawtypes",
+			 "-Xlint:-deprecation", "-Xlint:-unchecked"]
+*/
+
+	compileJava {
+		sourceCompatibility = 1.8
+		targetCompatibility = 1.8
+	}
+
+	repositories {
+		mavenCentral()
+		maven { url 'http://repo.spring.io/libs-snapshot' }
+		maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+		// for californium snapshots
+		maven { url 'https://repo.eclipse.org/content/repositories/californium' }
+	}
+
+	dependencyManagement {
+		imports {
+			mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
+		}
+		dependencies {
+			dependency "org.eclipse.californium:californium-core:$californiumVersion"
+			dependency "com.google.code.findbugs:jsr305:${jsr305Version}"
+		}
+	}
+
+	// for github.com/spring-gradle-plugins/dependency-management-plugin/issues/141
+	project.tasks.withType(Upload).all { uploadTask ->
+		uploadTask.repositories.withType(MavenResolver).all { resolver ->
+			resolver.pom.withXml(dependencyManagement.pomConfigurer);
+		}
+	}
+
+}
+
+configure(subprojects) { subproject ->
+	apply from: "${rootProject.projectDir}/publish-maven.gradle"
+
+	jar {
+		manifest.attributes['Implementation-Title'] = subproject.name
+		manifest.attributes['Implementation-Version'] = subproject.version
+
+		from("${rootProject.projectDir}/src/dist") {
+			include "license.txt"
+			include "notice.txt"
+			into "META-INF"
+			expand(copyright: new Date().format('yyyy'), version: project.version)
+		}
+	}
+
+	dependencies {
+		compileOnly("com.google.code.findbugs:jsr305")
+		testCompileOnly("com.google.code.findbugs:jsr305")
+	}
+
+	task sourcesJar(type: Jar, dependsOn:classes) {
+		classifier = 'sources'
+		from sourceSets.main.allJava
+	}
+
+	task javadocJar(type: Jar) {
+		classifier = 'javadoc'
+		from javadoc
+	}
+
+	artifacts {
+		archives sourcesJar
+		archives javadocJar
+	}
+
+}
+
+project('spring-coap-boot') {
+	description = "Spring CoAP Boot"
+
+	dependencies {
+		compile('org.slf4j:slf4j-api')
+		optional project(":spring-coap-core")
+		optional('org.springframework.boot:spring-boot-autoconfigure')
+		optional('org.springframework.boot:spring-boot-actuator')
+		optional('org.springframework.boot:spring-boot-configuration-processor')
+		testCompile('org.springframework.boot:spring-boot-starter-test')
+		testRuntime('org.springframework.boot:spring-boot-starter')
+	}
+	// for configuration processor
+	compileJava.dependsOn(processResources)
+}
+
+project('spring-coap-core') {
+	description = "Spring CoAP Core"
+
+	dependencies {
+		compile('org.eclipse.californium:californium-core')
+		compile('org.springframework:spring-context')
+		compile('org.springframework:spring-web')
+		compile('org.slf4j:slf4j-api')
+		compile('io.projectreactor:reactor-core')
+		optional('com.google.code.gson:gson')
+		testCompile('org.springframework.boot:spring-boot-starter-test')
+		testRuntime('org.springframework.boot:spring-boot-starter')
+	}
+}
+
+project('spring-coap-bom') {
+	description = "Spring Coap (Bill of Materials)"
+
+	dependencyManagement {
+		generatedPomCustomization {
+			enabled = false
+		}
+	}
+
+	configurations.archives.artifacts.clear()
+	artifacts {
+		// work around GRADLE-2406 by attaching text artifact
+		archives(file("spring-coap-bom.txt"))
+	}
+
+	install {
+		repositories.mavenInstaller {
+			pom.whenConfigured {
+				packaging = "pom"
+				withXml {
+					asNode().children().last() + {
+						delegate.dependencyManagement {
+							delegate.dependencies {
+								parent.subprojects.sort { "$it.name" }.each { p ->
+									if (!p.name.contains('spring-coap-samples') &&
+											p != project) {
+										delegate.dependency {
+											delegate.groupId(p.group)
+											delegate.artifactId(p.name)
+											delegate.version(p.version)
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+}
+
+configure(sampleProjects()) {
+	apply plugin: 'org.springframework.boot'
+	tasks.findByPath("artifactoryPublish")?.enabled = false
+	build.dependsOn bootJar
+}
+
+configure(rootProject) {
+	apply plugin: 'org.asciidoctor.gradle.asciidoctor'
+	apply plugin: "docbook-reference"
+	apply from: "${rootProject.projectDir}/publish-maven.gradle"
+	configurations.archives.artifacts.clear()
+
+	reference {
+		sourceDir = new File(asciidoctor.outputDir , 'docbook5')
+		pdfFilename = "spring-coap-reference.pdf"
+		epubFilename = "spring-coap-reference.epub"
+		expandPlaceholders = ""
+	}
+
+	afterEvaluate {
+		tasks.findAll { it.name.startsWith("reference") }.each{ it.dependsOn.add("asciidoctor") }
+	}
+
+	asciidoctorj {
+		version = '1.5.2'
+	}
+
+	asciidoctor {
+		sourceDir = file("docs/src/reference/asciidoc")
+		backends = ['docbook5']
+		options eruby: 'erubis'
+		attributes docinfo: '',
+			copycss : '',
+			icons : 'font',
+			'source-highlighter': 'prettify',
+			sectanchors : '',
+			toc2: '',
+			idprefix: '',
+			idseparator: '-',
+			doctype: 'book',
+			numbered: '',
+			'spring-coap-version' : project.version,
+			'spring-version' : springVersion,
+			'spring-boot-version' : springBootVersion,
+			'californium-version' : californiumVersion,
+			revnumber : project.version
+	}
+
+	task copyDocsSamples(type: Copy) {
+		from 'spring-coap-core/src/test/java'
+		from 'spring-coap-core/src/test/resources'
+		from 'spring-coap-boot/src/test/java'
+		from 'spring-coap-boot/src/test/resources'
+		include '**/docs/*.java'
+		include '**/docs/*.uml'
+		include '**/docs/*.yml'
+		include '**/docs/*.properties'
+		include '**/docs/*.json'
+		into 'docs/src/reference/asciidoc/samples'
+
+		from 'spring-coap-samples'
+		include '**/src/main/**/*.java'
+		include '**/src/main/**/*.yml'
+		into 'docs/src/reference/asciidoc/samples'
+	}
+
+	asciidoctor.dependsOn copyDocsSamples
+
+	task api(type: Javadoc) {
+		group = 'Documentation'
+		description = 'Generates aggregated Javadoc API documentation.'
+		title = "${rootProject.description} ${version} API"
+		options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+		options.author = true
+		options.header = rootProject.description
+		options.links(
+			'http://docs.jboss.org/jbossas/javadoc/4.0.5/connector'
+		)
+
+		// disable javadocs for samples
+		source subprojects
+		.findAll { project ->
+			!project.name.contains('samples')
+		}
+		.collect { project ->
+			project.sourceSets.main.allJava
+		}
+
+		destinationDir = new File(buildDir, "api")
+		classpath = files(subprojects.collect { project ->
+			project.sourceSets.main.compileClasspath
+		})
+		maxMemory = '1024m'
+	}
+
+
+	task docsZip(type: Zip) {
+		group = 'Distribution'
+		classifier = 'docs'
+		description = "Builds -${classifier} archive containing api and reference for deployment."
+		from('src/dist') {
+			include 'changelog.txt'
+		}
+		from (api) {
+			into 'api'
+		}
+		from (reference) {
+			into 'reference'
+		}
+	}
+
+
+	artifacts {
+		archives docsZip
+	}
+
+	task wrapper(type: Wrapper) {
+		description = 'Generates gradlew[.bat] scripts'
+		gradleVersion = '4.1'
+	}
+}

@@ -1,0 +1,14 @@
+description = 'Spring Coap Samples Common'
+
+configurations.archives.artifacts.removeAll { it.archiveTask.is jar }
+tasks.findByPath("artifactoryPublish")?.enabled = false
+
+project('spring-coap-samples-coap-server') {
+	description = 'Spring Coap Server Sample'
+	dependencies {
+		compile project(":spring-coap-core")
+		compile('org.springframework.boot:spring-boot-starter')
+		runtime project(":spring-coap-boot")
+	}
+}
+

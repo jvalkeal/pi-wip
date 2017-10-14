@@ -1,0 +1,204 @@
+[[iot-examples]]
+= IoT Examples
+xxx.
+
+[source,text]
+----
+./gradlew clean build -x test
+----
+
+Every sample is located in its own directory under
+`spring-cloud-iot-samples`. Samples are based on spring-boot and
+spring-shell and you will find usual boot fat jars under every sample
+projects `build/libs` directory.
+
+
+[[iot-examples-generic]]
+== Spring Clout Iot Generic Samples
+This section contains generic _Spring IoT Samples_.
+
+[[iot-examples-generic-fakesensor]]
+=== Spring Clout Iot Fake Sensors
+xxx.
+
+[[iot-examples-generic-gateway]]
+=== Spring Clout Iot Gateway
+This sample is showing concepts of a _IoT Gateway_ using server and
+client side components.
+
+*Requirements*
+
+* spring-cloud-iot-samples-gateway-server for gateway server
+* spring-cloud-iot-samples-gateway-client for gateway client
+* XBee devices(optional) if communicating over radio network
+
+*To Read*
+
+* To understand _IoT Gateway_ <<iot-gateway>>
+* More about _CoAP_ <<iot-coap>>
+* More about _XBee_ <<iot-xbee>>
+
+[[iot-examples-generic-temperaturelcd]]
+=== Spring Clout Iot Temperature to LCD
+xxx.
+
+[[iot-examples-sunfoundersensorkitv2]]
+== Sunfounder Sensor Kit V2
+Examples in this section are equivalent of what _Sunfounder_ have done
+with their _C_ and _Python_ based sample code.
+
+[NOTE]
+====
+We don't go into details what these samples do as we simply consentrate how
+same functionality is accomplished with _Spring Cloud IoT_. For
+details about schematics and generic functionality, see their own
+documentation.
+====
+
+=== Sunfounder Sensor Kit V2 Example 01
+xxx.
+
+[source,yaml,indent=0]
+----
+include::samples/sunfounder-sensor-01/src/main/resources/application.yml[tags=snippetA1]
+----
+
+[source,java,indent=0]
+----
+include::samples/sunfounder-sensor-01/src/main/java/demo/sunfoundersensor01/Application.java[tags=snippetA1]
+----
+
+=== Sunfounder Sensor Kit V2 Example 04
+xxx.
+
+=== Sunfounder Sensor Kit V2 Example 06
+xxx.
+
+=== Sunfounder Sensor Kit V2 Example 16
+xxx.
+
+=== Sunfounder Sensor Kit V2 Example 18
+xxx.
+
+=== Sunfounder Sensor Kit V2 Example 26
+xxx.
+
+=== Sunfounder Sensor Kit V2 Example 27
+xxx.
+
+=== Sunfounder Sensor Kit V2 Example 30
+xxx.
+
+[[iot-examples-sunfoundersuperkit]]
+== Sunfounder Super Kit
+xxx.
+
+=== Sunfounder Super Kit Example 11 Segment
+xxx.
+
+=== Sunfounder Super Kit Example 13
+xxx.
+
+[[iot-examples-xbee]]
+== Spring Clout Iot XBee Samples
+xxx.
+
+[[iot-examples-xbee-receivedata]]
+=== Spring Clout Iot XBee Receive Data
+xxx.
+
+[[iot-examples-xbee-senddata]]
+=== Spring Clout Iot XBee Send Data
+xxx.
+
+[[iot-examples-stream]]
+== Spring Clout Iot Stream Samples
+xxx.
+
+[[iot-examples-stream-ticktock]]
+=== Spring Clout Iot Stream Ticktock
+This sample is a simple _ticktock_ stream sample familiar from _Spring
+Cloud Dataflow_ as a basic `time` source into `log` sink.
+
+For _source_ application we simply cope existing
+`TimeSourceApplication` as is and define _XBee_ to be in
+`/dev/ttyUSB0`.
+[source,yaml,indent=0]
+----
+include::samples/time-source/src/main/resources/application.yml[tags=snippetA1]
+----
+
+[source,java,indent=0]
+----
+include::samples/time-source/src/main/java/demo/timesource/TimeSourceApplication.java[tags=snippetA1]
+----
+
+For _sink_ application we simply cope existing
+`LogSinkApplication` as is and define _XBee_ to be in
+`/dev/ttyUSB0`.
+[source,yaml,indent=0]
+----
+include::samples/log-sink/src/main/resources/application.yml[tags=snippetA1]
+----
+
+[source,java,indent=0]
+----
+include::samples/log-sink/src/main/java/demo/logsink/LogSinkApplication.java[tags=snippetA1]
+----
+
+Start both applications as:
+
+[source,text,subs="verbatim,attributes"]
+----
+$ sudo java -jar spring-cloud-iot-samples-log-sink-{revnumber}.jar \
+--spring.cloud.stream.bindings.input.contentType=text/plain
+----
+
+[source,text,subs="verbatim,attributes"]
+----
+$ sudo java -jar spring-cloud-iot-samples-time-source-{revnumber}.jar
+----
+
+`TimeSourceApplication` simply logs itself as started.
+
+[source,text,subs="verbatim,attributes"]
+----
+2017-04-02 16:19:05.132  INFO 3605 --- [           main] demo.timesource.TimeSourceApplication
+: Started TimeSourceApplication in 37.447 seconds (JVM running for 39.272)
+----
+
+`LogSinkApplication` simply logs messages received from
+`TimeSourceApplication`.
+
+[source,text,subs="verbatim,attributes"]
+----
+2017-04-02 17:54:37.655  INFO 7061 --- [           main] demo.logsink.LogSinkApplication
+: Started LogSinkApplication in 36.182 seconds (JVM running for 38.031)
+2017-04-02 17:55:13.874  INFO 7061 --- [ool-10-thread-1] log.sink : 04/02/17 17:55:13
+2017-04-02 17:55:14.786  INFO 7061 --- [ool-12-thread-1] log.sink : 04/02/17 17:55:14
+----
+
+[[iot-examples-tutorials]]
+== Spring Clout Iot Tutorials
+This section contains more samples and tutorials which requires
+specific hardware and generally involves more detailed understanding
+of low level workings of IoT devices.
+
+[[iot-examples-tutorials-buttons-game]]
+=== Spring Clout Iot Buttons Game Tutorial
+This button game is modeled after a famious game presented in a
+finnish game show called _Speden Pelit_. This simple game have 4
+buttons which will illuminate in a randon order. Game have two modes,
+where _speed_ mode will illuminate buttons on random order and game
+fails if player can't keep up with a speed and presses wrong button.
+On a _memory_ mode a set of buttons are illuminated and player is
+required to memorise order of buttons and game fails if player is
+unable to press buttons on correct order.
+
+Game is very addictive and simple from a hardware point of view as it
+either needs buttons and leds or buttons with led in it as presented
+in a original game device itself.
+
+In this tutorial we go through how this game is build as a harware and
+how code running a game works.
+

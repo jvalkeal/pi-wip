@@ -1,0 +1,32 @@
+[[introduction]]
+= Introduction
+Spring Cloud IoT(SCIOT) is a framework for application developers to use
+Spring concepts with IoT applications. SCIOT aims to provide the
+following features:
+
+* Device and Component abstraction.
+* Easy configuration model.
+* Support for different communication protocols.
+
+== Background
+
+[quote, Wikipedia]
+____________________________________________________________________
+The *Internet of things (IoT)* is the inter-networking of physical
+devices, vehicles (also referred to as "connected devices" and "smart
+devices"), buildings, and other items—embedded with electronics,
+software, sensors, actuators, and network connectivity that enable
+these objects to collect and exchange data.
+____________________________________________________________________
+
+That said, number of connected devices are expected to dramatically
+increase in coming years and to have a sensible ways to program and
+interact with these devices from a Java world is becoming more
+important.
+
+== Usage Scenarios
+There are two major areas where _SCIOT_ is relatively good pick to
+build your integrations with existing hardware. Firstly you are
+interested to collect metrics from a sensors and send those somewhere
+for further processing. Secondly you just want to build a device
+having different components and do interaction with those components.

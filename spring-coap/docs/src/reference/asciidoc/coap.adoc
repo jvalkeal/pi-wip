@@ -1,0 +1,41 @@
+[[iot-coap]]
+= CoAP
+*Constrained Application Protocol (CoAP)* is an Internet Application
+Protocol for constrained devices.
+
+[quote, Wikipedia]
+____
+Enables those constrained devices to communicate with the wider
+Internet using similar protocols. CoAP is designed for use between
+devices on the same constrained network, between devices and general
+nodes on the Internet, and between devices on different constrained
+networks both joined by an internet. CoAP is also being used via other
+mechanisms, such as SMS on mobile communication networks.
+____
+
+== Introduction
+*SCIOT* provides support for working with _CoAP_ protocol via base
+framework in <<iot-coap-framework>>, Spring Integration component in
+<<iot-coap-int>> and Binder support in <<iot-coap-binder>>.
+
+[[iot-coap-framework]]
+== CoAP Framework
+Base _CoAP_ support in package `spring-cloud-iot-coap` provides
+facilities to ease working with _CoAP_ protocol.
+
+=== Introduction
+xxx.
+
+
+[[iot-coap-int]]
+== Spring Integration CoAP
+`spring-cloud-iot-integration-coap` is a _Spring Integration_
+component providing gateways for inbound and outbound. It also have a
+inbound channel adapter.
+
+[[iot-coap-binder]]
+== Spring Cloud Stream Binder for CoAP
+`spring-cloud-iot-stream-binder-coap` is a _Spring Cloud Stream
+Binder_ implementation which work atop of <<iot-coap-int>> providing
+easy integration to bind messages via _CoAP_ protocol.
+

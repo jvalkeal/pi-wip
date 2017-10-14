@@ -1,0 +1,15 @@
+[[iot-security]]
+= Security
+Security is very important anything to do with IoT devices.
+
+[NOTE]
+====
+As we take security as a first priority we need to take a little
+different approach with our sample what you may have used with other
+Spring samples. On default we try to expose as little as possible
+while still giving user a configuration options to opt out and expose
+parts needed.
+====
+
+== Introduction
+xxx
