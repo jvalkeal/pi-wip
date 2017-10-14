@@ -15,14 +15,23 @@
  */
 package org.springframework.cloud.iot.coap.server.support;
 
+import java.util.List;
+
 import org.springframework.cloud.iot.coap.server.HandlerMethod;
+import org.springframework.cloud.iot.coap.server.result.method.CoapHandlerMethodArgumentResolver;
 import org.springframework.cloud.iot.coap.server.result.method.InvocableHandlerMethod;
 
 public class ControllerMethodResolver {
 
+	private final List<CoapHandlerMethodArgumentResolver> requestMappingResolvers;
+
+	public ControllerMethodResolver(List<CoapHandlerMethodArgumentResolver> requestMappingResolvers) {
+		this.requestMappingResolvers = requestMappingResolvers;
+	}
+
 	public InvocableHandlerMethod getRequestMappingMethod(HandlerMethod handlerMethod) {
 		InvocableHandlerMethod invocable = new InvocableHandlerMethod(handlerMethod);
-//		invocable.setArgumentResolvers(this.requestMappingResolvers);
+		invocable.setArgumentResolvers(this.requestMappingResolvers);
 		return invocable;
 	}
 

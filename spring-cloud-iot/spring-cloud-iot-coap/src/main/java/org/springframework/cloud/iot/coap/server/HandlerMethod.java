@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.BridgeMethodResolver;
+import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.SynthesizingMethodParameter;
@@ -39,6 +40,8 @@ public class HandlerMethod {
 
 	private final Method bridgedMethod;
 
+	private final MethodParameter[] parameters;
+
 	public HandlerMethod(Object bean, Method method) {
 		Assert.notNull(bean, "Bean is required");
 		Assert.notNull(method, "Method is required");
@@ -47,7 +50,7 @@ public class HandlerMethod {
 		this.beanType = ClassUtils.getUserClass(bean);
 		this.method = method;
 		this.bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
-//		this.parameters = initMethodParameters();
+		this.parameters = initMethodParameters();
 //		evaluateResponseStatus();
 	}
 
@@ -61,7 +64,7 @@ public class HandlerMethod {
 		this.beanType = (beanType != null ? ClassUtils.getUserClass(beanType) : null);
 		this.method = method;
 		this.bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
-//		this.parameters = initMethodParameters();
+		this.parameters = initMethodParameters();
 //		evaluateResponseStatus();
 	}
 
@@ -73,7 +76,7 @@ public class HandlerMethod {
 		this.beanType = handlerMethod.beanType;
 		this.method = handlerMethod.method;
 		this.bridgedMethod = handlerMethod.bridgedMethod;
-//		this.parameters = handlerMethod.parameters;
+		this.parameters = handlerMethod.parameters;
 //		this.responseStatus = handlerMethod.responseStatus;
 //		this.responseStatusReason = handlerMethod.responseStatusReason;
 //		this.resolvedFromHandlerMethod = handlerMethod.resolvedFromHandlerMethod;
@@ -87,7 +90,7 @@ public class HandlerMethod {
 		this.beanType = handlerMethod.beanType;
 		this.method = handlerMethod.method;
 		this.bridgedMethod = handlerMethod.bridgedMethod;
-//		this.parameters = handlerMethod.parameters;
+		this.parameters = handlerMethod.parameters;
 //		this.responseStatus = handlerMethod.responseStatus;
 //		this.responseStatusReason = handlerMethod.responseStatusReason;
 //		this.resolvedFromHandlerMethod = handlerMethod;
@@ -169,6 +172,15 @@ public class HandlerMethod {
 		return this.bridgedMethod;
 	}
 
+	/**
+	 * Return the method parameters for this handler method.
+	 *
+	 * @return the method parameters for this handler method
+	 */
+	public MethodParameter[] getMethodParameters() {
+		return this.parameters;
+	}
+
 	public HandlerMethod createWithResolvedBean() {
 		Object handler = this.bean;
 		if (this.bean instanceof String) {
@@ -212,4 +224,14 @@ public class HandlerMethod {
 		}
 	}
 
+	private MethodParameter[] initMethodParameters() {
+		int count = this.bridgedMethod.getParameterCount();
+		MethodParameter[] result = new MethodParameter[count];
+		for (int i = 0; i < count; i++) {
+			HandlerMethodParameter parameter = new HandlerMethodParameter(i);
+			GenericTypeResolver.resolveParameterType(parameter, this.beanType);
+			result[i] = parameter;
+		}
+		return result;
+	}
 }

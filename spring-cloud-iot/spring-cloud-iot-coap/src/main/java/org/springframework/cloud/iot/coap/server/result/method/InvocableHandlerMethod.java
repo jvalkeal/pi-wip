@@ -18,39 +18,145 @@ package org.springframework.cloud.iot.coap.server.result.method;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.coap.server.HandlerMethod;
 import org.springframework.cloud.iot.coap.server.HandlerResult;
 import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
+import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.MethodParameter;
+import org.springframework.core.ParameterNameDiscoverer;
+import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
 import reactor.core.publisher.Mono;
 
 public class InvocableHandlerMethod extends HandlerMethod {
 
+	private static final Logger log = LoggerFactory.getLogger(InvocableHandlerMethod.class);
+	private static final Mono<Object[]> EMPTY_ARGS = Mono.just(new Object[0]);
+	private static final Object NO_ARG_VALUE = new Object();
+	private List<CoapHandlerMethodArgumentResolver> resolvers = new ArrayList<>();
+	private ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
+
 	public InvocableHandlerMethod(HandlerMethod handlerMethod) {
 		super(handlerMethod);
 	}
 
-	public Mono<HandlerResult> invoke(ServerCoapExchange exchange) {
+	/**
+	 * Configure the argument resolvers to use to use for resolving method
+	 * argument values against a {@code ServerCoapExchange}.
+	 *
+	 * @param resolvers the argument resolvers
+	 */
+	public void setArgumentResolvers(List<CoapHandlerMethodArgumentResolver> resolvers) {
+		this.resolvers.clear();
+		this.resolvers.addAll(resolvers);
+	}
 
-		try {
-			Object value = doInvoke(new String[0]);
-			HandlerResult result = new HandlerResult(this, value, getReturnType());
-			return Mono.just(result);
+	/**
+	 * Return the configured argument resolvers.
+	 *
+	 * @return the configured argument resolvers
+	 */
+	public List<CoapHandlerMethodArgumentResolver> getResolvers() {
+		return this.resolvers;
+	}
+
+	public Mono<HandlerResult> invoke(ServerCoapExchange exchange, Object... providedArgs) {
+		return resolveArguments(exchange, providedArgs).flatMap(args -> {
+			try {
+				Object value = doInvoke(args);
+				HandlerResult result = new HandlerResult(this, value, getReturnType());
+				return Mono.just(result);
+			}
+			catch (InvocationTargetException ex) {
+				return Mono.error(ex.getTargetException());
+			}
+			catch (Throwable ex) {
+				return Mono.error(new IllegalStateException(getInvocationErrorMessage(new String[0])));
+			}
+		});
+	}
+
+	private Mono<Object[]> resolveArguments(ServerCoapExchange exchange, Object... providedArgs) {
+
+		if (ObjectUtils.isEmpty(getMethodParameters())) {
+			return EMPTY_ARGS;
 		}
-		catch (InvocationTargetException ex) {
-			return Mono.error(ex.getTargetException());
+		try {
+			List<Mono<Object>> argMonos = Stream.of(getMethodParameters())
+					.map(param -> {
+						param.initParameterNameDiscovery(this.parameterNameDiscoverer);
+						return findProvidedArgument(param, providedArgs)
+								.map(Mono::just)
+								.orElseGet(() -> {
+									CoapHandlerMethodArgumentResolver resolver = findResolver(param);
+									return resolveArg(resolver, param, exchange);
+								});
+
+					})
+					.collect(Collectors.toList());
+
+			// Create Mono with array of resolved values...
+			return Mono.zip(argMonos, argValues ->
+					Stream.of(argValues).map(o -> o != NO_ARG_VALUE ? o : null).toArray());
 		}
 		catch (Throwable ex) {
-			return Mono.error(new IllegalStateException(getInvocationErrorMessage(new String[0])));
+			return Mono.error(ex);
 		}
+	}
 
+	private Optional<Object> findProvidedArgument(MethodParameter parameter, Object... providedArgs) {
+		if (ObjectUtils.isEmpty(providedArgs)) {
+			return Optional.empty();
+		}
+		return Arrays.stream(providedArgs)
+				.filter(arg -> parameter.getParameterType().isInstance(arg))
+				.findFirst();
+	}
 
+	private CoapHandlerMethodArgumentResolver findResolver(MethodParameter param) {
+		return this.resolvers.stream()
+				.filter(r -> r.supportsParameter(param))
+				.findFirst()
+				.orElseThrow(() -> getArgumentError("No suitable resolver for", param, null));
+	}
+
+	private Mono<Object> resolveArg(CoapHandlerMethodArgumentResolver resolver, MethodParameter parameter,
+			ServerCoapExchange exchange) {
+
+		try {
+			return resolver.resolveArgument(parameter, exchange)
+					.defaultIfEmpty(NO_ARG_VALUE)
+					.doOnError(cause -> {
+						if (log.isDebugEnabled()) {
+							log.debug(getDetailedErrorMessage("Failed to resolve", parameter), cause);
+						}
+					});
+		}
+		catch (Exception ex) {
+			throw getArgumentError("Failed to resolve", parameter, ex);
+		}
+	}
+
+	private IllegalStateException getArgumentError(String text, MethodParameter parameter, @Nullable Throwable ex) {
+		return new IllegalStateException(getDetailedErrorMessage(text, parameter), ex);
+	}
+
+	private String getDetailedErrorMessage(String text, MethodParameter param) {
+		return text + " argument " + param.getParameterIndex() + " of type '" +
+				param.getParameterType().getName() + "' on " + getBridgedMethod().toGenericString();
 	}
 
 	private Object doInvoke(Object[] args) throws Exception {

@@ -17,13 +17,14 @@ package org.springframework.cloud.iot.coap.server.result.method.annotation;
 
 import java.lang.reflect.AnnotatedElement;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cloud.iot.coap.annotation.CoapController;
 import org.springframework.cloud.iot.coap.annotation.CoapRequestMapping;
 import org.springframework.cloud.iot.coap.server.HandlerMapping;
 import org.springframework.cloud.iot.coap.server.result.method.CoapRequestMappingInfo;
+import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.lang.Nullable;
+import org.springframework.util.StringValueResolver;
 
 /**
  * An implementation of {@link HandlerMapping} that creates
@@ -33,9 +34,10 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
  * @author Janne Valkealahti
  *
  */
-public class CoapRequestMappingHandlerMapping extends AbstractHandlerMethodMapping {
+public class CoapRequestMappingHandlerMapping extends AbstractHandlerMethodMapping implements EmbeddedValueResolverAware {
 
-	private static final Logger log = LoggerFactory.getLogger(CoapRequestMappingHandlerMapping.class);
+	@Nullable
+	private StringValueResolver embeddedValueResolver;
 
 	@Override
 	protected boolean isHandler(Class<?> beanType) {
@@ -49,11 +51,34 @@ public class CoapRequestMappingHandlerMapping extends AbstractHandlerMethodMappi
 		return requestMapping != null ? createRequestMappingInfo(requestMapping) : null;
 	}
 
+	@Override
+	public void setEmbeddedValueResolver(StringValueResolver resolver) {
+		this.embeddedValueResolver = resolver;
+	}
+
+	/**
+	 * Resolve placeholder values in the given array of patterns.
+	 *
+	 * @param patterns the patterns
+	 * @return a new array with updated patterns
+	 */
+	protected String[] resolveEmbeddedValuesInPatterns(String[] patterns) {
+		if (this.embeddedValueResolver == null) {
+			return patterns;
+		}
+		else {
+			String[] resolvedPatterns = new String[patterns.length];
+			for (int i = 0; i < patterns.length; i++) {
+				resolvedPatterns[i] = this.embeddedValueResolver.resolveStringValue(patterns[i]);
+			}
+			return resolvedPatterns;
+		}
+	}
+
 	private CoapRequestMappingInfo createRequestMappingInfo(CoapRequestMapping requestMapping) {
 		CoapRequestMappingInfo.Builder builder = CoapRequestMappingInfo
-				.paths(requestMapping.path())
+				.paths(resolveEmbeddedValuesInPatterns(requestMapping.path()))
 				.methods(requestMapping.method());
 		return builder.build();
 	}
-
 }

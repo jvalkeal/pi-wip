@@ -15,11 +15,15 @@
  */
 package org.springframework.cloud.iot.coap.server.result.method.annotation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cloud.iot.coap.server.HandlerAdapter;
 import org.springframework.cloud.iot.coap.server.HandlerMethod;
 import org.springframework.cloud.iot.coap.server.HandlerResult;
 import org.springframework.cloud.iot.coap.server.ServerCoapExchange;
+import org.springframework.cloud.iot.coap.server.result.method.CoapHandlerMethodArgumentResolver;
 import org.springframework.cloud.iot.coap.server.support.ControllerMethodResolver;
 import org.springframework.util.Assert;
 
@@ -44,6 +48,8 @@ public class CoapObservableHandlerAdapter implements HandlerAdapter, Initializin
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		this.methodResolver = new ControllerMethodResolver();
+		List<CoapHandlerMethodArgumentResolver> requestMappingResolvers = new ArrayList<>();
+		requestMappingResolvers.add(new ServerCoapExchangeArgumentResolver());
+		this.methodResolver = new ControllerMethodResolver(requestMappingResolvers);
 	}
 }
