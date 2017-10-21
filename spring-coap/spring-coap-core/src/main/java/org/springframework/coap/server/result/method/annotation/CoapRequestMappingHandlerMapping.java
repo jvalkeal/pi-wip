@@ -78,7 +78,9 @@ public class CoapRequestMappingHandlerMapping extends AbstractHandlerMethodMappi
 	private CoapRequestMappingInfo createRequestMappingInfo(CoapRequestMapping requestMapping) {
 		CoapRequestMappingInfo.Builder builder = CoapRequestMappingInfo
 				.paths(resolveEmbeddedValuesInPatterns(requestMapping.path()))
-				.methods(requestMapping.method());
+				.methods(requestMapping.method())
+				.headers(requestMapping.headers())
+				.consumes(requestMapping.consumes());
 		return builder.build();
 	}
 }

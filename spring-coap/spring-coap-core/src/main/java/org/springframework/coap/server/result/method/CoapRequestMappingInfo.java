@@ -22,8 +22,10 @@ import java.util.stream.Collectors;
 import org.springframework.coap.CoapMethod;
 import org.springframework.coap.server.CoapRequestCondition;
 import org.springframework.coap.server.ServerCoapExchange;
+import org.springframework.coap.server.result.condition.CoapConsumesRequestCondition;
 import org.springframework.coap.server.result.condition.CoapRequestMethodsRequestCondition;
 import org.springframework.coap.server.result.condition.CoapRequestPatternsRequestCondition;
+import org.springframework.coap.server.result.condition.CoapHeadersRequestCondition;
 import org.springframework.coap.server.support.util.pattern.PathPattern;
 import org.springframework.coap.server.support.util.pattern.PathPatternParser;
 import org.springframework.lang.Nullable;
@@ -39,36 +41,48 @@ public class CoapRequestMappingInfo implements CoapRequestCondition<CoapRequestM
 
 	private final CoapRequestPatternsRequestCondition patternsCondition;
 	private final CoapRequestMethodsRequestCondition methodsCondition;
+	private final CoapHeadersRequestCondition headersCondition;
+	private final CoapConsumesRequestCondition consumesCondition;
 
 	/**
 	 * Instantiates a new coap request mapping info.
 	 *
 	 * @param patterns the patterns
 	 * @param methods the methods
+	 * @param headers the headers
+	 * @param consumes the consumes
 	 */
-	public CoapRequestMappingInfo(CoapRequestPatternsRequestCondition patterns, CoapRequestMethodsRequestCondition methods) {
+	public CoapRequestMappingInfo(CoapRequestPatternsRequestCondition patterns,
+			CoapRequestMethodsRequestCondition methods, CoapHeadersRequestCondition headers,
+			CoapConsumesRequestCondition consumes) {
 		this.patternsCondition = patterns != null ? patterns : new CoapRequestPatternsRequestCondition();
 		this.methodsCondition = (methods != null ? methods : new CoapRequestMethodsRequestCondition());
+		this.headersCondition = (headers != null ? headers : new CoapHeadersRequestCondition());
+		this.consumesCondition = (consumes != null ? consumes : new CoapConsumesRequestCondition());
 	}
 
 	@Override
 	public CoapRequestMappingInfo combine(CoapRequestMappingInfo other) {
 		CoapRequestPatternsRequestCondition patterns = this.patternsCondition.combine(other.patternsCondition);
 		CoapRequestMethodsRequestCondition methods = this.methodsCondition.combine(other.methodsCondition);
-		return new CoapRequestMappingInfo(patterns, methods);
+		CoapHeadersRequestCondition headers = this.headersCondition.combine(other.headersCondition);
+		CoapConsumesRequestCondition consumes = this.consumesCondition.combine(other.consumesCondition);
+		return new CoapRequestMappingInfo(patterns, methods, headers, consumes);
 	}
 
 	@Override
 	public CoapRequestMappingInfo getMatchingCondition(ServerCoapExchange exchange) {
 		CoapRequestMethodsRequestCondition methods = methodsCondition.getMatchingCondition(exchange);
-		if (methods == null) {
+		CoapHeadersRequestCondition headers = this.headersCondition.getMatchingCondition(exchange);
+		CoapConsumesRequestCondition consumes = this.consumesCondition.getMatchingCondition(exchange);
+		if (methods == null || headers == null || consumes == null) {
 			return null;
 		}
 		CoapRequestPatternsRequestCondition patterns = patternsCondition.getMatchingCondition(exchange);
 		if (patterns == null) {
 			return null;
 		}
-		return new CoapRequestMappingInfo(patterns, methods);
+		return new CoapRequestMappingInfo(patterns, methods, headers, consumes);
 	}
 
 	@Override
@@ -82,6 +96,14 @@ public class CoapRequestMappingInfo implements CoapRequestCondition<CoapRequestM
 
 	public CoapRequestMethodsRequestCondition getMethodsCondition() {
 		return methodsCondition;
+	}
+
+	public CoapHeadersRequestCondition getHeadersCondition() {
+		return headersCondition;
+	}
+
+	public CoapConsumesRequestCondition getConsumesCondition() {
+		return consumesCondition;
 	}
 
 	/**
@@ -115,6 +137,22 @@ public class CoapRequestMappingInfo implements CoapRequestCondition<CoapRequestM
 		 */
 		Builder methods(CoapMethod... methods);
 
+		/**
+		 * Set the header conditions.
+		 * <p>By default this is not set.
+		 *
+		 * @param headers the headers
+		 * @return the builder for chaining
+		 */
+		Builder headers(String... headers);
+
+		/**
+		 * Set the consumes conditions.
+		 *
+		 * @param consumes the consumes
+		 * @return the builder for chaining
+		 */
+		Builder consumes(String... consumes);
 
 		/**
 		 * Builds the {@link CoapRequestMappingInfo}.
@@ -130,6 +168,12 @@ public class CoapRequestMappingInfo implements CoapRequestCondition<CoapRequestM
 
 		@Nullable
 		private CoapMethod[] methods;
+
+		@Nullable
+		private String[] headers;
+
+		@Nullable
+		private String[] consumes;
 
 		public DefaultBuilder(String... paths) {
 			this.paths = paths;
@@ -148,10 +192,23 @@ public class CoapRequestMappingInfo implements CoapRequestCondition<CoapRequestM
 		}
 
 		@Override
+		public DefaultBuilder headers(String... headers) {
+			this.headers = headers;
+			return this;
+		}
+
+		@Override
+		public DefaultBuilder consumes(String... consumes) {
+			this.consumes = consumes;
+			return this;
+		}
+
+		@Override
 		public CoapRequestMappingInfo build() {
 			PathPatternParser parser = new PathPatternParser();
 			CoapRequestPatternsRequestCondition patternsCondition = new CoapRequestPatternsRequestCondition(parse(this.paths, parser));
-			return new CoapRequestMappingInfo(patternsCondition, new CoapRequestMethodsRequestCondition(methods));
+			return new CoapRequestMappingInfo(patternsCondition, new CoapRequestMethodsRequestCondition(methods),
+					new CoapHeadersRequestCondition(headers), new CoapConsumesRequestCondition(consumes));
 		}
 
 		private static List<PathPattern> parse(String[] paths, PathPatternParser parser) {

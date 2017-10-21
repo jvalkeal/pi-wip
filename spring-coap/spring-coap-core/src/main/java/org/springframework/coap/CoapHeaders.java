@@ -15,15 +15,46 @@
  */
 package org.springframework.coap;
 
-import org.springframework.util.LinkedMultiValueMap;
+import java.util.List;
 
+import org.springframework.lang.Nullable;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.StringUtils;
+
+/**
+ * Represents COAP request and response headers, mapping integer header names to a list of byte[] values.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class CoapHeaders extends LinkedMultiValueMap<Integer, byte[]> {
 
 	private static final long serialVersionUID = 9213168835890681490L;
+	public static final String ACCEPT = "Accept";
+	public static final String CONTENT_FORMAT = "Content-Format";
+	public static final int CONTENT_FORMAT_VALUE = 12;
 
+	@Nullable
+	public MediaType getContentFormat() {
+		byte[] contentFormat = getFirst(CONTENT_FORMAT_VALUE);
+		return contentFormat.length > 0 ? MediaType.parseMediaType(new String(contentFormat)) : null;
+//		return (StringUtils.hasLength(value) ? MediaType.parseMediaType(value) : null);
+	}
 //	   The range of 2048..64999 is
 //	   for all other options including private or vendor-specific ones,
 //	   which undergo a Designated Expert review to help ensure that the
 //	   option semantics are defined correctly.
+
+	/**
+	 * Return the first header value for the given header name, if any.
+	 * @param headerName the header name
+	 * @return the first header value, or {@code null} if none
+	 */
+//	@Override
+//	@Nullable
+//	public String getFirst(String headerName) {
+//		List<String> headerValues = this.headers.get(headerName);
+//		return (headerValues != null ? headerValues.get(0) : null);
+//	}
 
 }

@@ -1,6 +1,6 @@
 logging:
   level:
-    org.springframework.cloud.iot: trace
+    org.springframework.coap: trace
     org.eclipse.californium: info
 spring:
   coap:

@@ -23,7 +23,10 @@ import java.util.List;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.coap.CoAP.Type;
+import org.eclipse.californium.core.coap.MediaTypeRegistry;
 import org.eclipse.californium.core.coap.Option;
+import org.eclipse.californium.core.coap.OptionNumberRegistry;
+import org.eclipse.californium.core.coap.OptionNumberRegistry.optionFormats;
 import org.eclipse.californium.core.network.Exchange;
 import org.eclipse.californium.core.observe.ObserveRelation;
 import org.eclipse.californium.core.server.resources.CoapExchange;
@@ -183,9 +186,19 @@ public class CaliforniumCoapHandlerResource extends AbstractCaliforniumCoapResou
 
 	private ServerCoapExchange createServerCoapExchange(CoapExchange exchange, ServerCoapObservableContext context) {
 		CoapHeaders coapHeaders = new CoapHeaders();
-		List<Option> others = exchange.getRequestOptions().getOthers();
-		for (Option option : others) {
-			coapHeaders.add(option.getNumber(), option.getStringValue().getBytes());
+		List<Option> options = exchange.getRequestOptions().asSortedList();
+		for (Option option : options) {
+
+			// TODO polish and come up better header storing logic
+			if (OptionNumberRegistry.getFormatByNr(option.getNumber()) == optionFormats.INTEGER
+					&& (option.getNumber() == OptionNumberRegistry.ACCEPT
+							|| option.getNumber() == OptionNumberRegistry.CONTENT_FORMAT)) {
+				String mediatype = MediaTypeRegistry.toString(option.getIntegerValue());
+				coapHeaders.add(option.getNumber(), mediatype.getBytes());
+			} else {
+				byte[] value = option.getValue();
+				coapHeaders.add(option.getNumber(), value.length == 0 ? new byte[] { 0 } : value);
+			}
 		}
 
 		GenericServerCoapRequest request = new GenericServerCoapRequest(exchange.getRequestPayload(), coapHeaders);
