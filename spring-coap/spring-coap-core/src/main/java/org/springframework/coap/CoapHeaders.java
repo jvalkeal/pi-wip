@@ -15,6 +15,7 @@
  */
 package org.springframework.coap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.lang.Nullable;
@@ -31,6 +32,7 @@ public class CoapHeaders extends LinkedMultiValueMap<Integer, byte[]> {
 
 	private static final long serialVersionUID = 9213168835890681490L;
 	public static final String ACCEPT = "Accept";
+	public static final int ACCEPT_VALUE = 17;
 	public static final String CONTENT_FORMAT = "Content-Format";
 	public static final int CONTENT_FORMAT_VALUE = 12;
 
@@ -39,6 +41,15 @@ public class CoapHeaders extends LinkedMultiValueMap<Integer, byte[]> {
 		byte[] contentFormat = getFirst(CONTENT_FORMAT_VALUE);
 		return contentFormat.length > 0 ? MediaType.parseMediaType(new String(contentFormat)) : null;
 //		return (StringUtils.hasLength(value) ? MediaType.parseMediaType(value) : null);
+	}
+
+	public List<MediaType> getAccept() {
+		byte[] accept = getFirst(ACCEPT_VALUE);
+		ArrayList<MediaType> accepts = new ArrayList<>();
+		if (accept.length > 0) {
+			accepts.add(MediaType.parseMediaType(new String(accept)));
+		}
+		return accepts;
 	}
 //	   The range of 2048..64999 is
 //	   for all other options including private or vendor-specific ones,
@@ -56,5 +67,6 @@ public class CoapHeaders extends LinkedMultiValueMap<Integer, byte[]> {
 //		List<String> headerValues = this.headers.get(headerName);
 //		return (headerValues != null ? headerValues.get(0) : null);
 //	}
+
 
 }

@@ -80,7 +80,8 @@ public class CoapRequestMappingHandlerMapping extends AbstractHandlerMethodMappi
 				.paths(resolveEmbeddedValuesInPatterns(requestMapping.path()))
 				.methods(requestMapping.method())
 				.headers(requestMapping.headers())
-				.consumes(requestMapping.consumes());
+				.consumes(requestMapping.consumes())
+				.produces(requestMapping.produces());
 		return builder.build();
 	}
 }

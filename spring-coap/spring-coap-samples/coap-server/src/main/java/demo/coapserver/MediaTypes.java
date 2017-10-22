@@ -34,4 +34,17 @@ public class MediaTypes {
 	public String consumeApplicationJson() {
 		return "Hello from consumeApplicationJson";
 	}
+
+	@CoapGetMapping(path = "/mediatypes/produce", produces = MediaType.TEXT_PLAIN_VALUE)
+	@CoapResponseBody
+	public String produceTextPlain() {
+		return "Hello from produceTextPlain";
+	}
+
+	@CoapGetMapping(path = "/mediatypes/produce", produces = MediaType.APPLICATION_JSON_VALUE)
+	@CoapResponseBody
+	public String produceApplicationJson() {
+		return "Hello from produceApplicationJson";
+	}
+
 }

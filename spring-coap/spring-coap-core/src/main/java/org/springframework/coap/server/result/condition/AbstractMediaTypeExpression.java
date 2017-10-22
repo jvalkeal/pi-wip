@@ -17,6 +17,7 @@ package org.springframework.coap.server.result.condition;
 
 import org.springframework.coap.MediaType;
 import org.springframework.coap.server.ServerCoapExchange;
+import org.springframework.lang.Nullable;
 
 abstract class AbstractMediaTypeExpression implements Comparable<AbstractMediaTypeExpression>, MediaTypeExpression {
 
@@ -63,6 +64,18 @@ abstract class AbstractMediaTypeExpression implements Comparable<AbstractMediaTy
 		}
 		builder.append(this.mediaType.toString());
 		return builder.toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj != null && getClass() == obj.getClass()) {
+			AbstractMediaTypeExpression other = (AbstractMediaTypeExpression) obj;
+			return (this.mediaType.equals(other.mediaType) && this.isNegated == other.isNegated);
+		}
+		return false;
 	}
 
 	public final boolean match(ServerCoapExchange exchange) {

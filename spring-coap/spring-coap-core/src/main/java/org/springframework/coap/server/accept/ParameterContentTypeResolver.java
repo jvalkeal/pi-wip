@@ -1,0 +1,82 @@
+/*
+ * Copyright 2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.springframework.coap.server.accept;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.coap.MediaType;
+import org.springframework.coap.server.NotAcceptableStatusException;
+import org.springframework.coap.server.ServerCoapExchange;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
+
+public class ParameterContentTypeResolver implements RequestedContentTypeResolver {
+
+	/** Primary lookup for media types by key (e.g. "json" -> "application/json") */
+	private final Map<String, MediaType> mediaTypes = new ConcurrentHashMap<>(64);
+
+	private String parameterName = "format";
+
+
+	public ParameterContentTypeResolver(Map<String, MediaType> mediaTypes) {
+		mediaTypes.forEach((key, value) -> this.mediaTypes.put(formatKey(key), value));
+	}
+
+	private static String formatKey(String key) {
+		return key.toLowerCase(Locale.ENGLISH);
+	}
+
+
+	/**
+	 * Set the name of the parameter to use to determine requested media types.
+	 * <p>By default this is set to {@literal "format"}.
+	 */
+	public void setParameterName(String parameterName) {
+		Assert.notNull(parameterName, "'parameterName' is required");
+		this.parameterName = parameterName;
+	}
+
+	public String getParameterName() {
+		return this.parameterName;
+	}
+
+
+	@Override
+	public List<MediaType> resolveMediaTypes(ServerCoapExchange exchange) throws NotAcceptableStatusException {
+		return Collections.emptyList();
+//		String key = exchange.getRequest().getQueryParams().getFirst(getParameterName());
+//		if (!StringUtils.hasText(key)) {
+//			return Collections.emptyList();
+//		}
+//		key = formatKey(key);
+//		MediaType match = this.mediaTypes.get(key);
+//		if (match == null) {
+//			match = MediaTypeFactory.getMediaType("filename." + key)
+//					.orElseThrow(() -> {
+//						List<MediaType> supported = new ArrayList<>(this.mediaTypes.values());
+//						return new NotAcceptableStatusException(supported);
+//					});
+//		}
+//		this.mediaTypes.putIfAbsent(key, match);
+//		return Collections.singletonList(match);
+	}
+
+}

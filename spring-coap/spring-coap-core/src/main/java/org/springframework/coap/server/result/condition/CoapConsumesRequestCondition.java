@@ -23,10 +23,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.coap.CoapHeaders;
+import org.springframework.coap.InvalidMediaTypeException;
 import org.springframework.coap.MediaType;
 import org.springframework.coap.annotation.CoapRequestMapping;
 import org.springframework.coap.server.ServerCoapExchange;
+import org.springframework.util.StringUtils;
 
 /**
  * A logical disjunction (' || ') request condition to match a request's
@@ -66,6 +67,7 @@ public class CoapConsumesRequestCondition extends AbstractRequestCondition<CoapC
 		if (isEmpty()) {
 			return this;
 		}
+
 		Set<ConsumeMediaTypeExpression> result = new LinkedHashSet<>(expressions);
 		for (Iterator<ConsumeMediaTypeExpression> iterator = result.iterator(); iterator.hasNext();) {
 			ConsumeMediaTypeExpression expression = iterator.next();
@@ -152,6 +154,11 @@ public class CoapConsumesRequestCondition extends AbstractRequestCondition<CoapC
 			super(mediaType, negated);
 		}
 
+		public final boolean match(MediaType contentType) {
+			boolean match = getMediaType().includes(contentType);
+			return (!isNegated() ? match : !match);
+		}
+
 		@Override
 		protected boolean matchMediaType(ServerCoapExchange exchange) throws RuntimeException {
 			try {
@@ -159,14 +166,12 @@ public class CoapConsumesRequestCondition extends AbstractRequestCondition<CoapC
 				contentFormat = (contentFormat != null ? contentFormat : MediaType.TEXT_PLAIN);
 				return getMediaType().includes(contentFormat);
 			}
-			catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-//			catch (InvalidMediaTypeException ex) {
+			catch (InvalidMediaTypeException ex) {
+				throw new RuntimeException(ex);
 //				throw new UnsupportedMediaTypeStatusException("Can't parse Content-Type [" +
 //						exchange.getRequest().getHeaders().getFirst("Content-Type") +
 //						"]: " + ex.getMessage());
-//			}
+			}
 		}
 
 	}
